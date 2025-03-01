@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import {
   Sidebar,
   SidebarContent,
@@ -13,11 +12,9 @@ import {
   SidebarRail,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-
-import { NavUser } from "@/components/nav-user";
+import { NavUser } from "./nav-user";
 
 const data = {
-  versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
   user: {
     name: "shadcn",
     email: "m@example.com",
@@ -25,7 +22,7 @@ const data = {
   },
   navMain: [
     {
-      title: "Getting Started",
+      title: "PeePee",
       url: "#",
       items: [
         {
@@ -59,6 +56,14 @@ const data = {
           title: "Caching",
           url: "#",
         },
+        {
+          title: "Styling",
+          url: "#",
+        },
+        {
+          title: "Optimizing",
+          url: "#",
+        },
       ],
     },
   ],
@@ -68,7 +73,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <h1>DermAppointment</h1>
+        <h1>DermAppoinment</h1>
       </SidebarHeader>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}

@@ -6,7 +6,6 @@ import {
   ChevronsUpDown,
   CreditCard,
   LogOut,
-  Sparkles,
   Sun,
   Moon,
 } from "lucide-react";
@@ -85,17 +84,15 @@ export function NavUser({
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <CreditCard />
-                Billing
+                Transactions
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
                 Notifications
               </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Moon />
-                Dark theme
+                Dark Theme
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

@@ -36,7 +36,7 @@ export default function HomePage() {
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">Good soup</div>
+        <div className="flex flex-1 flex-col gap-4 p-4">good soup</div>
       </SidebarInset>
     </SidebarProvider>
   );
