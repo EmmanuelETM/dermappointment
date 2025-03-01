@@ -6,17 +6,10 @@ import { useTheme } from "next-themes";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 export function ModeToggle() {
-  const { setTheme, theme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
+  const { setTheme, theme, systemTheme } = useTheme();
 
-  // Evita el hydration mismatch asegurando que se renderiza solo en el cliente
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null; // Evita mostrar contenido diferente entre SSR y CSR
-
-  const inverse = theme === "dark" ? "light" : "dark";
+  const currentTheme = theme === "system" ? systemTheme : theme;
+  const inverse = currentTheme === "dark" ? "light" : "dark";
 
   return (
     <DropdownMenuItem onClick={() => setTheme(inverse)}>
