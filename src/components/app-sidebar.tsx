@@ -13,12 +13,13 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
+import { ModeToggle } from "./mode-toggle";
 
 const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    avatar: "https://robohash.org/1",
   },
   navMain: [
     {
@@ -95,7 +96,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user}></NavUser>
+        <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
