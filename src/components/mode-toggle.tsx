@@ -7,12 +7,21 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 export function ModeToggle() {
   const { setTheme, theme } = useTheme();
-  const inverse = theme == "dark" ? "light" : "dark";
+  const [mounted, setMounted] = React.useState(false);
+
+  // Evita el hydration mismatch asegurando que se renderiza solo en el cliente
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null; // Evita mostrar contenido diferente entre SSR y CSR
+
+  const inverse = theme === "dark" ? "light" : "dark";
 
   return (
     <DropdownMenuItem onClick={() => setTheme(inverse)}>
-      {inverse == "dark" ? <Moon /> : <Sun />}
-      {inverse == "dark" ? "Dark" : "Light"}
+      {inverse === "dark" ? <Moon /> : <Sun />}
+      {inverse === "dark" ? "Dark" : "Light"}
     </DropdownMenuItem>
   );
 }
