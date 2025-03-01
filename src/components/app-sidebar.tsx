@@ -13,7 +13,6 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
-import { ModeToggle } from "./mode-toggle";
 
 const data = {
   user: {
