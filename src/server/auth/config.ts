@@ -35,8 +35,7 @@ declare module "next-auth" {
 export const authConfig = {
   providers: [
     DiscordProvider,
-    GoogleProvider,
-    /**
+    GoogleProvider /**
      * ...add more providers here.
      *
      * Most other providers require a bit more work than the Discord provider. For example, the
@@ -44,13 +43,11 @@ export const authConfig = {
      * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
      *
      * @see https://next-auth.js.org/providers/github
-     */
+     */,
   ],
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
-    sessionsTable: sessions,
-    verificationTokensTable: verificationTokens,
   }),
   callbacks: {
     session: ({ session, user }) => ({
