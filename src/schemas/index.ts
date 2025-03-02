@@ -19,13 +19,7 @@ export const SignUpSchema = z.object({
   password: z.string().min(8, {
     message: "Minimum of 8 characters required",
   }),
-  confirm: z.string().min(8, {
-    message: "Minimum of 8 characters required",
-  }),
-  birthday: z.string().date("Birth Date is required"),
   address: z.string(),
-  phone: z.string().min(13, {
-    message: "Enter a correct phone number",
-  }),
   gender: z.string(),
+  image: z.string(),
 });
