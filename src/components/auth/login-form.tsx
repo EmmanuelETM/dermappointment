@@ -19,18 +19,30 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import { useTheme } from "next-themes";
+
 import { Input } from "@/components/ui/input";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/schemas";
-import { FormError } from "@/components/form-error";
-import { FormSuccess } from "@/components/form-success";
+import { FormError } from "@/components/auth/form-error";
+import { FormSuccess } from "@/components/auth/form-success";
+import { login } from "@/actions/login";
+import Link from "next/link";
+import { Moon, Sun } from "lucide-react";
+import { Switch } from "@radix-ui/react-switch";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [isPending, startTransition] = useTransition();
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -39,16 +51,44 @@ export function LoginForm({
     },
   });
 
+  useEffect(() => {
+    setMounted(true);
+    console.log("Mounted:", true);
+  }, []);
+
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    console.log(values);
+    setError("");
+    setSuccess("");
+
+    startTransition(async () => {
+      const response = await login(values);
+      setError(response.error);
+      setSuccess(response.success);
+    });
   };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Welcome back</CardTitle>
-          <CardDescription>Login with your Google account</CardDescription>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
+            <div className="flex items-center space-x-2">
+              {mounted && (
+                <Switch
+                  checked={theme === "dark"}
+                  onCheckedChange={() =>
+                    setTheme(theme === "dark" ? "light" : "dark")
+                  }
+                />
+              )}
+              {mounted && theme === "dark" ? (
+                <Moon size={16} />
+              ) : (
+                <Sun size={16} />
+              )}
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -67,7 +107,7 @@ export function LoginForm({
                 </div>
                 <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                   <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                    Or continue with
+                    Or
                   </span>
                 </div>
                 <div className="grid gap-6">
@@ -81,6 +121,7 @@ export function LoginForm({
                           <FormControl>
                             <Input
                               {...field}
+                              disabled={isPending}
                               placeholder="johndoe@example.com"
                               type="email"
                             />
@@ -98,16 +139,17 @@ export function LoginForm({
                         <FormItem>
                           <FormLabel className="flex items-center justify-between">
                             Password
-                            <a
-                              href="#"
-                              className="ml-auto text-sm text-black underline-offset-4 hover:underline dark:text-white"
+                            <Link
+                              href="/forgot-password"
+                              className="ml-auto text-sm text-primary hover:underline hover:underline-offset-4"
                             >
                               Forgot your password?
-                            </a>
+                            </Link>
                           </FormLabel>
                           <FormControl>
                             <Input
                               {...field}
+                              disabled={isPending}
                               type="password"
                               placeholder="********"
                             />
@@ -117,17 +159,20 @@ export function LoginForm({
                       )}
                     ></FormField>
                   </div>
-                  <FormError message="" />
-                  <FormSuccess message="" />
-                  <Button type="submit" className="w-full">
+                  <FormError message={error} />
+                  <FormSuccess message={success} />
+                  <Button type="submit" className="w-full" disabled={isPending}>
                     Login
                   </Button>
                 </div>
                 <div className="text-center text-sm">
                   Don&apos;t have an account?{" "}
-                  <a href="#" className="underline underline-offset-4">
-                    Sign up
-                  </a>
+                  <Link
+                    href="/signup"
+                    className="text-primary hover:underline hover:underline-offset-4"
+                  >
+                    Sign Up
+                  </Link>
                 </div>
               </div>
             </form>
