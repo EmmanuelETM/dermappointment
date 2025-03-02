@@ -2,13 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import {
   Form,
@@ -19,10 +13,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { useTheme } from "next-themes";
-
 import { Input } from "@/components/ui/input";
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,8 +23,6 @@ import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
 import { login } from "@/actions/login";
 import Link from "next/link";
-import { Moon, Sun } from "lucide-react";
-import { Switch } from "@radix-ui/react-switch";
 
 export function LoginForm({
   className,
@@ -41,8 +31,6 @@ export function LoginForm({
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-  const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -50,11 +38,6 @@ export function LoginForm({
       password: "",
     },
   });
-
-  useEffect(() => {
-    setMounted(true);
-    console.log("Mounted:", true);
-  }, []);
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     setError("");
@@ -71,24 +54,7 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
-            <div className="flex items-center space-x-2">
-              {mounted && (
-                <Switch
-                  checked={theme === "dark"}
-                  onCheckedChange={() =>
-                    setTheme(theme === "dark" ? "light" : "dark")
-                  }
-                />
-              )}
-              {mounted && theme === "dark" ? (
-                <Moon size={16} />
-              ) : (
-                <Sun size={16} />
-              )}
-            </div>
-          </div>
+          <CardTitle className="text-2xl font-bold">Welcome Back!</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
