@@ -42,7 +42,7 @@ import {
 } from "@/components/ui/select";
 
 import { Input } from "@/components/ui/input";
-import { Textarea } from "../ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 
 import { useTheme } from "next-themes";
@@ -65,20 +65,10 @@ export function SignUpForm({
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const [step, setStep] = useState(1);
-  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    birthday: "",
-    phone: "",
-    email: "",
-    username: "",
-    password: "",
-    confirmPassword: "",
-    address: "",
-    gender: "male",
-  });
+  const { setTheme, theme, systemTheme } = useTheme();
+  const currentTheme = theme === "system" ? systemTheme : theme;
+  const inverse = currentTheme === "dark" ? "light" : "dark";
 
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
@@ -139,13 +129,11 @@ export function SignUpForm({
             <div className="flex items-center space-x-2">
               {mounted && (
                 <Switch
-                  checked={theme === "dark"}
-                  onCheckedChange={() =>
-                    setTheme(theme === "dark" ? "light" : "dark")
-                  }
+                  checked={inverse === "light"}
+                  onCheckedChange={() => setTheme(inverse)}
                 />
               )}
-              {mounted && theme === "dark" ? (
+              {mounted && inverse === "light" ? (
                 <Moon size={16} />
               ) : (
                 <Sun size={16} />
