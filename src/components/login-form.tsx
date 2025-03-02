@@ -24,6 +24,8 @@ import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/schemas";
+import { FormError } from "@/components/form-error";
+import { FormSuccess } from "@/components/form-success";
 
 export function LoginForm({
   className,
@@ -115,6 +117,8 @@ export function LoginForm({
                       )}
                     ></FormField>
                   </div>
+                  <FormError message="" />
+                  <FormSuccess message="" />
                   <Button type="submit" className="w-full">
                     Login
                   </Button>
