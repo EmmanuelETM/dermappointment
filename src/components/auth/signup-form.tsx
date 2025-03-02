@@ -79,8 +79,7 @@ export function SignUpForm({
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
-      firstname: "",
-      lastname: "",
+      name: "",
       birthday: "",
       email: "",
       password: "",
@@ -197,39 +196,19 @@ export function SignUpForm({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <FormField
                         control={form.control}
-                        name="firstname"
+                        name="name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>First Name</FormLabel>
+                            <FormLabel>Name</FormLabel>
                             <FormControl>
                               <Input
                                 {...field}
                                 // disabled={isPending}
-                                placeholder="John"
-                                type="text"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      ></FormField>
-                    </div>
-                    <div className="space-y-2">
-                      <FormField
-                        control={form.control}
-                        name="lastname"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Last Name</FormLabel>
-                            <FormControl>
-                              <Input
-                                {...field}
-                                // disabled={isPending}
-                                placeholder="Doe"
+                                placeholder="John Doe"
                                 type="text"
                               />
                             </FormControl>

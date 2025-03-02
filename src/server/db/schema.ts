@@ -13,13 +13,12 @@ import { type AdapterAccount } from "next-auth/adapters";
 
 export const createTable = pgTableCreator((name) => `dermappointment_${name}`);
 
-export const users = createTable("user", {
+export const users = createTable("users", {
   id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  firstname: varchar("firstname", { length: 255 }).notNull(),
-  lastname: varchar("lastname", { length: 255 }).notNull(),
+  name: varchar("firstname", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull(),
   password: varchar("password", { length: 255 }).notNull(),
   birthday: date("birthday", { mode: "date" }).notNull(),
