@@ -28,7 +28,6 @@ export function LoginForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -40,7 +39,6 @@ export function LoginForm({
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     setError("");
-    setSuccess("");
 
     startTransition(async () => {
       const response = await login(values);
