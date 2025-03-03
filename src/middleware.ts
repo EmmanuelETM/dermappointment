@@ -16,12 +16,12 @@ export default auth((req) => {
   if (isApiAuthRoute) {
     return NextResponse.next();
   }
-  // if (isAuthRoute) {
-  //   if (isLoggedIn) {
-  //     return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
-  //   }
-  //   return NextResponse.next();
-  // }
+  if (isAuthRoute) {
+    if (isLoggedIn) {
+      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+    }
+    return NextResponse.next();
+  }
   // if (!isLoggedIn && !isPublicRoute) {
   //   return Response.redirect(new URL("/login", nextUrl));
   // }
