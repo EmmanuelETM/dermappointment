@@ -16,13 +16,9 @@ export const signup = async (values: z.infer<typeof SignUpSchema>) => {
 
   const { name, email, password, address, gender } = validatedFields.data;
   const salt = await bcrypt.genSalt(10);
-  console.log("Password Cypher: " + password);
   const hashedPassword = await bcrypt.hash(password, salt);
-  console.log("hashed: " + hashedPassword);
 
   const existsUser = await getUserByEmail(email);
-
-  console.log(existsUser);
 
   if (existsUser) {
     return { error: "Email already in use!" };
