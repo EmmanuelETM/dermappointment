@@ -1,5 +1,5 @@
 import {
-  BadgeCheck,
+  Settings,
   Bell,
   ChevronsUpDown,
   CreditCard,
@@ -23,6 +23,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { ModeToggle } from "./mode-toggle";
+import { redirect } from "next/navigation";
 
 export function NavUser({
   user,
@@ -75,9 +76,9 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
+              <DropdownMenuItem onClick={() => redirect("/settings")}>
+                <Settings />
+                Settings
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <CreditCard />
