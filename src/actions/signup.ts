@@ -1,6 +1,6 @@
 "use server";
 
-import bcrypt from "bcrypt";
+// import bcrypt from "bcrypt";
 import { SignUpSchema } from "@/schemas";
 import type { z } from "zod";
 import { db } from "@/server/db";
@@ -15,7 +15,7 @@ export const signup = async (values: z.infer<typeof SignUpSchema>) => {
   }
 
   const { name, email, password, address, gender } = validatedFields.data;
-  const hashedPassword = await bcrypt.hash(password, 10);
+  // const hashedPassword = await bcrypt.hash(password, 10);
 
   const existsUser = await getUserByEmail(email);
 
@@ -28,7 +28,7 @@ export const signup = async (values: z.infer<typeof SignUpSchema>) => {
   await db.insert(users).values({
     name,
     email,
-    password: hashedPassword,
+    password: password,
     address,
     gender,
     image: "https://robohash.org/69",
