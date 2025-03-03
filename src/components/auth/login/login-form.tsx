@@ -20,7 +20,6 @@ import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/schemas";
 import { FormError } from "@/components/auth/form-error";
-import { FormSuccess } from "@/components/auth/form-success";
 import { login } from "@/actions/login";
 import Link from "next/link";
 
@@ -45,8 +44,7 @@ export function LoginForm({
 
     startTransition(async () => {
       const response = await login(values);
-      setError(response.error);
-      setSuccess(response.success);
+      setError(response?.error);
     });
   };
 
@@ -126,7 +124,6 @@ export function LoginForm({
                     ></FormField>
                   </div>
                   <FormError message={error} />
-                  <FormSuccess message={success} />
                   <Button type="submit" className="w-full" disabled={isPending}>
                     Login
                   </Button>
