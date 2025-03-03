@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/select";
 
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 
 import { useTheme } from "next-themes";
@@ -60,53 +61,54 @@ export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [isPending, startTransition] = useTransition();
   const [step, setStep] = useState(1);
-  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    birthday: "",
-    phone: "",
-    email: "",
-    username: "",
-    password: "",
-    confirmPassword: "",
-    address: "",
-    gender: "male",
-  });
+  const { setTheme, theme, systemTheme } = useTheme();
+  const currentTheme = theme === "system" ? systemTheme : theme;
+  const inverse = currentTheme === "dark" ? "light" : "dark";
 
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
       name: "",
-      birthday: "",
       email: "",
       password: "",
-      confirm: "",
       address: "",
-      phone: "",
       gender: "",
+      image: "",
     },
   });
 
-  // const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-  //   setError("");
-  //   setSuccess("");
+  const onSubmit = (values: z.infer<typeof SignUpSchema>) => {
+    console.log("submit");
+    setError("");
+    setSuccess("");
 
-  //   startTransition(async () => {
-  //     const response = await login(values);
-  //     setError(response.error);
-  //     setSuccess(response.success);
-  //   });
-  // };
+    startTransition(async () => {
+      const response = await signup(values);
+      setError(response.error);
+      setSuccess(response.success);
+    });
+  };
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const nextStep = () => {
-    if (step < 3) setStep(step + 1);
+  const nextStep = async () => {
+    const fieldsToValidate: Array<keyof z.infer<typeof SignUpSchema>> =
+      step === 1
+        ? ["name", "email", "password"]
+        : step === 2
+          ? ["address", "gender"]
+          : [];
+
+    const isValid = await form.trigger(fieldsToValidate); // Solo valida los campos visibles
+    if (!isValid) return;
+    setStep((prev) => prev + 1);
   };
 
   const prevStep = () => {
@@ -127,13 +129,11 @@ export function SignUpForm({
             <div className="flex items-center space-x-2">
               {mounted && (
                 <Switch
-                  checked={theme === "dark"}
-                  onCheckedChange={() =>
-                    setTheme(theme === "dark" ? "light" : "dark")
-                  }
+                  checked={inverse === "light"}
+                  onCheckedChange={() => setTheme(inverse)}
                 />
               )}
-              {mounted && theme === "dark" ? (
+              {mounted && inverse === "light" ? (
                 <Moon size={16} />
               ) : (
                 <Sun size={16} />
@@ -150,24 +150,24 @@ export function SignUpForm({
               <StepIndicator
                 currentStep={step}
                 stepNumber={1}
-                icon={<User size={16} />}
-              />
-              <StepIndicator
-                currentStep={step}
-                stepNumber={2}
                 icon={<Lock size={16} />}
               />
               <StepIndicator
                 currentStep={step}
-                stepNumber={3}
+                stepNumber={2}
                 icon={<MapPin size={16} />}
+              />
+              <StepIndicator
+                currentStep={step}
+                stepNumber={3}
+                icon={<User size={16} />}
               />
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form>
+        <Form {...form}>
+          <form>
+            <CardContent>
               {step === 1 && (
                 <div className="space-y-4">
                   <Button
@@ -207,7 +207,7 @@ export function SignUpForm({
                             <FormControl>
                               <Input
                                 {...field}
-                                // disabled={isPending}
+                                disabled={isPending}
                                 placeholder="John Doe"
                                 type="text"
                               />
@@ -217,21 +217,19 @@ export function SignUpForm({
                         )}
                       ></FormField>
                     </div>
-                  </div>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <FormField
                         control={form.control}
-                        name="birthday"
+                        name="email"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Birthday</FormLabel>
+                            <FormLabel>Email</FormLabel>
                             <FormControl>
                               <Input
                                 {...field}
-                                // disabled={isPending}
-                                placeholder="John"
-                                type="date"
+                                disabled={isPending}
+                                placeholder="john.doe@example.com"
+                                type="email"
                               />
                             </FormControl>
                             <FormMessage />
@@ -242,16 +240,16 @@ export function SignUpForm({
                     <div className="space-y-2">
                       <FormField
                         control={form.control}
-                        name="phone"
+                        name="password"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Phone Number</FormLabel>
+                            <FormLabel>Password</FormLabel>
                             <FormControl>
                               <Input
                                 {...field}
-                                // disabled={isPending}
-                                placeholder="+1 (555) 123-4567"
-                                type="tel"
+                                disabled={isPending}
+                                placeholder="********"
+                                type="password"
                               />
                             </FormControl>
                             <FormMessage />
@@ -262,71 +260,7 @@ export function SignUpForm({
                   </div>
                 </div>
               )}
-
               {step === 2 && (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              // disabled={isPending}
-                              placeholder="john.doe@example.com"
-                              type="email"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    ></FormField>
-                  </div>
-                  <div className="space-y-2">
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              // disabled={isPending}
-                              type="password"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    ></FormField>
-                  </div>
-                  <div className="space-y-2">
-                    <FormField
-                      control={form.control}
-                      name="confirm"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Confirm Password</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              // disabled={isPending}
-                              type="password"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    ></FormField>
-                  </div>
-                </div>
-              )}
-
-              {step === 3 && (
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <FormField
@@ -336,11 +270,10 @@ export function SignUpForm({
                         <FormItem>
                           <FormLabel>Address</FormLabel>
                           <FormControl>
-                            <Input
+                            <Textarea
                               {...field}
-                              // disabled={isPending}
+                              disabled={isPending}
                               placeholder="123 Main St, City, Country"
-                              type="text"
                             />
                           </FormControl>
                           <FormMessage />
@@ -365,8 +298,8 @@ export function SignUpForm({
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="male">male</SelectItem>
-                              <SelectItem value="female">female</SelectItem>
+                              <SelectItem value="Male">Male</SelectItem>
+                              <SelectItem value="Female">Female</SelectItem>
                             </SelectContent>
                             <FormMessage />
                           </FormItem>
@@ -376,10 +309,18 @@ export function SignUpForm({
                   </div>
                 </div>
               )}
-            </form>
-          </Form>
-        </CardContent>
+
+              {step === 3 && <div>this is peepee</div>}
+            </CardContent>
+          </form>
+        </Form>
         <CardFooter className="flex flex-col space-y-4">
+          {step === 3 && (
+            <div className="w-full">
+              <FormError message={error} />
+              <FormSuccess message={success} />
+            </div>
+          )}
           <div className="flex w-full flex-col justify-between space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
             <Button
               variant="outline"
@@ -390,12 +331,17 @@ export function SignUpForm({
               <ChevronLeft className="mr-2 h-4 w-4" /> Back
             </Button>
             {step < 3 ? (
-              <Button onClick={nextStep} className="w-full sm:w-auto">
+              <Button
+                type="button"
+                onClick={nextStep}
+                className="w-full sm:w-auto"
+              >
                 Next <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             ) : (
               <Button
-                onClick={() => alert("Registration complete!")}
+                type="submit"
+                onClick={form.handleSubmit(onSubmit)}
                 className="w-full sm:w-auto"
               >
                 Complete
@@ -404,7 +350,7 @@ export function SignUpForm({
           </div>
           <div className="text-center">
             <span className="text-sm text-muted-foreground">
-              {step === 3 ? "Already have an account? " : "Have an account? "}
+              {"Already have an account? "}
               <Link href="/login" className="text-primary hover:underline">
                 Log In
               </Link>
