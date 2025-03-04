@@ -23,20 +23,11 @@ import { FormError } from "@/components/auth/form-error";
 import { login } from "@/actions/login";
 import { GoogleAuth } from "@/components/auth/google-auth";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const searchParams = useSearchParams();
-
-  const urlError =
-    searchParams.get("error") === "OAuthAccountNotLinked"
-      ? "Email already in use with different provider!"
-      : "";
-
-  console.log(urlError, searchParams.get("error"));
   const [error, setError] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -121,7 +112,7 @@ export function LoginForm({
                       )}
                     ></FormField>
                   </div>
-                  <FormError message={error ?? urlError} />
+                  <FormError message={error} />
                   <Button type="submit" className="w-full" disabled={isPending}>
                     Login
                   </Button>
