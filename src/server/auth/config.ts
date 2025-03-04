@@ -9,6 +9,7 @@ import { accounts, users } from "@/server/db/schema";
 import { getUserByEmail } from "@/data/user";
 import { getUserById } from "@/data/user";
 import { type Roles } from "drizzle/schema";
+import { env } from "@/env";
 
 export const authConfig = {
   providers: [
@@ -30,7 +31,10 @@ export const authConfig = {
         return null;
       },
     }),
-    GoogleProvider,
+    GoogleProvider({
+      clientId: env.AUTH_GOOGLE_CLIENT_ID,
+      clientSecret: env.AUTH_GOOGLE_CLIENT_SECRET,
+    }),
   ],
   callbacks: {
     // async signIn({ user }) {

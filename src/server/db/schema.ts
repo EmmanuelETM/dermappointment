@@ -20,12 +20,12 @@ export const users = createTable("users", {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  name: varchar("name", { length: 255 }).notNull(),
-  email: varchar("email", { length: 255 }).notNull(),
-  password: varchar("password", { length: 255 }).notNull(),
-  role: UserRole("role").default("PATIENT").notNull(),
+  name: varchar("name", { length: 255 }),
+  email: varchar("email", { length: 255 }),
+  password: varchar("password", { length: 255 }),
+  role: UserRole("role").default("PATIENT"),
   address: text("address"),
-  gender: varchar("gender", { length: 128 }).notNull(),
+  gender: varchar("gender", { length: 128 }),
   emailVerified: timestamp("email_verified", {
     mode: "date",
     withTimezone: true,

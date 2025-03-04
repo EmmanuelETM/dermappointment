@@ -21,12 +21,12 @@ export enum Roles {
 
 export const dermappointmentUsers = pgTable("dermappointment_users", {
   id: varchar("id", { length: 255 }).primaryKey().notNull(),
-  name: varchar("name", { length: 255 }).notNull(),
-  email: varchar("email", { length: 255 }).notNull(),
-  password: varchar("password", { length: 255 }).notNull(),
+  name: varchar("name", { length: 255 }),
+  email: varchar("email", { length: 255 }),
+  password: varchar("password", { length: 255 }),
   role: userRole("role").default("PATIENT"),
   address: text("address"),
-  gender: varchar("gender", { length: 128 }).notNull(),
+  gender: varchar("gender", { length: 128 }),
   emailVerified: timestamp("email_verified", {
     withTimezone: true,
     mode: "string",

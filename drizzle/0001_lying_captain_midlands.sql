@@ -1,1 +1,0 @@
-ALTER TABLE "dermappointment_users" ALTER COLUMN "role" SET NOT NULL;

@@ -1,4 +1,5 @@
-CREATE TYPE IF NOT EXISTS "user_role" AS ENUM ('ADMIN', 'PATIENT', 'DOCTOR');
+CREATE TYPE user_role AS ENUM ('ADMIN', 'PATIENT', 'DOCTOR');
+
 
 CREATE TABLE IF NOT EXISTS "dermappointment_account" (
 	"user_id" varchar(255) NOT NULL,
@@ -17,12 +18,12 @@ CREATE TABLE IF NOT EXISTS "dermappointment_account" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "dermappointment_users" (
 	"id" varchar(255) PRIMARY KEY NOT NULL,
-	"name" varchar(255) NOT NULL,
-	"email" varchar(255) NOT NULL,
-	"password" varchar(255) NOT NULL,
+	"name" varchar(255),
+	"email" varchar(255),
+	"password" varchar(255),
 	"role" "user_role" DEFAULT 'PATIENT',
 	"address" text,
-	"gender" varchar(128) NOT NULL,
+	"gender" varchar(128),
 	"email_verified" timestamp with time zone,
 	"image" varchar(255)
 );

@@ -1,4 +1,3 @@
-"use client";
 import { logout } from "@/actions/logout";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { LogOut } from "lucide-react";
