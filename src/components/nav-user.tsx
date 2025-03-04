@@ -22,6 +22,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { LogoutItem } from "@/components/auth/logout";
 import { ModeToggle } from "./mode-toggle";
 import { redirect } from "next/navigation";
 
@@ -91,10 +92,11 @@ export function NavUser({
               <ModeToggle />
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <LogoutItem />
+            {/* <DropdownMenuItem>
               <LogOut />
               Log out
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
