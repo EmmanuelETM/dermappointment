@@ -3,6 +3,7 @@ import {
   index,
   integer,
   pgTableCreator,
+  pgEnum,
   primaryKey,
   text,
   timestamp,
@@ -12,6 +13,8 @@ import { type AdapterAccount } from "next-auth/adapters";
 
 export const createTable = pgTableCreator((name) => `dermappointment_${name}`);
 
+const UserRole = pgEnum("user_role", ["ADMIN", "PATIENT", "DOCTOR"]);
+
 export const users = createTable("users", {
   id: varchar("id", { length: 255 })
     .notNull()
@@ -20,6 +23,7 @@ export const users = createTable("users", {
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull(),
   password: varchar("password", { length: 255 }).notNull(),
+  role: UserRole("role").default("PATIENT").notNull(),
   address: text("address"),
   gender: varchar("gender", { length: 128 }).notNull(),
   emailVerified: timestamp("email_verified", {

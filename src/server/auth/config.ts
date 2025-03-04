@@ -7,13 +7,8 @@ import bcrypt from "bcryptjs";
 import { db } from "@/server/db";
 import { accounts, users } from "@/server/db/schema";
 import { getUserByEmail } from "@/data/user";
-
-declare module "next-auth" {
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
-}
+import { getUserById } from "@/data/user";
+import { type Roles } from "drizzle/schema";
 
 export const authConfig = {
   providers: [
@@ -37,6 +32,36 @@ export const authConfig = {
     }),
     GoogleProvider,
   ],
+  callbacks: {
+    // async signIn({ user }) {
+    //   const existingUser = await getUserById(user.id!);
+
+    //   if (!existingUser) return false;
+    //   if (!existingUser?.emailVerified) return false;
+
+    //   return true;
+    // },
+    async session({ token, session }) {
+      if (token.sub && session.user) {
+        session.user.id = token.sub;
+      }
+
+      if (token.role && session.user) {
+        session.user.role = token.role as Roles;
+      }
+      return session;
+    },
+    async jwt({ token }) {
+      if (!token.sub) return token;
+
+      const existingUser = await getUserById(token.sub);
+
+      if (!existingUser) return token;
+
+      token.role = existingUser.role;
+      return token;
+    },
+  },
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
