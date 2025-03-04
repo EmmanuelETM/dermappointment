@@ -6,6 +6,8 @@ import type { z } from "zod";
 import { db } from "@/server/db";
 import { users } from "@/server/db/schema";
 import { getUserByEmail } from "@/data/user";
+import { generateVToken } from "@/data/tokens";
+import { sendVerificationEmail } from "@/lib/mail";
 
 export const signup = async (values: z.infer<typeof SignUpSchema>) => {
   const validatedFields = SignUpSchema.safeParse(values);
@@ -33,5 +35,16 @@ export const signup = async (values: z.infer<typeof SignUpSchema>) => {
     image: "https://robohash.org/69",
   });
 
-  return { success: "Email Sent" };
+  const verificationToken = await generateVToken(email);
+
+  if (verificationToken[0]) {
+    await sendVerificationEmail(
+      verificationToken[0].email,
+      verificationToken[0].token,
+    );
+  } else {
+    return { error: "Failed to generate verification token" };
+  }
+
+  return { success: "Confirmation Email Sent!" };
 };

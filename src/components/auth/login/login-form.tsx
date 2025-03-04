@@ -20,6 +20,7 @@ import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/schemas";
 import { FormError } from "@/components/auth/form-error";
+import { FormSuccess } from "@/components/auth/form-success";
 import { login } from "@/actions/login";
 import { GoogleAuth } from "@/components/auth/google-auth";
 import Link from "next/link";
@@ -29,6 +30,7 @@ export function LoginForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -40,10 +42,12 @@ export function LoginForm({
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     setError("");
+    setSuccess("");
 
     startTransition(async () => {
       const response = await login(values);
       setError(response?.error);
+      setSuccess(response?.success);
     });
   };
 
@@ -113,6 +117,7 @@ export function LoginForm({
                     ></FormField>
                   </div>
                   <FormError message={error} />
+                  <FormSuccess message={success} />
                   <Button type="submit" className="w-full" disabled={isPending}>
                     Login
                   </Button>

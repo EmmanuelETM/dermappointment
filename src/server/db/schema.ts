@@ -73,7 +73,10 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
 export const verificationTokens = createTable(
   "verificationToken",
   {
-    identifier: text("identifier").notNull(),
+    identifier: text("identifier")
+      .notNull()
+      .$defaultFn(() => crypto.randomUUID()),
+    email: varchar("email", { length: 255 }).notNull(),
     token: text("token").notNull(),
     expires: timestamp("expires", { mode: "date" }).notNull(),
   },
