@@ -10,6 +10,7 @@ import { getUserByEmail } from "@/data/user";
 import { getUserById } from "@/data/user";
 import { type Roles } from "drizzle/schema";
 import { env } from "@/env";
+import { eq, sql } from "drizzle-orm";
 
 export const authConfig = {
   providers: [
@@ -36,6 +37,20 @@ export const authConfig = {
       clientSecret: env.AUTH_GOOGLE_CLIENT_SECRET,
     }),
   ],
+  pages: {
+    signIn: "/login",
+    error: "/auth-error",
+  },
+  events: {
+    async linkAccount({ user }) {
+      await db
+        .update(users)
+        .set({
+          emailVerified: sql`NOW()`,
+        })
+        .where(eq(users.id, user.id!));
+    },
+  },
   callbacks: {
     // async signIn({ user }) {
     //   const existingUser = await getUserById(user.id!);
