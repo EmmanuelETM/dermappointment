@@ -121,7 +121,7 @@ export function LoginForm({
                       )}
                     ></FormField>
                   </div>
-                  <FormError message={error || urlError} />
+                  <FormError message={error ?? urlError} />
                   <Button type="submit" className="w-full" disabled={isPending}>
                     Login
                   </Button>
