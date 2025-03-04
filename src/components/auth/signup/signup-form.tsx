@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useEffect, useTransition } from "react";
+import { useState, useTransition } from "react";
 import {
   CheckCircle2,
   ChevronLeft,
@@ -10,8 +10,6 @@ import {
   User,
   Lock,
   MapPin,
-  Moon,
-  Sun,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -43,9 +41,8 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
+import { ThemeSwitch } from "@/components/theme-switch";
 
-import { useTheme } from "next-themes";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -55,6 +52,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SignUpSchema } from "@/schemas";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
+import { GoogleAuth } from "@/components/auth/google-auth";
 import { signup } from "@/actions/signup";
 
 export function SignUpForm({
@@ -65,10 +63,6 @@ export function SignUpForm({
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const [step, setStep] = useState(1);
-  const [mounted, setMounted] = useState(false);
-  const { setTheme, theme, systemTheme } = useTheme();
-  const currentTheme = theme === "system" ? systemTheme : theme;
-  const inverse = currentTheme === "dark" ? "light" : "dark";
 
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
@@ -94,10 +88,6 @@ export function SignUpForm({
     });
   };
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const nextStep = async () => {
     const fieldsToValidate: Array<keyof z.infer<typeof SignUpSchema>> =
       step === 1
@@ -115,36 +105,19 @@ export function SignUpForm({
     if (step > 1) setStep(step - 1);
   };
 
-  const handleGoogleSignUp = () => {
-    // Implement Google sign-up logic here
-    alert("Google sign-up functionality to be implemented");
-  };
-
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="w-full max-w-md">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
-            <div className="flex items-center space-x-2">
-              {mounted && (
-                <Switch
-                  checked={inverse === "light"}
-                  onCheckedChange={() => setTheme(inverse)}
-                />
-              )}
-              {mounted && inverse === "light" ? (
-                <Moon size={16} />
-              ) : (
-                <Sun size={16} />
-              )}
-            </div>
+            <ThemeSwitch />
           </div>
-          <div className="mt-4 flex items-center justify-between">
+          <div className="mb-4 flex items-center justify-between">
             <CardDescription>
-              {step === 1 && "Tell us about yourself"}
-              {step === 2 && "Create your login credentials"}
-              {step === 3 && "Add your contact information"}
+              {step === 1 && "Create your login credentials"}
+              {step === 2 && "Tell us about yourself"}
+              {step === 3 && "Add your profile image"}
             </CardDescription>
             <div className="flex items-center space-x-1">
               <StepIndicator
@@ -164,38 +137,27 @@ export function SignUpForm({
               />
             </div>
           </div>
+          {step === 1 && (
+            <div className="pt-3">
+              <GoogleAuth text="Sign Up" />
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">
+                    Or
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
         </CardHeader>
         <Form {...form}>
           <form>
-            <CardContent>
+            <CardContent className="mt-0">
               {step === 1 && (
                 <div className="space-y-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleGoogleSignUp}
-                    className="w-full"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                      <path
-                        d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                    Sign up with Google
-                  </Button>
-
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t" />
-                    </div>
-                    <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-background px-2 text-muted-foreground">
-                        Or
-                      </span>
-                    </div>
-                  </div>
-
                   <div className="gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <FormField

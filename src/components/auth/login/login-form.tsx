@@ -12,6 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { ThemeSwitch } from "@/components/theme-switch";
 
 import { Input } from "@/components/ui/input";
 import { useState, useTransition } from "react";
@@ -54,10 +55,10 @@ export function LoginForm({
           <CardTitle className="text-2xl font-bold">Welcome Back!</CardTitle>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="grid gap-6">
-                <GoogleAuth />
+          <div className="grid gap-6">
+            <GoogleAuth text="Log In" />
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                   <span className="relative z-10 bg-background px-2 text-muted-foreground">
                     Or
@@ -117,7 +118,7 @@ export function LoginForm({
                     Login
                   </Button>
                 </div>
-                <div className="text-center text-sm">
+                <div className="mt-3 text-center text-sm text-muted-foreground">
                   Don&apos;t have an account?{" "}
                   <Link
                     href="/signup"
@@ -126,9 +127,9 @@ export function LoginForm({
                     Sign Up
                   </Link>
                 </div>
-              </div>
-            </form>
-          </Form>
+              </form>
+            </Form>
+          </div>
         </CardContent>
       </Card>
       <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">

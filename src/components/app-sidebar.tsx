@@ -14,6 +14,7 @@ import {
   SidebarRail,
   SidebarFooter,
 } from "@/components/ui/sidebar";
+import { ThemeSwitch } from "@/components/theme-switch";
 import { NavUser } from "./nav-user";
 
 const data = {
@@ -96,7 +97,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <div className="flex items-center justify-center">
+          <NavUser user={data.user} />
+          <ThemeSwitch />
+        </div>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

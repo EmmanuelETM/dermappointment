@@ -1,9 +1,9 @@
 import { googleSignIn } from "@/actions/googleAuth";
 import { Button } from "@/components/ui/button";
 
-export function GoogleAuth() {
+export function GoogleAuth({ text }: { text: string }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="mb-3">
       <Button
         onClick={async () => {
           await googleSignIn();
@@ -17,7 +17,7 @@ export function GoogleAuth() {
             fill="currentColor"
           />
         </svg>
-        Login with Google
+        {text} with Google
       </Button>
     </div>
   );

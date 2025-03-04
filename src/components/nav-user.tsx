@@ -1,10 +1,4 @@
-import {
-  Settings,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-} from "lucide-react";
+import { Settings, Bell, ChevronsUpDown, CreditCard } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -23,7 +17,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { LogoutItem } from "@/components/auth/logout";
-import { ModeToggle } from "./mode-toggle";
 import { redirect } from "next/navigation";
 
 export function NavUser({
@@ -77,26 +70,24 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => redirect("/settings")}>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => redirect("/settings")}
+              >
                 <Settings />
                 Settings
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
                 <CreditCard />
                 Transactions
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
                 <Bell />
                 Notifications
               </DropdownMenuItem>
-              <ModeToggle />
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <LogoutItem />
-            {/* <DropdownMenuItem>
-              <LogOut />
-              Log out
-            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
