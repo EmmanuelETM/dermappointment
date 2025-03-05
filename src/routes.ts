@@ -27,6 +27,10 @@ export const apiAuthPrefix = "/api/auth";
 
 /**
  * The default redirect path after logging in
- * @type {string}
+ * @param {string} email
+ *
  */
-export const DEFAULT_LOGIN_REDIRECT = "/";
+export const DEFAULT_LOGIN_REDIRECT = (email: string) => {
+  const slug = email.split("@")[0];
+  return `/${slug!.toLowerCase()}/dashboard`;
+};
