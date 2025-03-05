@@ -1,4 +1,4 @@
-import { logout } from "@/actions/logout";
+import { logout } from "@/actions/auth/logout";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { LogOut } from "lucide-react";
 

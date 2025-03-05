@@ -23,3 +23,9 @@ export const SignUpSchema = z.object({
   gender: z.string(),
   image: z.string(),
 });
+
+export const ResetSchema = z.object({
+  email: z.string().email({
+    message: "Email is required",
+  }),
+});

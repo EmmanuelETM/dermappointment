@@ -8,7 +8,7 @@ export const getUserByEmail = async (email: string) => {
       where: eq(users.email, email),
     });
     return user;
-  } catch (err) {
+  } catch {
     return null;
   }
 };
@@ -19,7 +19,7 @@ export const getUserById = async (id: string) => {
       where: eq(users.id, id),
     });
     return user;
-  } catch (err) {
+  } catch {
     return null;
   }
 };

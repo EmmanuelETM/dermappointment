@@ -18,34 +18,34 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchema } from "@/schemas";
+import { ResetSchema } from "@/schemas";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
-import { login } from "@/actions/auth/login";
-import { GoogleAuth } from "@/components/auth/google-auth";
+import { reset } from "@/actions/auth/reset";
 import Link from "next/link";
 
-export function LoginForm({
+export function ResetForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<typeof ResetSchema>>({
+    resolver: zodResolver(ResetSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = (values: z.infer<typeof ResetSchema>) => {
     setError("");
     setSuccess("");
 
+    console.log(values);
+
     startTransition(async () => {
-      const response = await login(values);
+      const response = await reset(values);
       setError(response?.error);
       setSuccess(response?.success);
     });
@@ -55,18 +55,12 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Welcome Back!</CardTitle>
+          <CardTitle className="text-2xl font-bold">Forgot Password?</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-6">
-            <GoogleAuth text="Log In" />
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
-                <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                  <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                    Or
-                  </span>
-                </div>
                 <div className="grid gap-6">
                   <div className="grid gap-2">
                     <FormField
@@ -88,47 +82,18 @@ export function LoginForm({
                       )}
                     ></FormField>
                   </div>
-                  <div className="mb-2 grid gap-2">
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center justify-between">
-                            Password
-                            <Link
-                              href="/reset-password"
-                              className="ml-auto text-sm text-primary hover:underline hover:underline-offset-4"
-                            >
-                              Forgot your password?
-                            </Link>
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              disabled={isPending}
-                              type="password"
-                              placeholder="********"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    ></FormField>
-                  </div>
                   <FormError message={error} />
                   <FormSuccess message={success} />
                   <Button type="submit" className="w-full" disabled={isPending}>
-                    Login
+                    Send Reset Email
                   </Button>
                 </div>
-                <div className="mt-3 text-center text-sm text-muted-foreground">
-                  Don&apos;t have an account?{" "}
+                <div className="mt-5 text-center text-sm text-muted-foreground">
                   <Link
-                    href="/signup"
+                    href="/login"
                     className="text-primary hover:underline hover:underline-offset-4"
                   >
-                    Sign Up
+                    Back to Log In
                   </Link>
                 </div>
               </form>
@@ -136,10 +101,6 @@ export function LoginForm({
           </div>
         </CardContent>
       </Card>
-      <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </div>
     </div>
   );
 }

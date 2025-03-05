@@ -1,4 +1,4 @@
-import { googleSignIn } from "@/actions/googleAuth";
+import { googleSignIn } from "@/actions/auth/googleAuth";
 import { Button } from "@/components/ui/button";
 
 export function GoogleAuth({ text }: { text: string }) {

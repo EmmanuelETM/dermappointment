@@ -53,7 +53,7 @@ import { SignUpSchema } from "@/schemas";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
 import { GoogleAuth } from "@/components/auth/google-auth";
-import { signup } from "@/actions/signup";
+import { signup } from "@/actions/auth/signup";
 
 export function SignUpForm({
   className,

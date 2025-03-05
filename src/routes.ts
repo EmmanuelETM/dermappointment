@@ -3,14 +3,20 @@
  * Even users that are not logged in can access this ones.
  * @type {string[]}
  */
-export const publicRoutes = [""];
+export const publicRoutes = ["/new-verification"];
 
 /**
  * An array of routes that are accesible to the public.
  * These routes will redirect logged in users to settings
  * @type {string[]}
  */
-export const authRoutes = ["/login", "/signup", "/auth-error"];
+export const authRoutes = [
+  "/login",
+  "/signup",
+  "/auth-error",
+  "/reset-password",
+  "/new-password",
+];
 
 /**
  * The prefix for API authentication routes.

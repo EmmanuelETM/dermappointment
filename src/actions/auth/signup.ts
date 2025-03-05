@@ -6,7 +6,7 @@ import type { z } from "zod";
 import { db } from "@/server/db";
 import { users } from "@/server/db/schema";
 import { getUserByEmail } from "@/data/user";
-import { generateVToken } from "@/data/tokens";
+import { generateVToken } from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/mail";
 
 export const signup = async (values: z.infer<typeof SignUpSchema>) => {

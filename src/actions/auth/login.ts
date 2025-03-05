@@ -5,9 +5,8 @@ import type { z } from "zod";
 import { AuthError } from "next-auth";
 import { signIn } from "@/server/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { generateVToken } from "@/data/tokens";
+import { generateVToken } from "@/lib/tokens";
 import { getUserByEmail } from "@/data/user";
-import { userAgent } from "next/server";
 import bcrypt from "bcryptjs";
 import { sendVerificationEmail } from "@/lib/mail";
 

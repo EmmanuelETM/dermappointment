@@ -8,7 +8,7 @@ export const getVTokenByEmail = async (email: string) => {
       where: eq(verificationTokens.email, email),
     });
     return vToken;
-  } catch (err) {
+  } catch {
     return null;
   }
 };
@@ -19,7 +19,7 @@ export const getVTokenByToken = async (token: string) => {
       where: eq(verificationTokens.token, token),
     });
     return vToken;
-  } catch (err) {
+  } catch {
     return null;
   }
 };

@@ -86,3 +86,20 @@ export const verificationTokens = createTable(
     }),
   }),
 );
+
+export const passwordResetTokens = createTable(
+  "passwordResetToken",
+  {
+    identifier: text("identifier")
+      .notNull()
+      .$defaultFn(() => crypto.randomUUID()),
+    email: varchar("email", { length: 255 }).notNull(),
+    token: text("token").notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
+  },
+  (verificationToken) => ({
+    compositePk: primaryKey({
+      columns: [verificationToken.identifier, verificationToken.token],
+    }),
+  }),
+);
