@@ -30,7 +30,4 @@ export const apiAuthPrefix = "/api/auth";
  * @param {string} email
  *
  */
-export const DEFAULT_LOGIN_REDIRECT = (email: string) => {
-  const slug = email.split("@")[0];
-  return `/${slug!.toLowerCase()}/dashboard`;
-};
+export const DEFAULT_LOGIN_REDIRECT = "/";
