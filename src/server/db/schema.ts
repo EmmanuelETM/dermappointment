@@ -1,3 +1,4 @@
+import { ROLES, SKIN_TYPES } from "@/data/constants";
 import { relations } from "drizzle-orm";
 import {
   index,
@@ -8,34 +9,20 @@ import {
   text,
   timestamp,
   varchar,
+  numeric,
+  boolean,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
 export const createTable = pgTableCreator((name) => `dermappointment_${name}`);
 
-const UserRole = pgEnum("user_role", ["ADMIN", "PATIENT", "DOCTOR"]);
+const createdAt = timestamp("createdAt").notNull().defaultNow();
+const updatedAt = timestamp("createdAt")
+  .notNull()
+  .defaultNow()
+  .$onUpdate(() => new Date());
 
-export const users = createTable("users", {
-  id: varchar("id", { length: 255 })
-    .notNull()
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  name: varchar("name", { length: 255 }),
-  email: varchar("email", { length: 255 }),
-  password: varchar("password", { length: 255 }),
-  role: UserRole("role").default("PATIENT"),
-  address: text("address"),
-  gender: varchar("gender", { length: 128 }),
-  emailVerified: timestamp("email_verified", {
-    mode: "date",
-    withTimezone: true,
-  }),
-  image: varchar("image", { length: 255 }),
-});
-
-export const usersRelations = relations(users, ({ many }) => ({
-  accounts: many(accounts),
-}));
+//Auth Tables
 
 export const accounts = createTable(
   "account",
@@ -103,3 +90,295 @@ export const passwordResetTokens = createTable(
     }),
   }),
 );
+
+// Users
+
+export const UserRole = pgEnum("user_role", ROLES);
+
+export const users = createTable("users", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }),
+  email: varchar("email", { length: 255 }),
+  password: varchar("password", { length: 255 }),
+  role: UserRole("role").default("PATIENT"),
+  address: text("address"),
+  gender: varchar("gender", { length: 128 }),
+  emailVerified: timestamp("email_verified", {
+    mode: "date",
+    withTimezone: true,
+  }),
+  image: varchar("image", { length: 255 }),
+});
+
+export const usersRelations = relations(users, ({ many, one }) => ({
+  accounts: many(accounts),
+  patients: one(patients, {
+    fields: [users.id],
+    references: [patients.userId],
+  }),
+  doctors: one(doctors, {
+    fields: [users.id],
+    references: [doctors.userId],
+  }),
+  participant: many(participant),
+  messages: many(messages),
+}));
+
+//Patients
+
+export const patients = createTable("patients", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt,
+  updatedAt,
+});
+
+export const patientsRelations = relations(patients, ({ one }) => ({
+  users: one(users, {
+    fields: [patients.userId],
+    references: [users.id],
+  }),
+  clinicalHistory: one(clinicalHistory, {
+    fields: [patients.id],
+    references: [clinicalHistory.patientId],
+  }),
+}));
+
+//Doctors
+
+export const doctors = createTable("doctors", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt,
+  updatedAt,
+});
+
+export const doctorsRelations = relations(doctors, ({ one, many }) => ({
+  users: one(users, {
+    fields: [doctors.userId],
+    references: [users.id],
+  }),
+  doctorSpecialties: many(doctorSpecialties),
+  doctorProcedures: many(doctorProcedures),
+}));
+
+//Specialties
+
+export const specialties = createTable("specialties", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description").notNull(),
+});
+
+export const specialtiesRelations = relations(specialties, ({ many }) => ({
+  doctorSpecialties: many(doctorSpecialties),
+}));
+
+//Doctor => Specialties
+
+export const doctorSpecialties = createTable("doctor_specialties", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  doctorId: varchar("doctor_id", { length: 255 })
+    .notNull()
+    .references(() => doctors.id, { onDelete: "cascade" }),
+  specialtyId: varchar("specialty_id", { length: 255 })
+    .notNull()
+    .references(() => specialties.id, { onDelete: "cascade" }),
+});
+
+export const doctorSpecialtiesRelations = relations(
+  doctorSpecialties,
+  ({ one }) => ({
+    doctors: one(doctors, {
+      fields: [doctorSpecialties.doctorId],
+      references: [doctors.id],
+    }),
+    specialties: one(specialties, {
+      fields: [doctorSpecialties.specialtyId],
+      references: [specialties.id],
+    }),
+  }),
+);
+
+//Procedures
+
+export const procedures = createTable("procedures", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description").notNull(),
+  price: numeric("price", { precision: 10, scale: 2 }).notNull(),
+});
+
+export const proceduresRelations = relations(specialties, ({ many }) => ({
+  doctorProcedures: many(doctorProcedures),
+}));
+
+// Doctor Procedures
+
+export const doctorProcedures = createTable("doctor_specialties", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  doctorId: varchar("doctor_id", { length: 255 })
+    .notNull()
+    .references(() => doctors.id, { onDelete: "cascade" }),
+  procedureId: varchar("procedure_id", { length: 255 })
+    .notNull()
+    .references(() => specialties.id, { onDelete: "cascade" }),
+});
+
+export const doctorProceduresRelations = relations(
+  doctorProcedures,
+  ({ one }) => ({
+    doctors: one(doctors, {
+      fields: [doctorProcedures.doctorId],
+      references: [doctors.id],
+    }),
+    procedures: one(procedures, {
+      fields: [doctorProcedures.procedureId],
+      references: [procedures.id],
+    }),
+  }),
+);
+
+// schedules and appointment
+
+// clinical history
+
+export const SkinType = pgEnum("skin_type", SKIN_TYPES);
+
+//clinical history
+
+export const clinicalHistory = createTable("clinical_history", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  patientId: varchar("patient_id", { length: 255 })
+    .notNull()
+    .references(() => patients.id),
+  dermatologicBackground: text("dermatologic_background"),
+  skinType: SkinType("skin_type").default("Normal"),
+  alergies: text("alergies"),
+  sunExposure: boolean("sun_exposure").default(false),
+  sunscreen: boolean("sunscreen").default(false),
+  smokes: boolean("smokes").default(false),
+  alcohol: boolean("alcohol").default(false),
+  drugs: boolean("drugs").default(false),
+  diet: text("diet"),
+  stress: boolean("stress").default(false),
+  medicine: text("medicine"),
+  chronicDiseases: text("chronic_diseases"),
+  skinInjuries: text("skinInjuries"),
+  itches: boolean("itches").default(false),
+  skinPeels: boolean("skin_peels").default(false),
+  erythema: boolean("erythema").default(false),
+  diagnosis: text("diagnosis"),
+  treatment: text("treatment"),
+  monitoring: text("monitoring"),
+  createdAt,
+  updatedAt,
+});
+
+export const clinicalHistoryRelations = relations(
+  clinicalHistory,
+  ({ one }) => ({
+    patients: one(patients, {
+      fields: [clinicalHistory.patientId],
+      references: [patients.id],
+    }),
+  }),
+);
+
+// chat stuff
+
+export const participant = createTable("participant", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: varchar("user_id", { length: 255 }).notNull(),
+  conversationId: varchar("conversation_id", { length: 255 }).notNull(),
+});
+
+export const participantRelations = relations(participant, ({ one }) => ({
+  users: one(users, {
+    fields: [participant.userId],
+    references: [users.id],
+  }),
+  conversation: one(conversation, {
+    fields: [participant.conversationId],
+    references: [conversation.id],
+  }),
+}));
+
+//conversation
+
+export const conversation = createTable("conversation", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  lastSenderId: varchar("last_sender_id", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  createdAt,
+});
+
+export const conversationRelations = relations(conversation, ({ many }) => ({
+  participant: many(participant),
+  messages: many(messages),
+}));
+
+//messages
+
+export const messages = createTable("messages", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  conversationId: varchar("conversation_id", { length: 255 })
+    .notNull()
+    .references(() => conversation.id),
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  content: text("content").notNull(),
+  createdAt,
+});
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  users: one(users, {
+    fields: [messages.userId],
+    references: [users.id],
+  }),
+  conversation: one(conversation, {
+    fields: [messages.conversationId],
+    references: [conversation.id],
+  }),
+}));
+
+//Payment stuff
