@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import { LogoutItem } from "@/components/auth/logout";
 import { redirect } from "next/navigation";
-import { ThemeItem } from "./theme-item";
+import { ThemeItem } from "@/components/theme-item";
 
 export function NavUser({
   user,
@@ -78,11 +78,17 @@ export function NavUser({
                 <Settings />
                 Settings
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => redirect("/transactions")}
+              >
                 <CreditCard />
                 Transactions
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => redirect("/notifications")}
+              >
                 <Bell />
                 Notifications
               </DropdownMenuItem>

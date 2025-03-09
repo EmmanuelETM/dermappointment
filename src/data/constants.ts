@@ -17,3 +17,5 @@ export const DAYS_OF_WEEK = [
 ] as const;
 
 export const ROLES = ["ADMIN", "PATIENT", "DOCTOR"] as const;
+
+export const LOCATION = ["La Vega", "Puerto Plata"] as const;

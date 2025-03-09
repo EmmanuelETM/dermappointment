@@ -8,7 +8,7 @@ import { db } from "@/server/db";
 import { accounts, users } from "@/server/db/schema";
 import { getUserByEmail } from "@/data/user";
 import { getUserById } from "@/data/user";
-import { type Roles } from "drizzle/schema";
+import { type UserRole } from "@/server/db/schema";
 import { env } from "@/env";
 import { eq, sql } from "drizzle-orm";
 
@@ -68,7 +68,7 @@ export const authConfig = {
       }
 
       if (token.role && session.user) {
-        session.user.role = token.role as Roles;
+        session.user.role = token.role as typeof UserRole;
       }
       return session;
     },
@@ -87,5 +87,9 @@ export const authConfig = {
     usersTable: users,
     accountsTable: accounts,
   }),
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    // maxAge: 24 * 60 * 60,
+    // updateAge: 3600,
+  },
 } satisfies NextAuthConfig;

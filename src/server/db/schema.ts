@@ -1,4 +1,4 @@
-import { ROLES, SKIN_TYPES } from "@/data/constants";
+import { DAYS_OF_WEEK, LOCATION, ROLES, SKIN_TYPES } from "@/data/constants";
 import { relations } from "drizzle-orm";
 import {
   index,
@@ -11,16 +11,41 @@ import {
   varchar,
   numeric,
   boolean,
+  time,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
 export const createTable = pgTableCreator((name) => `dermappointment_${name}`);
 
 const createdAt = timestamp("createdAt").notNull().defaultNow();
-const updatedAt = timestamp("createdAt")
+const updatedAt = timestamp("updatedAt")
   .notNull()
   .defaultNow()
   .$onUpdate(() => new Date());
+
+// Users
+
+export const UserRole = pgEnum("user_role", ROLES);
+
+export const users = createTable("users", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }),
+  email: varchar("email", { length: 255 }),
+  password: varchar("password", { length: 255 }),
+  role: UserRole("role").default("PATIENT"),
+  address: text("address"),
+  gender: varchar("gender", { length: 128 }),
+  emailVerified: timestamp("email_verified", {
+    mode: "date",
+    withTimezone: true,
+  }),
+  image: varchar("image", { length: 255 }),
+  createdAt,
+  updatedAt,
+});
 
 //Auth Tables
 
@@ -68,6 +93,7 @@ export const verificationTokens = createTable(
     expires: timestamp("expires", { mode: "date" }).notNull(),
   },
   (verificationToken) => ({
+    // Sólo una clave primaria compuesta
     compositePk: primaryKey({
       columns: [verificationToken.identifier, verificationToken.token],
     }),
@@ -90,28 +116,6 @@ export const passwordResetTokens = createTable(
     }),
   }),
 );
-
-// Users
-
-export const UserRole = pgEnum("user_role", ROLES);
-
-export const users = createTable("users", {
-  id: varchar("id", { length: 255 })
-    .notNull()
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  name: varchar("name", { length: 255 }),
-  email: varchar("email", { length: 255 }),
-  password: varchar("password", { length: 255 }),
-  role: UserRole("role").default("PATIENT"),
-  address: text("address"),
-  gender: varchar("gender", { length: 128 }),
-  emailVerified: timestamp("email_verified", {
-    mode: "date",
-    withTimezone: true,
-  }),
-  image: varchar("image", { length: 255 }),
-});
 
 export const usersRelations = relations(users, ({ many, one }) => ({
   accounts: many(accounts),
@@ -235,7 +239,7 @@ export const proceduresRelations = relations(specialties, ({ many }) => ({
   doctorProcedures: many(doctorProcedures),
 }));
 
-// Doctor Procedures
+// Doctor => Procedures
 
 export const doctorProcedures = createTable("doctor_specialties", {
   id: varchar("id", { length: 255 })
@@ -264,7 +268,100 @@ export const doctorProceduresRelations = relations(
   }),
 );
 
-// schedules and appointment
+// appointment
+
+export const Location = pgEnum("location", LOCATION);
+
+export const appointment = createTable("appointment", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  patientId: varchar("patient_id", { length: 255 })
+    .notNull()
+    .references(() => patients.id),
+  doctorId: varchar("doctor_id", { length: 255 })
+    .notNull()
+    .references(() => doctors.id),
+  procedureId: varchar("procedure_id", { length: 255 })
+    .notNull()
+    .references(() => procedures.id),
+  date: timestamp("date", { mode: "date" }),
+  duration: integer("duration").notNull(),
+  location: Location("location").notNull(),
+  reason: text("reason"),
+  status: varchar("status", { length: 20 }).notNull().default("pending"),
+  createdAt,
+  updatedAt,
+});
+
+//schedule
+
+export const schedule = createTable("schedule", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  timezone: text("timezone").notNull(),
+  doctorId: varchar("doctor_id", { length: 255 })
+    .notNull()
+    .references(() => doctors.id, { onDelete: "cascade" })
+    .unique(),
+});
+
+export const scheduleRelations = relations(schedule, ({ one, many }) => ({
+  doctors: one(doctors, {
+    fields: [schedule.doctorId],
+    references: [doctors.id],
+  }),
+  scheduleAvailability: many(scheduleAvailability),
+}));
+
+export const WeekDays = pgEnum("week_days", DAYS_OF_WEEK);
+
+export const scheduleAvailability = createTable(
+  "schedule_availability",
+  {
+    id: varchar("id", { length: 255 })
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    scheduleId: varchar("schedule_id", { length: 255 })
+      .notNull()
+      .references(() => schedule.id, { onDelete: "cascade" }),
+    weekDay: WeekDays("week_day").notNull(),
+    start: time("start").notNull(),
+    end: time("end").notNull(),
+  },
+  (table) => ({
+    scheduleIdIndx: index("scheduleIdIndex").on(table.scheduleId),
+  }),
+);
+
+export const scheduleAvailabilityRelations = relations(
+  scheduleAvailability,
+  ({ one }) => ({
+    schedule: one(schedule, {
+      fields: [scheduleAvailability.scheduleId],
+      references: [schedule.id],
+    }),
+  }),
+);
+
+export const appointmentRelations = relations(appointment, ({ one }) => ({
+  patients: one(patients, {
+    fields: [appointment.patientId],
+    references: [patients.id],
+  }),
+  doctors: one(doctors, {
+    fields: [appointment.doctorId],
+    references: [doctors.id],
+  }),
+  procedures: one(procedures, {
+    fields: [appointment.procedureId],
+    references: [procedures.id],
+  }),
+}));
 
 // clinical history
 

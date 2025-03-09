@@ -20,7 +20,7 @@ const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    avatar: "https://robohash.org/1",
   },
   versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
   navMain: [
@@ -30,7 +30,7 @@ const data = {
       items: [
         {
           title: "Dashboard",
-          url: "#",
+          url: "/dashboard",
         },
         {
           title: "Project Structure",

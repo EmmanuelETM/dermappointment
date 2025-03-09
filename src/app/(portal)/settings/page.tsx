@@ -5,6 +5,7 @@ import { logout } from "@/actions/auth/logout";
 
 const SettingsPage = () => {
   const user = useCurrentUser();
+  console.log(user);
 
   return (
     <div>
