@@ -118,6 +118,7 @@ export function SignUpForm({
               {step === 1 && "Create your login credentials"}
               {step === 2 && "Tell us about yourself"}
               {step === 3 && "Add your profile image"}
+              &nbsp; &nbsp;
             </CardDescription>
             <div className="flex items-center space-x-1">
               <StepIndicator

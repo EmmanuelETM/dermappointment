@@ -30,4 +30,4 @@ export const apiAuthPrefix = "/api/auth";
  * @param {string} email
  *
  */
-export const DEFAULT_LOGIN_REDIRECT = "/";
+export const DEFAULT_LOGIN_REDIRECT = "/dashboard";
