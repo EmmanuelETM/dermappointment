@@ -4,7 +4,7 @@ import { LoginSchema } from "@/schemas";
 import type { z } from "zod";
 import { AuthError } from "next-auth";
 import { signIn } from "@/server/auth";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { getDefaultRedirect } from "@/routes";
 import { generateVToken } from "@/lib/tokens";
 import { getUserByEmail } from "@/data/user";
 import bcrypt from "bcryptjs";
@@ -43,11 +43,13 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     return { success: "Confirmation Email sent!" };
   }
 
+  const redirectUrl = getDefaultRedirect(existingUser.role as string);
+
   try {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirectTo: redirectUrl,
     });
   } catch (error) {
     if (error instanceof AuthError) {

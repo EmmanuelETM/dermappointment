@@ -7,7 +7,7 @@ import {
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
-  User,
+  GalleryVerticalEnd,
   Lock,
   MapPin,
 } from "lucide-react";
@@ -107,13 +107,19 @@ export function SignUpForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <a className="flex items-center gap-2 self-center font-medium">
+        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+          <GalleryVerticalEnd className="size-4" />
+        </div>
+        DermAppointment
+      </a>
       <Card className="w-full max-w-md">
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-10">
             <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
             <ThemeSwitch />
           </div>
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4 flex items-center justify-between gap-2">
             <CardDescription>
               {step === 1 && "Create your login credentials"}
               {step === 2 && "Tell us about yourself"}
@@ -130,11 +136,6 @@ export function SignUpForm({
                 currentStep={step}
                 stepNumber={2}
                 icon={<MapPin size={16} />}
-              />
-              <StepIndicator
-                currentStep={step}
-                stepNumber={3}
-                icon={<User size={16} />}
               />
             </div>
           </div>
@@ -272,13 +273,11 @@ export function SignUpForm({
                   </div>
                 </div>
               )}
-
-              {step === 3 && <div>this is peepee</div>}
             </CardContent>
           </form>
         </Form>
         <CardFooter className="flex flex-col space-y-4">
-          {step === 3 && (
+          {step === 2 && (
             <div className="w-full">
               <FormError message={error} />
               <FormSuccess message={success} />
@@ -293,7 +292,7 @@ export function SignUpForm({
             >
               <ChevronLeft className="mr-2 h-4 w-4" /> Back
             </Button>
-            {step < 3 ? (
+            {step < 2 ? (
               <Button
                 type="button"
                 onClick={nextStep}
@@ -307,7 +306,7 @@ export function SignUpForm({
                 onClick={form.handleSubmit(onSubmit)}
                 className="w-full sm:w-auto"
               >
-                Complete
+                Continue
               </Button>
             )}
           </div>
@@ -321,6 +320,10 @@ export function SignUpForm({
           </div>
         </CardFooter>
       </Card>
+      <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
+        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
+        and <a href="#">Privacy Policy</a>.
+      </div>
     </div>
   );
 }
@@ -350,7 +353,7 @@ function StepIndicator({
       >
         {isCompleted ? <CheckCircle2 size={16} /> : icon}
       </div>
-      {stepNumber < 3 && (
+      {stepNumber < 2 && (
         <div
           className={`h-1 w-3 ${isCompleted ? "bg-primary dark:bg-primary" : "bg-muted dark:bg-muted"}`}
         />

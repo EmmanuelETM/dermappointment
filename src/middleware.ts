@@ -1,9 +1,12 @@
 import { auth } from "@/server/auth";
 import {
-  DEFAULT_LOGIN_REDIRECT,
   apiAuthPrefix,
+  adminRoutesPrefix,
+  patientRoutesPrefix,
+  doctorRoutesPrefix,
   authRoutes,
   publicRoutes,
+  getDefaultRedirect,
 } from "@/routes";
 import { NextResponse } from "next/server";
 
@@ -15,6 +18,9 @@ export default auth(async (req) => {
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+  const isAdminRoute = nextUrl.pathname.startsWith(adminRoutesPrefix);
+  const isPatientRoute = nextUrl.pathname.startsWith(patientRoutesPrefix);
+  const isDoctorRoute = nextUrl.pathname.startsWith(doctorRoutesPrefix);
 
   if (isApiAuthRoute) {
     return NextResponse.next();
@@ -22,7 +28,9 @@ export default auth(async (req) => {
 
   if (isAuthRoute) {
     if (isLoggedIn) {
-      return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+      return NextResponse.redirect(
+        new URL(getDefaultRedirect(session?.user.role as string)!, nextUrl),
+      );
     }
     return NextResponse.next();
   }
@@ -30,6 +38,29 @@ export default auth(async (req) => {
   if (!isLoggedIn && !isPublicRoute) {
     return NextResponse.redirect(new URL("/login", nextUrl));
   }
+
+  //Role Based Access Control
+
+  console.log(session?.user.role);
+
+  if (isAdminRoute && session?.user.role !== "ADMIN") {
+    return NextResponse.redirect(
+      new URL(getDefaultRedirect(session?.user.role as string)!, nextUrl),
+    );
+  }
+
+  if (isPatientRoute && session?.user.role !== "PATIENT") {
+    return NextResponse.redirect(
+      new URL(getDefaultRedirect(session?.user.role as string)!, nextUrl),
+    );
+  }
+
+  if (isDoctorRoute && session?.user.role !== "DOCTOR") {
+    return NextResponse.redirect(
+      new URL(getDefaultRedirect(session?.user.role as string)!, nextUrl),
+    );
+  }
+
   return NextResponse.next();
 });
 
