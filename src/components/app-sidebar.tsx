@@ -20,7 +20,7 @@ const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
-    avatar: "https://robohash.org/1",
+    image: "https://robohash.org/1",
   },
   versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
   navMain: [
