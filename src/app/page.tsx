@@ -26,5 +26,9 @@ export default function AuthRedirect() {
     void handleRedirect();
   }, [router]);
 
-  return <p className="text-center text-lg font-semibold">Redirecting...</p>;
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <p className="text-lg font-semibold">Redirecting...</p>
+    </div>
+  );
 }
