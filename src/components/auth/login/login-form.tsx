@@ -24,6 +24,7 @@ import { FormSuccess } from "@/components/auth/form-success";
 import { login } from "@/actions/auth/login";
 import { GoogleAuth } from "@/components/auth/google-auth";
 import Link from "next/link";
+import { GalleryVerticalEnd } from "lucide-react";
 
 export function LoginForm({
   className,
@@ -53,6 +54,12 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <a className="flex items-center gap-2 self-center font-medium">
+        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+          <GalleryVerticalEnd className="size-4" />
+        </div>
+        DermAppointment
+      </a>
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Welcome Back!</CardTitle>

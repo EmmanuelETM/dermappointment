@@ -47,6 +47,20 @@ export const users = createTable("users", {
   updatedAt,
 });
 
+export const usersRelations = relations(users, ({ many, one }) => ({
+  accounts: many(accounts),
+  patients: one(patients, {
+    fields: [users.id],
+    references: [patients.userId],
+  }),
+  doctors: one(doctors, {
+    fields: [users.id],
+    references: [doctors.userId],
+  }),
+  participant: many(participant),
+  messages: many(messages),
+}));
+
 //Auth Tables
 
 export const accounts = createTable(
@@ -116,20 +130,6 @@ export const passwordResetTokens = createTable(
     }),
   }),
 );
-
-export const usersRelations = relations(users, ({ many, one }) => ({
-  accounts: many(accounts),
-  patients: one(patients, {
-    fields: [users.id],
-    references: [patients.userId],
-  }),
-  doctors: one(doctors, {
-    fields: [users.id],
-    references: [doctors.userId],
-  }),
-  participant: many(participant),
-  messages: many(messages),
-}));
 
 //Patients
 

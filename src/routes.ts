@@ -30,4 +30,35 @@ export const apiAuthPrefix = "/api/auth";
  * @param {string} email
  *
  */
-export const DEFAULT_LOGIN_REDIRECT = "/dashboard";
+
+export const getDefaultRedirect = (role: string) => {
+  switch (role) {
+    case "ADMIN":
+      return "/admin";
+    case "DOCTOR":
+      return "/doctor";
+    case "PATIENT":
+      return "/patient";
+  }
+};
+
+/**
+ * The prefix for Admin only routes.
+ * Routes that start with this prefix are used for Admin pages
+ * @type {string}
+ */
+export const adminRoutesPrefix = "/admin";
+
+/**
+ * The prefix for Patient only routes.
+ * Routes that start with this prefix are used for Patient pages
+ * @type {string}
+ */
+export const patientRoutesPrefix = "/patient";
+
+/**
+ * The prefix for Doctor only routes.
+ * Routes that start with this prefix are used for Doctor pages
+ * @type {string}
+ */
+export const doctorRoutesPrefix = "/doctor";

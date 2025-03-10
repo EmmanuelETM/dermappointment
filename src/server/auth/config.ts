@@ -77,7 +77,10 @@ export const authConfig = {
 
       const existingUser = await getUserById(token.sub);
 
-      if (!existingUser) return token;
+      if (!existingUser) {
+        token.id = existingUser!.id;
+        return token;
+      }
 
       token.role = existingUser.role;
       return token;

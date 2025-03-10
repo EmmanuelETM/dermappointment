@@ -11,6 +11,7 @@ import { useTheme } from "next-themes";
 import { BarLoader } from "react-spinners";
 import { FormSuccess } from "@/components/auth/form-success";
 import { FormError } from "@/components/auth/form-error";
+import { GalleryVerticalEnd } from "lucide-react";
 
 export function NewVerificationForm({
   className,
@@ -42,6 +43,12 @@ export function NewVerificationForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <a className="flex items-center gap-2 self-center font-medium">
+        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+          <GalleryVerticalEnd className="size-4" />
+        </div>
+        DermAppointment
+      </a>
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl font-bold">

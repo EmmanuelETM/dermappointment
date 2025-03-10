@@ -23,6 +23,7 @@ import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
 import { reset } from "@/actions/auth/reset";
 import Link from "next/link";
+import { GalleryVerticalEnd } from "lucide-react";
 
 export function ResetForm({
   className,
@@ -53,6 +54,12 @@ export function ResetForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <a className="flex items-center gap-2 self-center font-medium">
+        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+          <GalleryVerticalEnd className="size-4" />
+        </div>
+        DermAppointment
+      </a>
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Forgot Password?</CardTitle>
