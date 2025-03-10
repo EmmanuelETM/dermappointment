@@ -41,8 +41,6 @@ export default auth(async (req) => {
 
   //Role Based Access Control
 
-  console.log(session?.user.role);
-
   if (isAdminRoute && session?.user.role !== "ADMIN") {
     return NextResponse.redirect(
       new URL(getDefaultRedirect(session?.user.role as string)!, nextUrl),
