@@ -70,6 +70,19 @@ export const authConfig = {
       if (token.role && session.user) {
         session.user.role = token.role as typeof UserRole;
       }
+
+      if (session.user) {
+        session.user.name = token.name;
+      }
+
+      if (session.user) {
+        session.user.email = token.email ?? "";
+      }
+
+      if (session.user) {
+        session.user.image = token.image as string | null | undefined;
+      }
+
       return session;
     },
     async jwt({ token }) {
@@ -82,6 +95,9 @@ export const authConfig = {
         return token;
       }
 
+      token.name = existingUser.name;
+      token.email = existingUser.email;
+      token.image = existingUser.image;
       token.role = existingUser.role;
       return token;
     },

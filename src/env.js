@@ -12,7 +12,6 @@ export const env = createEnv({
     AUTH_GOOGLE_REDIRECT_URI: z.string(),
     AUTH_GOOGLE_REFRESH_TOKEN: z.string(),
     NODEMAILER_EMAIL: z.string(),
-    RESEND_API_KEY: z.string(),
     DATABASE_URL: z.string().url(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
@@ -28,7 +27,6 @@ export const env = createEnv({
     AUTH_GOOGLE_REDIRECT_URI: process.env.AUTH_GOOGLE_REDIRECT_URI,
     AUTH_GOOGLE_REFRESH_TOKEN: process.env.AUTH_GOOGLE_REFRESH_TOKEN,
     NODEMAILER_EMAIL: process.env.NODEMAILER_EMAIL,
-    RESEND_API_KEY: process.env.RESEND_API_KEY,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,

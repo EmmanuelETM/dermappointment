@@ -9,7 +9,7 @@ export const ThemeItem = () => {
 
   return (
     <DropdownMenuItem
-      className="rounded-sm hover:bg-accent"
+      className="rounded-sm py-1 hover:bg-accent"
       onClick={() => setTheme(inverse)}
     >
       <div className="flex cursor-pointer items-center gap-2 pl-2 text-sm">

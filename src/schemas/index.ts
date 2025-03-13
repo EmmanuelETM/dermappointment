@@ -35,3 +35,7 @@ export const NewPasswordSchema = z.object({
     message: "Minimum 8 characters required",
   }),
 });
+
+export const SettingsSchema = z.object({
+  name: z.optional(z.string()),
+});

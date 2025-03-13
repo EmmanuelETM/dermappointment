@@ -1,21 +1,16 @@
 "use client";
-
+// 6:56:20
 import type React from "react";
 
-import { useState } from "react";
+import { currentUser } from "@/lib/auth";
+import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Camera, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -28,100 +23,61 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Toaster } from "@/components/ui/sonner";
+// import { Toaster } from "@/components/ui/sonner";
+import { ThemeSwitch } from "../theme-switch";
+import { settings } from "@/actions/settings";
+import { useSession } from "next-auth/react";
 
-const profileFormSchema = z
-  .object({
-    name: z.string().min(2, {
-      message: "Name must be at least 2 characters.",
-    }),
-    email: z.string().email({
-      message: "Please enter a valid email address.",
-    }),
-    password: z.string().optional(),
-    confirmPassword: z.string().optional(),
-  })
-  .refine(
-    (data) => {
-      if (data.password && !data.confirmPassword) return false;
-      if (!data.password && data.confirmPassword) return false;
-      if (
-        data.password &&
-        data.confirmPassword &&
-        data.password !== data.confirmPassword
-      )
-        return false;
-      return true;
-    },
-    {
-      message: "Passwords do not match",
-      path: ["confirmPassword"],
-    },
-  );
+const profileFormSchema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+});
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export function SettingsForm() {
+  const user = useSession()?.data?.user;
   const [avatar, setAvatar] = useState<string>(
     "/placeholder.svg?height=100&width=100",
   );
   const [isUploading, setIsUploading] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  const onClick = () => {
+    startTransition(async () => {
+      await settings({ name: "Juan pepe" });
+    });
+  };
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      name: "John Doe",
-      email: "john.doe@example.com",
-      password: "",
-      confirmPassword: "",
+      name: `${user?.name}`,
+      email: `${user?.email}`,
     },
   });
 
-  function onSubmit(data: ProfileFormValues) {
-    // In a real app, you would send this data to your backend
-    console.log(data);
-    // Toaster({
-    //   title: "Profile updated",
-    //   description: "Your profile has been updated successfully.",
-    // });
-  }
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-
-    // Simulate upload delay
-    setTimeout(() => {
-      // In a real app, you would upload the file to your backend/storage
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setAvatar(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
-      setIsUploading(false);
-    }, 1500);
-  };
-
   return (
     <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Profile Settings</CardTitle>
-        <CardDescription>
-          Update your profile information and manage your account.
-        </CardDescription>
+      <CardHeader className="center flex flex-row justify-between">
+        <CardTitle>Settings</CardTitle>
+        <ThemeSwitch />
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="flex flex-col items-start gap-6 sm:flex-row">
               <div className="group relative">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src={avatar} alt="Profile picture" />
-                  <AvatarFallback>JD</AvatarFallback>
+                  <AvatarImage
+                    src={user?.image ?? avatar}
+                    alt="Profile picture"
+                  />
+                  <AvatarFallback>NP</AvatarFallback>
                 </Avatar>
                 <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                   <label
@@ -139,12 +95,11 @@ export function SettingsForm() {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={handleImageUpload}
                     disabled={isUploading}
                   />
                 </div>
               </div>
-              <div className="flex-1 space-y-4">
+              <div className="w-full flex-1 space-y-4">
                 <FormField
                   control={form.control}
                   name="name"
@@ -152,7 +107,7 @@ export function SettingsForm() {
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Your name" {...field} />
+                        <Input placeholder="Name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -166,51 +121,6 @@ export function SettingsForm() {
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <Input placeholder="Your email" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            <Separator />
-
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Change Password</h3>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>New Password</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="••••••••"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Leave blank to keep current password
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="••••••••"
-                          {...field}
-                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
