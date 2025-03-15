@@ -2,64 +2,72 @@
 // 6:56:20
 import type React from "react";
 
-import { currentUser } from "@/lib/auth";
 import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { type z } from "zod";
 import { Camera, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FormError } from "@/components/auth/form-error";
+import { FormSuccess } from "@/components/auth/form-success";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // import { Toaster } from "@/components/ui/sonner";
 import { ThemeSwitch } from "../theme-switch";
-import { settings } from "@/actions/settings";
+import { settings } from "@/actions/auth/settings";
 import { useSession } from "next-auth/react";
-
-const profileFormSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-});
-
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
+import { SettingsSchema } from "@/schemas";
+import { useCurrentUser } from "@/hooks/user-current-user";
 
 export function SettingsForm() {
-  const user = useSession()?.data?.user;
-  const [avatar, setAvatar] = useState<string>(
-    "/placeholder.svg?height=100&width=100",
-  );
-  const [isUploading, setIsUploading] = useState(false);
+  const user = useCurrentUser();
+  const { update } = useSession();
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const isUploading = false;
   const [isPending, startTransition] = useTransition();
+  const avatar = user?.image ?? "";
 
-  const onClick = () => {
-    startTransition(async () => {
-      await settings({ name: "Juan pepe" });
-    });
-  };
-
-  const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileFormSchema),
+  const form = useForm<z.infer<typeof SettingsSchema>>({
+    resolver: zodResolver(SettingsSchema),
     defaultValues: {
-      name: `${user?.name}`,
-      email: `${user?.email}`,
+      name: user?.name ?? undefined,
+      email: user?.email ?? undefined,
+      password: "",
+      newPassword: "",
     },
   });
+
+  const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
+    startTransition(async () => {
+      const filteredValues = Object.fromEntries(
+        Object.entries(values).filter(([_, v]) => v !== "" && v !== undefined),
+      );
+
+      try {
+        const response = await settings(filteredValues);
+
+        if (response.error) setError(response.error);
+
+        if (response.success) {
+          await update();
+          setSuccess(response.success);
+        }
+      } catch {
+        setError("Something went wrong!");
+      }
+    });
+  };
 
   return (
     <Card className="w-full">
@@ -69,14 +77,11 @@ export function SettingsForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex flex-col items-start gap-6 sm:flex-row">
               <div className="group relative">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage
-                    src={user?.image ?? avatar}
-                    alt="Profile picture"
-                  />
+                  <AvatarImage src={avatar} alt="Profile picture" />
                   <AvatarFallback>NP</AvatarFallback>
                 </Avatar>
                 <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
@@ -95,7 +100,7 @@ export function SettingsForm() {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    disabled={isUploading}
+                    disabled={isUploading || isPending}
                   />
                 </div>
               </div>
@@ -107,28 +112,73 @@ export function SettingsForm() {
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Name" {...field} />
+                        <Input disabled={isPending} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Your email" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {user?.isOauth === false && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="email"
+                              disabled={isPending}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="********"
+                              type="password"
+                              disabled={isPending}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="newPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>New Password</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="********"
+                              type="password"
+                              disabled={isPending}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
               </div>
             </div>
-
+            <FormError message={error} />
+            <FormSuccess message={success} />
             <div className="flex justify-end">
               <Button type="submit">Save Changes</Button>
             </div>

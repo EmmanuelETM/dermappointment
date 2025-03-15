@@ -4,8 +4,8 @@ import { type z } from "zod";
 
 import { db } from "@/server/db";
 import { type SettingsSchema } from "@/schemas";
-import { getUserById } from "@/data/user";
-import { currentUser } from "@/lib/auth";
+import { getUserByEmail, getUserById } from "@/data/user";
+import { currentUser } from "@/lib/currentUser";
 import { eq } from "drizzle-orm";
 import { users } from "@/server/db/schema";
 
@@ -20,6 +20,20 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
 
   if (!dbUser) {
     return { error: "Unathorized" };
+  }
+
+  if (user.isOauth) {
+    values.email = undefined;
+    values.password = undefined;
+    values.newPassword = undefined;
+  }
+
+  if (values.email && values.email !== user.email) {
+    const existingUser = await getUserByEmail(values.email);
+
+    if (existingUser && existingUser.id !== user.id) {
+      return { error: "Email already in use!" };
+    }
   }
 
   await db

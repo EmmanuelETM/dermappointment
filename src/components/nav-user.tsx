@@ -31,7 +31,6 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
-
   const pathname = usePathname();
   const prefix = getRoutePrefix(pathname);
 

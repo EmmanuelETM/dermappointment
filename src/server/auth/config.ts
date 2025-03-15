@@ -11,6 +11,7 @@ import { getUserById } from "@/data/user";
 import { type UserRole } from "@/server/db/schema";
 import { env } from "@/env";
 import { eq, sql } from "drizzle-orm";
+import { getAccountByUserId } from "@/data/account";
 
 export const authConfig = {
   providers: [
@@ -25,7 +26,6 @@ export const authConfig = {
           if (!user?.password) return null;
 
           const passwordMatch = await bcrypt.compare(password, user.password);
-
           if (passwordMatch) return user;
         }
 
@@ -73,14 +73,9 @@ export const authConfig = {
 
       if (session.user) {
         session.user.name = token.name;
-      }
-
-      if (session.user) {
         session.user.email = token.email ?? "";
-      }
-
-      if (session.user) {
         session.user.image = token.image as string | null | undefined;
+        session.user.isOauth = token.isOauth as boolean;
       }
 
       return session;
@@ -95,10 +90,15 @@ export const authConfig = {
         return token;
       }
 
+      const existingAccount = await getAccountByUserId(existingUser.id);
+
       token.name = existingUser.name;
       token.email = existingUser.email;
       token.image = existingUser.image;
       token.role = existingUser.role;
+      token.isOauth =
+        !!existingAccount && existingAccount.provider !== "credentials";
+
       return token;
     },
   },

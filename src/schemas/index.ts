@@ -36,6 +36,23 @@ export const NewPasswordSchema = z.object({
   }),
 });
 
-export const SettingsSchema = z.object({
-  name: z.optional(z.string()),
-});
+export const SettingsSchema = z
+  .object({
+    name: z.string().optional(),
+    email: z.string().email().optional().or(z.literal("")),
+    password: z.string().min(8).optional().or(z.literal("")),
+    newPassword: z.string().min(8).optional().or(z.literal("")),
+  })
+  .refine(
+    (data) => {
+      if (data.password === "" && data.newPassword === "") return true;
+      if (data.password && !data.newPassword) return false;
+      if (!data.password && data.newPassword) return false;
+      return true;
+    },
+    {
+      message:
+        "Both password and new password are required when changing password",
+      path: ["password"],
+    },
+  );
