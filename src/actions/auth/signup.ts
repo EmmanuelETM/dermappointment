@@ -37,6 +37,8 @@ export const signup = async (values: z.infer<typeof SignUpSchema>) => {
 
   const verificationToken = await generateVToken(email);
 
+  console.log(verificationToken[0]);
+
   if (verificationToken[0]) {
     await sendVerificationEmail(
       verificationToken[0].email,

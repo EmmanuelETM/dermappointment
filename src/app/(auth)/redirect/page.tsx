@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { getSession } from "next-auth/react";
 import { getDefaultRedirect } from "@/routes";
 
 export default function AuthRedirect() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
 
   useEffect(() => {
     async function handleRedirect() {
@@ -17,14 +19,20 @@ export default function AuthRedirect() {
         return;
       }
 
-      const redirectTo = getDefaultRedirect(session?.user.role as string);
+      //
+
+      const redirectTo =
+        callbackUrl && callbackUrl !== "null"
+          ? callbackUrl
+          : getDefaultRedirect(session?.user.role as string);
+
       if (redirectTo) {
         router.replace(redirectTo);
       }
     }
 
     void handleRedirect();
-  }, [router]);
+  }, [router, callbackUrl]);
 
   return <p className="text-center text-lg font-semibold">Redirecting...</p>;
 }

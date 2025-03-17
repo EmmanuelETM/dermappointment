@@ -40,7 +40,6 @@ import {
 } from "@/components/ui/select";
 
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { ThemeSwitch } from "@/components/theme-switch";
 
 import Link from "next/link";
@@ -70,7 +69,7 @@ export function SignUpForm({
       name: "",
       email: "",
       password: "",
-      address: "",
+      location: "",
       gender: "",
       image: "",
     },
@@ -93,7 +92,7 @@ export function SignUpForm({
       step === 1
         ? ["name", "email", "password"]
         : step === 2
-          ? ["address", "gender"]
+          ? ["location", "gender"]
           : [];
 
     const isValid = await form.trigger(fieldsToValidate); // Solo valida los campos visibles
@@ -229,19 +228,28 @@ export function SignUpForm({
                   <div className="space-y-2">
                     <FormField
                       control={form.control}
-                      name="address"
+                      name="location"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Address</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              {...field}
-                              disabled={isPending}
-                              placeholder="123 Main St, City, Country"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormItem>
+                            <FormLabel>Location</FormLabel>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="La Vega" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="La Vega">La Vega</SelectItem>
+                              <SelectItem value="Puerto Plata">
+                                Puerto Plata
+                              </SelectItem>
+                            </SelectContent>
+                            <FormMessage />
+                          </FormItem>
+                        </Select>
                       )}
                     ></FormField>
                   </div>

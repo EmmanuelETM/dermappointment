@@ -1,3 +1,4 @@
+import { LOCATION } from "@/data/constants";
 import { z } from "zod";
 
 export const LoginSchema = z.object({
@@ -19,7 +20,7 @@ export const SignUpSchema = z.object({
   password: z.string().min(8, {
     message: "Minimum of 8 characters required",
   }),
-  address: z.string(),
+  location: z.string(),
   gender: z.string(),
   image: z.string(),
 });
@@ -42,17 +43,27 @@ export const SettingsSchema = z
     email: z.string().email().optional().or(z.literal("")),
     password: z.string().min(8).optional().or(z.literal("")),
     newPassword: z.string().min(8).optional().or(z.literal("")),
+    location: z.enum(LOCATION).optional(),
   })
   .refine(
     (data) => {
       if (data.password === "" && data.newPassword === "") return true;
       if (data.password && !data.newPassword) return false;
+      return true;
+    },
+    {
+      message: "New Password is required!",
+      path: ["newPassword"],
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.password === "" && data.newPassword === "") return true;
       if (!data.password && data.newPassword) return false;
       return true;
     },
     {
-      message:
-        "Both password and new password are required when changing password",
+      message: "Password is required!",
       path: ["password"],
     },
   );

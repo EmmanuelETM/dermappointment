@@ -1,12 +1,18 @@
+"use client";
+
 import { googleSignIn } from "@/actions/auth/googleAuth";
 import { Button } from "@/components/ui/button";
+import { useSearchParams } from "next/navigation";
 
 export function GoogleAuth({ text }: { text: string }) {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
+
   return (
     <div className="mb-3">
       <Button
         onClick={async () => {
-          await googleSignIn();
+          await googleSignIn(callbackUrl);
         }}
         variant="outline"
         className="w-full"

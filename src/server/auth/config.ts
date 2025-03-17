@@ -75,6 +75,7 @@ export const authConfig = {
         session.user.name = token.name;
         session.user.email = token.email ?? "";
         session.user.image = token.image as string | null | undefined;
+        session.user.location = token.location as string;
         session.user.isOauth = token.isOauth as boolean;
       }
 
@@ -96,6 +97,7 @@ export const authConfig = {
       token.email = existingUser.email;
       token.image = existingUser.image;
       token.role = existingUser.role;
+      token.location = existingUser.location;
       token.isOauth =
         !!existingAccount && existingAccount.provider !== "credentials";
 

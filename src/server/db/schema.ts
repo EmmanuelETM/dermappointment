@@ -26,6 +26,7 @@ const updatedAt = timestamp("updatedAt")
 // Users
 
 export const UserRole = pgEnum("user_role", ROLES);
+export const UserLocation = pgEnum("user_location", LOCATION);
 
 export const users = createTable("users", {
   id: varchar("id", { length: 255 })
@@ -36,7 +37,7 @@ export const users = createTable("users", {
   email: varchar("email", { length: 255 }),
   password: varchar("password", { length: 255 }),
   role: UserRole("role").default("PATIENT"),
-  address: text("address"),
+  location: UserLocation("location"),
   gender: varchar("gender", { length: 128 }),
   emailVerified: timestamp("email_verified", {
     mode: "date",

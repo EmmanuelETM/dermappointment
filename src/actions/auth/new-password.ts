@@ -57,5 +57,5 @@ export const newPassword = async (
     .delete(passwordResetTokens)
     .where(eq(passwordResetTokens.identifier, existingToken.identifier));
 
-  return { success: "Password Updated" };
+  return { success: "Password Updated!" };
 };

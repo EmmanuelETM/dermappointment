@@ -10,7 +10,10 @@ import { getUserByEmail } from "@/data/user";
 import bcrypt from "bcryptjs";
 import { sendVerificationEmail } from "@/lib/mail/index";
 
-export const login = async (values: z.infer<typeof LoginSchema>) => {
+export const login = async (
+  values: z.infer<typeof LoginSchema>,
+  callbackUrl?: string | null,
+) => {
   const validatedFields = LoginSchema.safeParse(values);
 
   if (!validatedFields.success) {
@@ -49,7 +52,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: redirectUrl,
+      redirectTo: callbackUrl ?? redirectUrl,
     });
   } catch (error) {
     if (error instanceof AuthError) {

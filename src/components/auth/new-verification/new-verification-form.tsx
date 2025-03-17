@@ -19,6 +19,7 @@ export function NewVerificationForm({
 }: React.ComponentPropsWithoutRef<"div">) {
   const { theme } = useTheme();
   const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
   const token = searchParams.get("token");
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
@@ -68,8 +69,8 @@ export function NewVerificationForm({
             </div>
           </div>
           <div className="mt-6 grid gap-6">
-            <Button onClick={() => redirect("/login")} className="w-full">
-              Go back to Login
+            <Button onClick={() => redirect(callbackUrl!)} className="w-full">
+              Go back to App
             </Button>
           </div>
         </CardContent>

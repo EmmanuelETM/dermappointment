@@ -25,14 +25,23 @@ import { login } from "@/actions/auth/login";
 import { GoogleAuth } from "@/components/auth/google-auth";
 import Link from "next/link";
 import { GalleryVerticalEnd } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
+  const urlError =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Email already in use with different provider"
+      : "";
+
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -46,7 +55,7 @@ export function LoginForm({
     setSuccess("");
 
     startTransition(async () => {
-      const response = await login(values);
+      const response = await login(values, callbackUrl);
       setError(response?.error);
       setSuccess(response?.success);
     });

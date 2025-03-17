@@ -5,6 +5,7 @@ export type ExtendedUser = DefaultSession["user"] & {
   role: Roles;
   address: string;
   gender: string;
+  location: string;
   isOauth: boolean;
 };
 
