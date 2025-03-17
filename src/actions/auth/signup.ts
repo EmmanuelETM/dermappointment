@@ -8,6 +8,7 @@ import { users } from "@/server/db/schema";
 import { getUserByEmail } from "@/data/user";
 import { generateVToken } from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/mail/index";
+import { type LOCATION } from "@/data/constants";
 
 export const signup = async (values: z.infer<typeof SignUpSchema>) => {
   const validatedFields = SignUpSchema.safeParse(values);
@@ -16,7 +17,7 @@ export const signup = async (values: z.infer<typeof SignUpSchema>) => {
     return { error: "Invalid Fields" };
   }
 
-  const { name, email, password, address, gender } = validatedFields.data;
+  const { name, email, password, location, gender } = validatedFields.data;
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -30,13 +31,12 @@ export const signup = async (values: z.infer<typeof SignUpSchema>) => {
     name,
     email,
     password: hashedPassword,
-    address,
+    location: location as (typeof LOCATION)[number],
     gender,
     image: "https://robohash.org/69",
   });
 
   const verificationToken = await generateVToken(email);
-
   console.log(verificationToken[0]);
 
   if (verificationToken[0]) {
