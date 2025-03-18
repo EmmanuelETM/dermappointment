@@ -4,7 +4,7 @@ import { db } from "@/server/db";
 import { passwordResetTokens, verificationTokens } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
-export const generateVToken = async (email: string) => {
+export const generateVToken = async (userId: string, email: string) => {
   const token = uuidv4();
   const expires = new Date(new Date().getTime() + 3600 * 1000);
 
@@ -18,7 +18,7 @@ export const generateVToken = async (email: string) => {
 
   const verificationToken = await db
     .insert(verificationTokens)
-    .values({ email, token, expires })
+    .values({ userId, email, token, expires })
     .returning();
 
   return verificationToken;

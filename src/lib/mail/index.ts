@@ -1,9 +1,17 @@
 import { sendEmail } from "@/server/nodemailer";
 import { env } from "@/env";
 
-export const sendVerificationEmail = async (email: string, token: string) => {
-  console.log(token);
-  const confirmLink = `${env.NEXT_PUBLIC_BASE_URL}new-verification?token=${token}`;
+export const sendVerificationEmail = async (
+  email: string,
+  token: string,
+  callbackUrl?: string,
+) => {
+  let confirmLink: string;
+  if (callbackUrl) {
+    confirmLink = `${env.NEXT_PUBLIC_BASE_URL}new-verification?token=${token}&callbackUrl=${callbackUrl}`;
+  } else {
+    confirmLink = `${env.NEXT_PUBLIC_BASE_URL}new-verification?token=${token}`;
+  }
 
   await sendEmail({
     to: email,

@@ -103,6 +103,7 @@ export const verificationTokens = createTable(
     identifier: text("identifier")
       .notNull()
       .$defaultFn(() => crypto.randomUUID()),
+    userId: varchar("user_id", { length: 255 }).notNull(),
     email: varchar("email", { length: 255 }).notNull(),
     token: text("token").notNull(),
     expires: timestamp("expires", { mode: "date" }).notNull(),

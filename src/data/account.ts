@@ -1,5 +1,5 @@
 import { db } from "@/server/db";
-import { accounts, users } from "@/server/db/schema";
+import { accounts } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
 export const getAccountByUserId = async (userId: string) => {

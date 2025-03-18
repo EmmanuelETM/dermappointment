@@ -4,8 +4,10 @@
 
 - [x] make it deploy
 - [x] scaffold basic ui
-- [ ] setup dark theme
-- [ ] Set up a database with drizzle
-- [ ] Attach database with ui
-- [ ] Add auth
-- [ ] Role based routing
+- [x] setup dark theme
+- [x] Set up a database with drizzle
+- [x] Attach database with ui
+- [x] Add auth
+- [x] Role based routing
+- [x] Setup Settings page for all users
+- [] Callback url for email verification on settings page

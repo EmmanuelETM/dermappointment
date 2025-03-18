@@ -36,7 +36,9 @@ export const signup = async (values: z.infer<typeof SignUpSchema>) => {
     image: "https://robohash.org/69",
   });
 
-  const verificationToken = await generateVToken(email);
+  const user = await getUserByEmail(email);
+
+  const verificationToken = await generateVToken(user!.id, email);
   console.log(verificationToken[0]);
 
   if (verificationToken[0]) {

@@ -32,7 +32,10 @@ export const login = async (
   if (!passwordMatch) return { error: "Invalid Credentials!" };
 
   if (!existingUser.emailVerified) {
-    const verificationToken = await generateVToken(existingUser.email);
+    const verificationToken = await generateVToken(
+      existingUser.id,
+      existingUser.email,
+    );
 
     if (verificationToken[0]) {
       await sendVerificationEmail(

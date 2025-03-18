@@ -46,15 +46,17 @@ export const UserSettings = () => {
   const form = useForm<z.infer<typeof SettingsSchema>>({
     resolver: zodResolver(SettingsSchema),
     defaultValues: {
-      name: user?.name ?? undefined,
-      email: user?.email ?? undefined,
-      password: undefined,
-      newPassword: undefined,
-      location: (user?.location as (typeof LOCATION)[number]) ?? undefined,
+      name: user?.name ?? "",
+      email: user?.email ?? "",
+      password: "",
+      newPassword: "",
+      location: (user?.location as (typeof LOCATION)[number]) ?? "",
     },
   });
 
   const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
+    setError("");
+    setSuccess("");
     startTransition(async () => {
       const filteredValues = Object.fromEntries(
         Object.entries(values).filter(([_, v]) => v !== "" && v !== undefined),

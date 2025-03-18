@@ -35,7 +35,7 @@ export function LoginForm({
   const callbackUrl = searchParams.get("callbackUrl");
   const urlError =
     searchParams.get("error") === "OAuthAccountNotLinked"
-      ? "Email already in use with different provider"
+      ? "Email already in use with different provider!"
       : "";
 
   const [error, setError] = useState<string | undefined>("");
@@ -132,7 +132,7 @@ export function LoginForm({
                       )}
                     ></FormField>
                   </div>
-                  <FormError message={error} />
+                  <FormError message={error ?? urlError} />
                   <FormSuccess message={success} />
                   <Button type="submit" className="w-full" disabled={isPending}>
                     Login
