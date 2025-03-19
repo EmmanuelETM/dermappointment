@@ -10,4 +10,4 @@
 - [x] Add auth
 - [x] Role based routing
 - [x] Setup Settings page for all users
-- [] Callback url for email verification on settings page
+- [] Fix callback url sitation, shit is fucked up

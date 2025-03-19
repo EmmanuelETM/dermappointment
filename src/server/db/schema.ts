@@ -297,6 +297,21 @@ export const appointment = createTable("appointment", {
   updatedAt,
 });
 
+export const appointmentRelations = relations(appointment, ({ one }) => ({
+  patients: one(patients, {
+    fields: [appointment.patientId],
+    references: [patients.id],
+  }),
+  doctors: one(doctors, {
+    fields: [appointment.doctorId],
+    references: [doctors.id],
+  }),
+  procedures: one(procedures, {
+    fields: [appointment.procedureId],
+    references: [procedures.id],
+  }),
+}));
+
 //schedule
 
 export const schedule = createTable("schedule", {
@@ -349,21 +364,6 @@ export const scheduleAvailabilityRelations = relations(
     }),
   }),
 );
-
-export const appointmentRelations = relations(appointment, ({ one }) => ({
-  patients: one(patients, {
-    fields: [appointment.patientId],
-    references: [patients.id],
-  }),
-  doctors: one(doctors, {
-    fields: [appointment.doctorId],
-    references: [doctors.id],
-  }),
-  procedures: one(procedures, {
-    fields: [appointment.procedureId],
-    references: [procedures.id],
-  }),
-}));
 
 // clinical history
 

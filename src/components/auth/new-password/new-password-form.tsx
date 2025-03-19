@@ -42,7 +42,6 @@ export function NewPasswordForm({
 
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
-  const callbackUrl = searchParams.get("callbackUrl");
 
   const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
     setError("");
@@ -102,10 +101,10 @@ export function NewPasswordForm({
                 </div>
                 <div className="mt-5 text-center text-sm text-muted-foreground">
                   <Link
-                    href={callbackUrl!}
+                    href="/login"
                     className="text-primary hover:underline hover:underline-offset-4"
                   >
-                    Back to App
+                    Back to Login
                   </Link>
                 </div>
               </form>

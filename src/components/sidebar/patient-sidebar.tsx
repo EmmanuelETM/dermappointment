@@ -28,11 +28,11 @@ const data = {
       url: "#",
       items: [
         {
-          title: "Dashboard",
+          title: "Appointments",
           url: "/patient/dashboard",
         },
         {
-          title: "Project Structure",
+          title: "Doctors",
           url: "#",
         },
       ],
@@ -63,9 +63,9 @@ export function PatientSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const user = useCurrentUser();
-  data.user.name = user?.name ?? "some dud";
-  data.user.email = user?.email ?? "default@example.com";
-  data.user.image = user?.image ?? "https://robohash.org/1";
+  data.user.name = user?.name ?? "";
+  data.user.email = user?.email ?? "";
+  data.user.image = user?.image ?? "";
 
   return (
     <Sidebar {...props}>
