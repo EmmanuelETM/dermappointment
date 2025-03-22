@@ -16,14 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavUser } from "@/components/nav-user";
 
-import {
-  CalendarCheck,
-  CalendarPlus,
-  DollarSign,
-  Hospital,
-  Home,
-  Send,
-} from "lucide-react";
+import { DollarSign, Send, Gauge, User, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const data = {
@@ -34,51 +27,32 @@ const data = {
   },
   sidebar: [
     {
-      title: "Home",
+      title: "Manteinance",
       items: [
         {
-          title: "Home",
-          url: "/patient/home",
-          icon: Home,
-        },
-      ],
-    },
-    {
-      title: "Search",
-      items: [
-        {
-          title: "Doctors",
-          url: "/patient/search-doctors",
-          icon: Hospital,
-        },
-      ],
-    },
-    {
-      title: "Appointments",
-      items: [
-        {
-          title: "New Appointment",
-          url: "/patient/new-appointment",
-          icon: CalendarPlus,
+          title: "Dashboard",
+          url: "/admin/dashboard",
+          icon: Gauge,
         },
         {
-          title: "My Appointments",
-          url: "/patient/my-appointments",
-          icon: CalendarCheck,
+          title: "Users",
+          url: "/admin/users",
+          icon: User,
         },
-      ],
-    },
-    {
-      title: "Others",
-      items: [
+        {
+          title: "Appointments",
+          url: "/admin/new-appointment",
+          icon: Calendar,
+        },
+
         {
           title: "Payments",
-          url: "/patient/payments",
+          url: "/admin/payments",
           icon: DollarSign,
         },
         {
           title: "Chat",
-          url: "/patient/chat",
+          url: "/admin/chat",
           icon: Send,
         },
       ],
@@ -86,7 +60,7 @@ const data = {
   ],
 };
 
-export function PatientSidebar({
+export function AdminSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const user = useCurrentUser();

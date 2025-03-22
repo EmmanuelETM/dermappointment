@@ -18,11 +18,15 @@ import { NavUser } from "@/components/nav-user";
 
 import {
   CalendarCheck,
+  CalendarClock,
   CalendarPlus,
   DollarSign,
   Hospital,
   Home,
   Send,
+  CalendarDays,
+  ClipboardPlus,
+  User,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -38,18 +42,23 @@ const data = {
       items: [
         {
           title: "Home",
-          url: "/patient/home",
+          url: "/doctor/home",
           icon: Home,
         },
       ],
     },
     {
-      title: "Search",
+      title: "Schedule",
       items: [
         {
-          title: "Doctors",
-          url: "/patient/search-doctors",
-          icon: Hospital,
+          title: "Schedule",
+          url: "/doctor/schedule",
+          icon: CalendarClock,
+        },
+        {
+          title: "Calendar",
+          url: "/doctor/calendar",
+          icon: CalendarDays,
         },
       ],
     },
@@ -58,13 +67,28 @@ const data = {
       items: [
         {
           title: "New Appointment",
-          url: "/patient/new-appointment",
+          url: "/doctor/new-appointment",
           icon: CalendarPlus,
         },
         {
           title: "My Appointments",
-          url: "/patient/my-appointments",
+          url: "/doctor/my-appointments",
           icon: CalendarCheck,
+        },
+      ],
+    },
+    {
+      title: "Patients",
+      items: [
+        {
+          title: "Patients",
+          url: "/doctor/patients",
+          icon: User,
+        },
+        {
+          title: "Clinical Histories",
+          url: "/doctor/histories",
+          icon: ClipboardPlus,
         },
       ],
     },
@@ -72,13 +96,8 @@ const data = {
       title: "Others",
       items: [
         {
-          title: "Payments",
-          url: "/patient/payments",
-          icon: DollarSign,
-        },
-        {
           title: "Chat",
-          url: "/patient/chat",
+          url: "/doctor/chat",
           icon: Send,
         },
       ],
@@ -86,7 +105,7 @@ const data = {
   ],
 };
 
-export function PatientSidebar({
+export function DoctorSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const user = useCurrentUser();

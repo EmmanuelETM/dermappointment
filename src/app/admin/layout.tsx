@@ -1,4 +1,4 @@
-import { PatientSidebar } from "@/components/sidebar/patient-sidebar";
+import { AdminSidebar } from "@/components/sidebar/admin-sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -25,7 +25,7 @@ export default async function PatientLayout({
   return (
     <SessionProvider session={session}>
       <SidebarProvider>
-        <PatientSidebar />
+        <AdminSidebar />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger className="-ml-1" />

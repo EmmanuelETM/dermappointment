@@ -34,7 +34,7 @@ export const apiAuthPrefix = "/api/auth";
 export const getDefaultRedirect = (role: string) => {
   switch (role) {
     case "ADMIN":
-      return "/admin";
+      return "/admin/dashboard";
     case "DOCTOR":
       return "/doctor/home";
     case "PATIENT":

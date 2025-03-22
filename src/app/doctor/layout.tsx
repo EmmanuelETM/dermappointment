@@ -1,4 +1,3 @@
-import { PatientSidebar } from "@/components/sidebar/patient-sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,6 +14,7 @@ import {
 } from "@/components/ui/sidebar";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/server/auth";
+import { DoctorSidebar } from "@/components/sidebar/doctor-sidebar";
 
 export default async function PatientLayout({
   children,
@@ -25,7 +25,7 @@ export default async function PatientLayout({
   return (
     <SessionProvider session={session}>
       <SidebarProvider>
-        <PatientSidebar />
+        <DoctorSidebar />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger className="-ml-1" />
