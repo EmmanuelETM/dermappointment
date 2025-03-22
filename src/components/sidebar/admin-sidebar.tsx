@@ -44,7 +44,6 @@ const data = {
           url: "/admin/new-appointment",
           icon: Calendar,
         },
-
         {
           title: "Payments",
           url: "/admin/payments",

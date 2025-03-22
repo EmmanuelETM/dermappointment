@@ -83,13 +83,6 @@ export function NavUser({
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer"
-                onClick={() => redirect(`${prefix}/transactions`)}
-              >
-                <CreditCard />
-                Transactions
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="cursor-pointer"
                 onClick={() => redirect(`${prefix}/notifications`)}
               >
                 <Bell />
