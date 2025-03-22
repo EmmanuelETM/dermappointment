@@ -16,73 +16,100 @@ import {
 } from "@/components/ui/sidebar";
 import { NavUser } from "@/components/nav-user";
 
+import {
+  CalendarCheck,
+  CalendarPlus,
+  DollarSign,
+  Hospital,
+  Home,
+  Send,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+
 const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
     image: "https://robohash.org/1",
   },
-  navMain: [
+  sidebar: [
     {
       title: "Home",
-      url: "#",
       items: [
         {
-          title: "Dashboard",
-          url: "/admin/dashboard",
-        },
-        {
-          title: "Project Structure",
-          url: "#",
+          title: "Home",
+          url: "/patient/home",
+          icon: Home,
         },
       ],
     },
     {
-      title: "Building Your Application",
-      url: "#",
+      title: "Search",
       items: [
         {
-          title: "Routing",
-          url: "#",
+          title: "Doctors",
+          url: "/patient/search-doctors",
+          icon: Hospital,
+        },
+      ],
+    },
+    {
+      title: "Appointments",
+      items: [
+        {
+          title: "New Appointment",
+          url: "/patient/new-appointment",
+          icon: CalendarPlus,
         },
         {
-          title: "Data Fetching",
-          url: "#",
-          isActive: true,
+          title: "My Appointments",
+          url: "/patient/my-appointments",
+          icon: CalendarCheck,
+        },
+      ],
+    },
+    {
+      title: "Others",
+      items: [
+        {
+          title: "Payments",
+          url: "/patient/payments",
+          icon: DollarSign,
         },
         {
-          title: "Rendering",
-          url: "#",
+          title: "Chat",
+          url: "/patient/chat",
+          icon: Send,
         },
       ],
     },
   ],
 };
 
-export function AdminSidebar({
+export function PatientSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const user = useCurrentUser();
-  data.user.name = user?.name ?? "some dud";
-  data.user.email = user?.email ?? "default@example.com";
-  data.user.image = user?.image ?? "https://robohash.org/1";
-
+  data.user.name = user?.name ?? "";
+  data.user.email = user?.email ?? "";
+  data.user.image = user?.image ?? "";
+  const router = useRouter();
   return (
-    <Sidebar {...props}>
+    <Sidebar>
       <SidebarHeader>
         <NavUser user={data.user} />
       </SidebarHeader>
       <SidebarContent>
-        {/* We create a SidebarGroup for each parent. */}
-        {data.navMain.map((item) => (
+        {data.sidebar.map((item) => (
           <SidebarGroup key={item.title}>
             <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {item.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
-                      <a href={item.url}>{item.title}</a>
+                {item.items.map((subitem) => (
+                  <SidebarMenuItem key={subitem.title}>
+                    <SidebarMenuButton onClick={() => router.push(subitem.url)}>
+                      {subitem.icon && <subitem.icon />}
+                      {subitem.title}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}

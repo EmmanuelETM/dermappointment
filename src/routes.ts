@@ -36,9 +36,9 @@ export const getDefaultRedirect = (role: string) => {
     case "ADMIN":
       return "/admin";
     case "DOCTOR":
-      return "/doctor";
+      return "/doctor/home";
     case "PATIENT":
-      return "/patient";
+      return "/patient/home";
   }
 };
 

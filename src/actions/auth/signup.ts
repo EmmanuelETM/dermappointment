@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { SignUpSchema } from "@/schemas";
 import type { z } from "zod";
 import { db } from "@/server/db";
-import { users } from "@/server/db/schema";
+import { patients, users } from "@/server/db/schema";
 import { getUserByEmail } from "@/data/user";
 import { generateVToken } from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/mail/index";
@@ -27,21 +27,24 @@ export const signup = async (values: z.infer<typeof SignUpSchema>) => {
     return { error: "Email already in use!" };
   }
 
-  await db.insert(users).values({
-    name,
-    email,
-    password: hashedPassword,
-    location: location as (typeof LOCATION)[number],
-    gender,
-    image: "https://robohash.org/69",
-  });
+  const [user] = await db
+    .insert(users)
+    .values({
+      name,
+      email,
+      password: hashedPassword,
+      location: location as (typeof LOCATION)[number],
+      gender,
+      image: "https://robohash.org/69",
+    })
+    .returning();
 
-  const user = await getUserByEmail(email);
+  await db.insert(patients).values({ userId: user!.id });
 
   const verificationToken = await generateVToken(user!.id, email);
   console.log(verificationToken[0]);
 
-  const callbackUrl = "";
+  // const callbackUrl = "";
 
   if (verificationToken[0]) {
     await sendVerificationEmail(
