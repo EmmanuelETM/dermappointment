@@ -28,15 +28,18 @@ import {
 
 import { DataTablePagination } from "@/components/tables/pagination";
 import { DataTableToolbar } from "@/components/tables/table-toolbar";
+import { type PopoverGroup } from "@/schemas/tables";
 
 type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  popoverConfig: PopoverGroup;
 };
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  popoverConfig,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -65,9 +68,9 @@ export function DataTable<TData, TValue>({
     },
   });
   return (
-    <div>
+    <>
       <div className="space-y-4 pb-4">
-        <DataTableToolbar table={table} />
+        <DataTableToolbar table={table} popoverConfig={popoverConfig} />
       </div>
       <div className="rounded-md border">
         <Table>
@@ -120,6 +123,6 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <DataTablePagination table={table} />
-    </div>
+    </>
   );
 }

@@ -1,8 +1,9 @@
 import { cn } from "@/lib/utils";
 import { type Column } from "@tanstack/react-table";
-import { Check, PlusCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+
+import { Check, PlusCircle } from "lucide-react";
 
 import {
   Command,
@@ -21,6 +22,7 @@ import {
 } from "@/components/ui/popover";
 
 import { Separator } from "@/components/ui/separator";
+import { iconMap } from "./iconMap";
 
 type DataTableFacetedFilterProps<TData, TValue> = {
   column?: Column<TData, TValue>;
@@ -28,7 +30,7 @@ type DataTableFacetedFilterProps<TData, TValue> = {
   options: {
     label: string;
     value: string;
-    icon?: React.ComponentType<{ className?: string }>;
+    iconKey: string;
   }[];
 };
 
@@ -89,6 +91,8 @@ export function DataTableFacetedFilter<TData, TValue>({
             <CommandGroup>
               {options.map((option) => {
                 const isSelected = selectedValues.has(option.value);
+                const Icon = iconMap[option.iconKey]; // Obtener el ícono dinámicamente
+
                 return (
                   <CommandItem
                     key={option.value}
@@ -114,8 +118,8 @@ export function DataTableFacetedFilter<TData, TValue>({
                     >
                       <Check />
                     </div>
-                    {option.icon && (
-                      <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                    {Icon && (
+                      <Icon className="mr-2 h-4 w-4 text-muted-foreground" />
                     )}
                     <span>{option.label}</span>
                     {facets?.get(option.value) && (

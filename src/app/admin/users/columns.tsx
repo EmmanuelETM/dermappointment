@@ -45,14 +45,6 @@ export const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "userId",
-    header: "User Id",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-  },
-  {
     accessorKey: "name",
     header: "Name",
   },
@@ -71,10 +63,12 @@ export const columns: ColumnDef<Payment>[] = [
     },
   },
   {
+    id: "Role",
     accessorKey: "role",
     header: "Role",
   },
   {
+    id: "Location",
     accessorKey: "location",
     header: "Location",
   },

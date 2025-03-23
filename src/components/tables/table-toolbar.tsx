@@ -1,21 +1,24 @@
 "use client";
 
 import { type Table } from "@tanstack/react-table";
+import { type PopoverGroup } from "@/schemas/tables";
+
 import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTableViewOptions } from "@/components/tables/view-options";
 
-import { statuses } from "./test-data";
 import { DataTableFacetedFilter } from "@/components/tables/faceted-filters";
 
-interface DataTableToolbarProps<TData> {
+type DataTableToolbarProps<TData> = {
   table: Table<TData>;
-}
+  popoverConfig?: PopoverGroup;
+};
 
 export function DataTableToolbar<TData>({
   table,
+  popoverConfig,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
@@ -23,20 +26,22 @@ export function DataTableToolbar<TData>({
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter tasks..."
+          placeholder="Filter..."
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
           }
-          className="h-8 w-[150px] lg:w-[250px]"
+          className="h-8 w-[200px] lg:w-[300px]"
         />
-        {table.getColumn("status") && (
+        {popoverConfig?.items.map((group) => (
           <DataTableFacetedFilter
-            column={table.getColumn("status")}
-            title="Status"
-            options={statuses}
+            key={group.title}
+            column={table.getColumn(group.column)}
+            title={group.title}
+            options={group.options}
           />
-        )}
+        ))}
+
         {isFiltered && (
           <Button
             variant="ghost"
