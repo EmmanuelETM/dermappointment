@@ -48,9 +48,8 @@ export default async function TransactionsPage() {
 
   return (
     <>
-      <p className="py-2 text-lg font-bold">Users</p>
-      <Separator />
-      <div className="container mx-auto py-1">
+      <div className="container mx-auto px-4">
+        <p className="py-2 text-lg font-bold">Users</p>
         <DataTable
           columns={columns}
           data={data}

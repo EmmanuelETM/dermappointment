@@ -25,15 +25,15 @@ export function DataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex flex-1 items-center space-x-2">
+    <div className="flex flex-wrap items-center justify-between gap-2">
+      <div className="flex flex-1 flex-wrap items-center space-x-2">
         <Input
           placeholder={"Filter " + filter + "..."}
           value={(table.getColumn(filter)?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn(filter)?.setFilterValue(event.target.value)
           }
-          className="h-8 w-[200px] lg:w-[300px]"
+          className="h-8 min-w-[150px] flex-grow sm:w-[200px] lg:w-[300px]"
         />
         {popoverConfig?.items.map((group) => (
           <DataTableFacetedFilter
@@ -48,7 +48,7 @@ export function DataTableToolbar<TData>({
           <Button
             variant="ghost"
             onClick={() => table.resetColumnFilters()}
-            className="h-8 px-2 lg:px-3"
+            className="mt-2 h-8 px-2 sm:mt-0 lg:px-3"
           >
             Reset
             <X />

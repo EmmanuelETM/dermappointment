@@ -70,7 +70,7 @@ export function DataTable<TData, TValue>({
     },
   });
   return (
-    <>
+    <div>
       <div className="space-y-4 pb-4">
         <DataTableToolbar
           table={table}
@@ -78,8 +78,8 @@ export function DataTable<TData, TValue>({
           popoverConfig={popoverConfig}
         />
       </div>
-      <div className="rounded-md border">
-        <Table>
+      <div className="overflow-auto rounded-md border">
+        <Table className="min-w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -129,6 +129,6 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <DataTablePagination table={table} />
-    </>
+    </div>
   );
 }
