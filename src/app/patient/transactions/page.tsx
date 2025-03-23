@@ -1,6 +1,5 @@
 import { Separator } from "@/components/ui/separator";
 import { type Payment, columns } from "./columns";
-import { DataTable } from "@/components/tables/data-table";
 
 async function getData(): Promise<Payment[]> {
   return [
@@ -128,9 +127,7 @@ export default async function TransactionsPage() {
     <>
       <p className="py-2 text-lg font-bold">Transactions</p>
       <Separator />
-      <div className="container mx-auto py-1">
-        <DataTable columns={columns} data={data} />
-      </div>
+      <div className="container mx-auto py-1"></div>
     </>
   );
 }
