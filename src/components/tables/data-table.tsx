@@ -34,7 +34,7 @@ type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   filter: string;
-  popoverConfig: PopoverGroup;
+  popoverConfig?: PopoverGroup;
 };
 
 export function DataTable<TData, TValue>({
