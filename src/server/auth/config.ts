@@ -2,7 +2,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { type NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
-import { LoginSchema } from "@/schemas";
+import { LoginSchema } from "@/schemas/auth";
 import bcrypt from "bcryptjs";
 import { db } from "@/server/db";
 import { accounts, users } from "@/server/db/schema";

@@ -4,7 +4,7 @@ import { type z } from "zod";
 
 import { db } from "@/server/db";
 import bcrypt from "bcryptjs";
-import { type SettingsSchema } from "@/schemas";
+import { type SettingsSchema } from "@/schemas/auth";
 import { getUserByEmail, getUserById } from "@/data/user";
 import { currentUser } from "@/lib/currentUser";
 import { eq } from "drizzle-orm";

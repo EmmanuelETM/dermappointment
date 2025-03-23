@@ -22,7 +22,7 @@ import { useCurrentUser } from "@/hooks/user-current-user";
 import { useSession } from "next-auth/react";
 import { useState, useTransition } from "react";
 import { type z } from "zod";
-import { SettingsSchema } from "@/schemas";
+import { SettingsSchema } from "@/schemas/auth";
 import { settings } from "@/actions/auth/settings";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type LOCATION } from "@/data/constants";

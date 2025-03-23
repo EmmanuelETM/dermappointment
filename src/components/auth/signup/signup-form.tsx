@@ -48,7 +48,7 @@ import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SignUpSchema } from "@/schemas";
+import { SignUpSchema } from "@/schemas/auth";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
 import { GoogleAuth } from "@/components/auth/google-auth";
