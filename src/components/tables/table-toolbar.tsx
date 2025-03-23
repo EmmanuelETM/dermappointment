@@ -1,7 +1,7 @@
 "use client";
 
 import { type Table } from "@tanstack/react-table";
-import { type PopoverGroup } from "@/schemas/tables";
+import { type PopoverGroup } from "@/types/tables";
 
 import { X } from "lucide-react";
 
@@ -33,7 +33,7 @@ export function DataTableToolbar<TData>({
           onChange={(event) =>
             table.getColumn(filter)?.setFilterValue(event.target.value)
           }
-          className="h-8 min-w-[150px] flex-grow sm:w-[200px] lg:w-[300px]"
+          className="h-8 min-w-[150px] sm:w-[200px] lg:w-[300px]"
         />
         {popoverConfig?.items.map((group) => (
           <DataTableFacetedFilter

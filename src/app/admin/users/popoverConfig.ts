@@ -1,4 +1,4 @@
-import { type PopoverGroup, type PopoverItem } from "@/schemas/tables";
+import { type PopoverGroup, type PopoverItem } from "@/types/tables";
 
 const RolePopover: PopoverItem = {
   column: "Role",

@@ -16,7 +16,16 @@ import {
 } from "@/components/ui/sidebar";
 import { NavUser } from "@/components/nav-user";
 
-import { DollarSign, Send, Gauge, User, Calendar } from "lucide-react";
+import {
+  DollarSign,
+  Send,
+  Gauge,
+  User,
+  Calendar,
+  Hospital,
+  Sparkle,
+  Activity,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const data = {
@@ -38,6 +47,21 @@ const data = {
           title: "Users",
           url: "/admin/users",
           icon: User,
+        },
+        {
+          title: "Doctors",
+          url: "/admin/doctors",
+          icon: Hospital,
+        },
+        {
+          title: "Specialties",
+          url: "/admin/specialties",
+          icon: Sparkle,
+        },
+        {
+          title: "Procedures",
+          url: "/admin/specialties",
+          icon: Activity,
         },
         {
           title: "Appointments",

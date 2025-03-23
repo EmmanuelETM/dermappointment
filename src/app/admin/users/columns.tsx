@@ -13,15 +13,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Checkbox } from "@/components/ui/checkbox";
+import { type User } from "@/schemas/user";
+import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
-};
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<User>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -66,6 +68,33 @@ export const columns: ColumnDef<Payment>[] = [
     id: "Role",
     accessorKey: "role",
     header: "Role",
+    cell: ({ row }) => {
+      const RoleCell = () => {
+        const user = row.original;
+        const [role, setRole] = useState(user.role);
+
+        const handleChange = async (
+          newRole: "ADMIN" | "PATIENT" | "DOCTOR",
+        ) => {
+          setRole(newRole);
+        };
+
+        return (
+          <Select value={role!} onValueChange={handleChange}>
+            <SelectTrigger className="w-[120px]">
+              <SelectValue placeholder="Select role" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ADMIN">Admin</SelectItem>
+              <SelectItem value="DOCTOR">Doctor</SelectItem>
+              <SelectItem value="PATIENT">Patient</SelectItem>
+            </SelectContent>
+          </Select>
+        );
+      };
+
+      return <RoleCell />;
+    },
   },
   {
     id: "Location",
@@ -77,7 +106,7 @@ export const columns: ColumnDef<Payment>[] = [
     header: () => <div className="text-right">Actions</div>,
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const user = row.original;
 
       return (
         <div className="text-right">
@@ -90,7 +119,7 @@ export const columns: ColumnDef<Payment>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id)}
+                onClick={() => navigator.clipboard.writeText(user.id!)}
               >
                 Copy User Id
               </DropdownMenuItem>

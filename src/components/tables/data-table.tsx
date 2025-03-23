@@ -28,7 +28,7 @@ import {
 
 import { DataTablePagination } from "@/components/tables/pagination";
 import { DataTableToolbar } from "@/components/tables/table-toolbar";
-import { type PopoverGroup } from "@/schemas/tables";
+import { type PopoverGroup } from "@/schemas/popover";
 
 type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];

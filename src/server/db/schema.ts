@@ -37,7 +37,7 @@ export const users = createTable("users", {
   email: varchar("email", { length: 255 }),
   password: varchar("password", { length: 255 }),
   role: UserRole("role").default("PATIENT"),
-  location: UserLocation("location"),
+  location: UserLocation("location").default("La Vega"),
   gender: varchar("gender", { length: 128 }),
   emailVerified: timestamp("email_verified", {
     mode: "date",

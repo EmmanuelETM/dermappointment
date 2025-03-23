@@ -1,46 +1,11 @@
-import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/tables/data-table";
-import { type Payment, columns } from "./columns";
+import { columns } from "./columns";
 import { popoverConfig } from "./popoverConfig";
+import { db } from "@/server/db";
+import { type User } from "@/schemas/user";
 
-// async function getUserData() {
-//   try {
-//     const data = await db.query.users.findMany();
-//     return data;
-//   } catch {
-//     console.log("error");
-//   }
-// }
-
-//Todo add type safety to all types with zod, and also this function on top
-
-async function getUserData(): Promise<Payment[]> {
-  return [
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "a@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-  ];
+async function getUserData(): Promise<User[]> {
+  return await db.query.users.findMany();
 }
 
 export default async function TransactionsPage() {
