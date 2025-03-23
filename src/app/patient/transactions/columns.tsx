@@ -1,7 +1,7 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, ArrowUpDown, Table } from "lucide-react";
+import { MoreHorizontal, ArrowUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -45,10 +45,6 @@ export const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "status",
-  },
-  {
     accessorKey: "email",
     header: ({ column }) => {
       return (
@@ -61,6 +57,10 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       );
     },
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
   },
   {
     accessorKey: "amount",
