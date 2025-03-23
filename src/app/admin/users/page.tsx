@@ -3,13 +3,24 @@ import { DataTable } from "@/components/tables/data-table";
 import { type Payment, columns } from "./columns";
 import { popoverConfig } from "./popoverConfig";
 
+// async function getUserData() {
+//   try {
+//     const data = await db.query.users.findMany();
+//     return data;
+//   } catch {
+//     console.log("error");
+//   }
+// }
+
+//Todo add type safety to all types with zod, and also this function on top
+
 async function getUserData(): Promise<Payment[]> {
   return [
     {
       id: "728ed52f",
       amount: 100,
       status: "pending",
-      email: "m@example.com",
+      email: "a@example.com",
     },
     {
       id: "728ed52f",
@@ -37,12 +48,13 @@ export default async function TransactionsPage() {
 
   return (
     <>
-      <p className="py-2 text-lg font-bold">Transactions</p>
+      <p className="py-2 text-lg font-bold">Users</p>
       <Separator />
       <div className="container mx-auto py-1">
         <DataTable
           columns={columns}
           data={data}
+          filter="name"
           popoverConfig={popoverConfig}
         />
       </div>

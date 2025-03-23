@@ -33,12 +33,14 @@ import { type PopoverGroup } from "@/schemas/tables";
 type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  filter: string;
   popoverConfig: PopoverGroup;
 };
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  filter,
   popoverConfig,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -70,7 +72,11 @@ export function DataTable<TData, TValue>({
   return (
     <>
       <div className="space-y-4 pb-4">
-        <DataTableToolbar table={table} popoverConfig={popoverConfig} />
+        <DataTableToolbar
+          table={table}
+          filter={filter}
+          popoverConfig={popoverConfig}
+        />
       </div>
       <div className="rounded-md border">
         <Table>

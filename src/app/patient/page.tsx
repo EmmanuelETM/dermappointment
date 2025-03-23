@@ -1,9 +1,7 @@
+import { redirect } from "next/navigation";
+
 function Page() {
-  return (
-    <div>
-      <h1>Patient only page</h1>
-    </div>
-  );
+  redirect("/patient/home");
 }
 
 export default Page;
