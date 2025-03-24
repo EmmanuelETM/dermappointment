@@ -23,6 +23,7 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -33,7 +34,6 @@ import { ProcedureFormSchema } from "@/schemas/admin/procedures";
 import { createProcedure } from "@/actions/admin/procedures";
 
 export function ProceduresDialog() {
-  const [error, setError] = useState<string | undefined>("");
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -47,12 +47,12 @@ export function ProceduresDialog() {
   });
 
   const onSubmit = (values: z.infer<typeof ProcedureFormSchema>) => {
-    setError("");
-
     startTransition(async () => {
       const response = await createProcedure(values);
-      if (response) setOpen(false);
-      console.log(response);
+      setOpen(false);
+
+      if (response?.success) toast(response?.success);
+      else toast(response?.error);
     });
   };
   return (

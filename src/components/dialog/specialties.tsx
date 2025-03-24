@@ -23,6 +23,7 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -33,7 +34,6 @@ import { SpecialtyFormSchema } from "@/schemas/admin/specialties";
 import { createSpecialty } from "@/actions/admin/specialties";
 
 export function SpecialtiesDialog() {
-  const [error, setError] = useState<string | undefined>("");
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -46,13 +46,12 @@ export function SpecialtiesDialog() {
   });
 
   const onSubmit = (values: z.infer<typeof SpecialtyFormSchema>) => {
-    console.log("submit");
-    setError("");
-
     startTransition(async () => {
       const response = await createSpecialty(values);
-      if (response) setOpen(false);
-      console.log(response);
+      setOpen(false);
+
+      if (response?.success) toast(response?.success);
+      else toast(response?.error);
     });
   };
 
