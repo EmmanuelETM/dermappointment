@@ -60,7 +60,7 @@ const data = {
         },
         {
           title: "Procedures",
-          url: "/admin/specialties",
+          url: "/admin/procedures",
           icon: Activity,
         },
         {
