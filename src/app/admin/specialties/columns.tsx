@@ -51,6 +51,10 @@ export const columns: ColumnDef<Specialty>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const name = row.getValue("name");
+      return <div className="ml-4">{String(name)}</div>;
+    },
   },
   {
     accessorKey: "description",

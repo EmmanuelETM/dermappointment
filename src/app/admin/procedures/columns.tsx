@@ -26,6 +26,7 @@ export const columns: ColumnDef<Procedure>[] = [
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select-All"
+        className="translate-y-[2px]"
       />
     ),
     cell: ({ row }) => (
@@ -33,6 +34,7 @@ export const columns: ColumnDef<Procedure>[] = [
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        className="translate-y-[2px]"
       />
     ),
     enableSorting: false,
@@ -51,6 +53,10 @@ export const columns: ColumnDef<Procedure>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const name = row.getValue("name");
+      return <div className="ml-4">{String(name)}</div>;
+    },
   },
   {
     accessorKey: "description",
@@ -58,7 +64,26 @@ export const columns: ColumnDef<Procedure>[] = [
   },
   {
     accessorKey: "price",
-    header: "Price",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Price
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const price = parseFloat(row.getValue("price"));
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(price);
+
+      return <div className="ml-4 font-medium">{formatted}</div>;
+    },
   },
   {
     id: "actions",
