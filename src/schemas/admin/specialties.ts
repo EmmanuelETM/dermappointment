@@ -7,3 +7,8 @@ export const SpecialtySchema = z.object({
 });
 
 export type Specialty = z.infer<typeof SpecialtySchema>;
+
+export const SpecialtyFormSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+});

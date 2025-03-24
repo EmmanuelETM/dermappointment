@@ -8,3 +8,9 @@ export const ProceduresSchema = z.object({
 });
 
 export type Procedure = z.infer<typeof ProceduresSchema>;
+
+export const ProcedureFormSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  price: z.string(),
+});

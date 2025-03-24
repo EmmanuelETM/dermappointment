@@ -12,48 +12,136 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-import { Label } from "@/components/ui/label";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+
+import { type z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ProcedureFormSchema } from "@/schemas/admin/procedures";
+import { createProcedure } from "@/actions/admin/procedures";
+
 export function ProceduresDialog() {
+  const [error, setError] = useState<string | undefined>("");
+  const [open, setOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  const form = useForm<z.infer<typeof ProcedureFormSchema>>({
+    resolver: zodResolver(ProcedureFormSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      price: "",
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof ProcedureFormSchema>) => {
+    setError("");
+
+    startTransition(async () => {
+      const response = await createProcedure(values);
+      if (response) setOpen(false);
+      console.log(response);
+    });
+  };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">
           <Plus /> Add
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Create Procedure</DialogTitle>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input id="name" placeholder="Botox" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="price" className="text-right">
-              Price
-            </Label>
-            <Input id="price" placeholder="USD$300" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="description" className="text-right">
-              Description
-            </Label>
-            <Textarea id="description" className="col-span-3" />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">
-            <Plus />
-            Create
-          </Button>
-        </DialogFooter>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <DialogHeader>
+              <DialogTitle>Create Procedure</DialogTitle>
+            </DialogHeader>
+            <div className="mt-4 grid gap-6">
+              <div className="grid gap-2">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={isPending}
+                          placeholder="Botox"
+                          type="text"
+                          className="col-span-3"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid gap-2">
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Price</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={isPending}
+                          step="0.01"
+                          min="0"
+                          inputMode="decimal"
+                          placeholder="0.00"
+                          type="number"
+                          className="col-span-3"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="mb-4 grid gap-2">
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          disabled={isPending}
+                          className="col-span-3"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit">
+                <Plus />
+                Create
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
