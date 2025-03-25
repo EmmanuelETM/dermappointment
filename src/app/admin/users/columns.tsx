@@ -12,40 +12,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Checkbox } from "@/components/ui/checkbox";
 import { type User } from "@/schemas/user";
-import { useState } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { changePatientToDoctor } from "@/actions/admin/patientDoctor";
+import { toast } from "sonner";
 
 export const columns: ColumnDef<User>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select-All"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: "name",
     header: "Name",
@@ -63,38 +34,15 @@ export const columns: ColumnDef<User>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const email = row.getValue("email");
+      return <div className="ml-4">{String(email)}</div>;
+    },
   },
   {
     id: "Role",
     accessorKey: "role",
     header: "Role",
-    cell: ({ row }) => {
-      const RoleCell = () => {
-        const user = row.original;
-        const [role, setRole] = useState(user.role);
-
-        const handleChange = async (
-          newRole: "ADMIN" | "PATIENT" | "DOCTOR",
-        ) => {
-          setRole(newRole);
-        };
-
-        return (
-          <Select value={role!} onValueChange={handleChange}>
-            <SelectTrigger className="w-[120px]">
-              <SelectValue placeholder="Select role" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ADMIN">Admin</SelectItem>
-              <SelectItem value="DOCTOR">Doctor</SelectItem>
-              <SelectItem value="PATIENT">Patient</SelectItem>
-            </SelectContent>
-          </Select>
-        );
-      };
-
-      return <RoleCell />;
-    },
   },
   {
     id: "Location",
@@ -125,6 +73,19 @@ export const columns: ColumnDef<User>[] = [
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Save Changes</DropdownMenuItem>
+              {user.role === "PATIENT" ? (
+                <DropdownMenuItem
+                  onClick={async () => {
+                    const response = await changePatientToDoctor(user);
+                    if (response?.success) toast(response.success);
+                    if (response?.error) toast(response.error);
+                  }}
+                >
+                  Set Doctor
+                </DropdownMenuItem>
+              ) : (
+                ""
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

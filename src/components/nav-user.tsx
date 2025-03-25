@@ -1,4 +1,4 @@
-import { Settings, Bell, ChevronsUpDown, CreditCard } from "lucide-react";
+import { Settings, Bell, ChevronsUpDown } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {

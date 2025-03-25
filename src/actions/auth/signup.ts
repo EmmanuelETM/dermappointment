@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { SignUpSchema } from "@/schemas/auth";
 import type { z } from "zod";
 import { db } from "@/server/db";
-import { patients, users } from "@/server/db/schema";
+import { users } from "@/server/db/schema";
 import { getUserByEmail } from "@/data/user";
 import { generateVToken } from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/mail/index";
@@ -38,8 +38,6 @@ export const signup = async (values: z.infer<typeof SignUpSchema>) => {
       image: "https://robohash.org/69",
     })
     .returning();
-
-  await db.insert(patients).values({ userId: user!.id });
 
   const verificationToken = await generateVToken(user!.id, email);
   console.log(verificationToken[0]);

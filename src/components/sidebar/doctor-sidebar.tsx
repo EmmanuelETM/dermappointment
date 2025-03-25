@@ -21,7 +21,6 @@ import {
   CalendarClock,
   CalendarPlus,
   DollarSign,
-  Hospital,
   Home,
   Send,
   CalendarDays,

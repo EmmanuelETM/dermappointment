@@ -1,5 +1,5 @@
 {
-  "id": "f2c2fd2d-d0b5-435f-bb74-2db3cfef5e7f",
+  "id": "20645733-a011-422c-8729-64cacb6cd1ba",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -128,8 +128,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "patient_id": {
-          "name": "patient_id",
+        "user_id": {
+          "name": "user_id",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
@@ -195,12 +195,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "dermappointment_appointment_patient_id_dermappointment_patients_id_fk": {
-          "name": "dermappointment_appointment_patient_id_dermappointment_patients_id_fk",
+        "dermappointment_appointment_user_id_dermappointment_users_id_fk": {
+          "name": "dermappointment_appointment_user_id_dermappointment_users_id_fk",
           "tableFrom": "dermappointment_appointment",
-          "tableTo": "dermappointment_patients",
+          "tableTo": "dermappointment_users",
           "columnsFrom": [
-            "patient_id"
+            "user_id"
           ],
           "columnsTo": [
             "id"
@@ -248,8 +248,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "patient_id": {
-          "name": "patient_id",
+        "user_id": {
+          "name": "user_id",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
@@ -396,12 +396,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "dermappointment_clinical_history_patient_id_dermappointment_patients_id_fk": {
-          "name": "dermappointment_clinical_history_patient_id_dermappointment_patients_id_fk",
+        "dermappointment_clinical_history_user_id_dermappointment_users_id_fk": {
+          "name": "dermappointment_clinical_history_user_id_dermappointment_users_id_fk",
           "tableFrom": "dermappointment_clinical_history",
-          "tableTo": "dermappointment_patients",
+          "tableTo": "dermappointment_users",
           "columnsFrom": [
-            "patient_id"
+            "user_id"
           ],
           "columnsTo": [
             "id"
@@ -450,6 +450,61 @@
             "id"
           ],
           "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.dermappointment_doctor_procedures": {
+      "name": "dermappointment_doctor_procedures",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "doctor_id": {
+          "name": "doctor_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "procedure_id": {
+          "name": "procedure_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "dermappointment_doctor_procedures_doctor_id_dermappointment_doctors_id_fk": {
+          "name": "dermappointment_doctor_procedures_doctor_id_dermappointment_doctors_id_fk",
+          "tableFrom": "dermappointment_doctor_procedures",
+          "tableTo": "dermappointment_doctors",
+          "columnsFrom": [
+            "doctor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "dermappointment_doctor_procedures_procedure_id_dermappointment_specialties_id_fk": {
+          "name": "dermappointment_doctor_procedures_procedure_id_dermappointment_specialties_id_fk",
+          "tableFrom": "dermappointment_doctor_procedures",
+          "tableTo": "dermappointment_specialties",
+          "columnsFrom": [
+            "procedure_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -699,56 +754,6 @@
       },
       "uniqueConstraints": {}
     },
-    "public.dermappointment_patients": {
-      "name": "dermappointment_patients",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar(255)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "dermappointment_patients_user_id_dermappointment_users_id_fk": {
-          "name": "dermappointment_patients_user_id_dermappointment_users_id_fk",
-          "tableFrom": "dermappointment_patients",
-          "tableTo": "dermappointment_users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "public.dermappointment_procedures": {
       "name": "dermappointment_procedures",
       "schema": "",
@@ -970,10 +975,11 @@
         },
         "location": {
           "name": "location",
-          "type": "user_location",
+          "type": "location",
           "typeSchema": "public",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "'La Vega'"
         },
         "gender": {
           "name": "gender",
@@ -1020,6 +1026,12 @@
         "identifier": {
           "name": "identifier",
           "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
@@ -1074,14 +1086,6 @@
         "Oily",
         "Combiation",
         "Sensitive"
-      ]
-    },
-    "public.user_location": {
-      "name": "user_location",
-      "schema": "public",
-      "values": [
-        "La Vega",
-        "Puerto Plata"
       ]
     },
     "public.user_role": {

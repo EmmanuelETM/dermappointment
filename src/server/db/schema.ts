@@ -26,7 +26,7 @@ const updatedAt = timestamp("updatedAt")
 // Users
 
 export const UserRole = pgEnum("user_role", ROLES);
-export const UserLocation = pgEnum("user_location", LOCATION);
+export const Location = pgEnum("location", LOCATION);
 
 export const users = createTable("users", {
   id: varchar("id", { length: 255 })
@@ -37,7 +37,7 @@ export const users = createTable("users", {
   email: varchar("email", { length: 255 }),
   password: varchar("password", { length: 255 }),
   role: UserRole("role").default("PATIENT"),
-  location: UserLocation("location").default("La Vega"),
+  location: Location("location").default("La Vega"),
   gender: varchar("gender", { length: 128 }),
   emailVerified: timestamp("email_verified", {
     mode: "date",
@@ -50,13 +50,13 @@ export const users = createTable("users", {
 
 export const usersRelations = relations(users, ({ many, one }) => ({
   accounts: many(accounts),
-  patients: one(patients, {
-    fields: [users.id],
-    references: [patients.userId],
-  }),
   doctors: one(doctors, {
     fields: [users.id],
     references: [doctors.userId],
+  }),
+  clinicalHistory: one(clinicalHistory, {
+    fields: [users.id],
+    references: [clinicalHistory.userId],
   }),
   participant: many(participant),
   messages: many(messages),
@@ -135,28 +135,28 @@ export const passwordResetTokens = createTable(
 
 //Patients
 
-export const patients = createTable("patients", {
-  id: varchar("id", { length: 255 })
-    .notNull()
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  userId: varchar("user_id", { length: 255 })
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  createdAt,
-  updatedAt,
-});
+// export const patients = createTable("patients", {
+//   id: varchar("id", { length: 255 })
+//     .notNull()
+//     .primaryKey()
+//     .$defaultFn(() => crypto.randomUUID()),
+//   userId: varchar("user_id", { length: 255 })
+//     .notNull()
+//     .references(() => users.id, { onDelete: "cascade" }),
+//   createdAt,
+//   updatedAt,
+// });
 
-export const patientsRelations = relations(patients, ({ one }) => ({
-  users: one(users, {
-    fields: [patients.userId],
-    references: [users.id],
-  }),
-  clinicalHistory: one(clinicalHistory, {
-    fields: [patients.id],
-    references: [clinicalHistory.patientId],
-  }),
-}));
+// export const patientsRelations = relations(patients, ({ one }) => ({
+//   users: one(users, {
+//     fields: [patients.userId],
+//     references: [users.id],
+//   }),
+//   clinicalHistory: one(clinicalHistory, {
+//     fields: [patients.id],
+//     references: [clinicalHistory.patientId],
+//   }),
+// }));
 
 //Doctors
 
@@ -243,7 +243,7 @@ export const proceduresRelations = relations(specialties, ({ many }) => ({
 
 // Doctor => Procedures
 
-export const doctorProcedures = createTable("doctor_specialties", {
+export const doctorProcedures = createTable("doctor_procedures", {
   id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
@@ -272,16 +272,14 @@ export const doctorProceduresRelations = relations(
 
 // appointment
 
-export const Location = pgEnum("location", LOCATION);
-
 export const appointment = createTable("appointment", {
   id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  patientId: varchar("patient_id", { length: 255 })
+  userId: varchar("user_id", { length: 255 })
     .notNull()
-    .references(() => patients.id),
+    .references(() => users.id),
   doctorId: varchar("doctor_id", { length: 255 })
     .notNull()
     .references(() => doctors.id),
@@ -298,9 +296,9 @@ export const appointment = createTable("appointment", {
 });
 
 export const appointmentRelations = relations(appointment, ({ one }) => ({
-  patients: one(patients, {
-    fields: [appointment.patientId],
-    references: [patients.id],
+  patients: one(users, {
+    fields: [appointment.userId],
+    references: [users.id],
   }),
   doctors: one(doctors, {
     fields: [appointment.doctorId],
@@ -376,9 +374,9 @@ export const clinicalHistory = createTable("clinical_history", {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  patientId: varchar("patient_id", { length: 255 })
+  userId: varchar("user_id", { length: 255 })
     .notNull()
-    .references(() => patients.id),
+    .references(() => users.id),
   dermatologicBackground: text("dermatologic_background"),
   skinType: SkinType("skin_type").default("Normal"),
   alergies: text("alergies"),
@@ -405,9 +403,9 @@ export const clinicalHistory = createTable("clinical_history", {
 export const clinicalHistoryRelations = relations(
   clinicalHistory,
   ({ one }) => ({
-    patients: one(patients, {
-      fields: [clinicalHistory.patientId],
-      references: [patients.id],
+    patients: one(users, {
+      fields: [clinicalHistory.userId],
+      references: [users.id],
     }),
   }),
 );
