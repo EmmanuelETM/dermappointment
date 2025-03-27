@@ -103,10 +103,7 @@ export function ProceduresDialog() {
                         <Input
                           {...field}
                           disabled={isPending}
-                          step="0.01"
                           min="0"
-                          inputMode="decimal"
-                          placeholder="0.00"
                           type="number"
                           className="col-span-3"
                         />

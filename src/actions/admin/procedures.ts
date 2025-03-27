@@ -21,7 +21,7 @@ export async function createProcedure(
     await db.insert(procedures).values({
       name: name,
       description: description,
-      price: price,
+      price: Number(price),
     });
 
     revalidatePath("/admin/procedures");
