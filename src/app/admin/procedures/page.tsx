@@ -2,7 +2,7 @@ import { DataTable } from "@/components/tables/data-table";
 import { columns } from "./columns";
 import { db } from "@/server/db";
 import { type Procedure } from "@/schemas/admin/procedures";
-import { ProceduresDialog } from "@/components/dialog/procedures";
+import { ProceduresDialog } from "@/components/dialog/admin/procedures";
 
 async function getProceduresData(): Promise<Procedure[]> {
   return await db.query.procedures.findMany();

@@ -3,7 +3,7 @@ import { columns } from "./columns";
 import { db } from "@/server/db";
 import { type Specialty } from "@/schemas/admin/specialties";
 
-import { SpecialtiesDialog } from "@/components/dialog/specialties";
+import { SpecialtiesDialog } from "@/components/dialog/admin/specialties";
 
 async function getSpecialtyData(): Promise<Specialty[]> {
   return await db.query.specialties.findMany();

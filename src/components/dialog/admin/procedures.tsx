@@ -53,6 +53,8 @@ export function ProceduresDialog() {
 
       if (response?.success) toast(response?.success);
       else toast(response?.error);
+
+      form.reset();
     });
   };
   return (

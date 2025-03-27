@@ -234,10 +234,10 @@ export const procedures = createTable("procedures", {
     .$defaultFn(() => crypto.randomUUID()),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description").notNull(),
-  price: numeric("price", { precision: 10, scale: 2 }).notNull(),
+  price: integer("price").notNull(),
 });
 
-export const proceduresRelations = relations(specialties, ({ many }) => ({
+export const proceduresRelations = relations(procedures, ({ many }) => ({
   doctorProcedures: many(doctorProcedures),
 }));
 
@@ -253,7 +253,7 @@ export const doctorProcedures = createTable("doctor_procedures", {
     .references(() => doctors.id, { onDelete: "cascade" }),
   procedureId: varchar("procedure_id", { length: 255 })
     .notNull()
-    .references(() => specialties.id, { onDelete: "cascade" }),
+    .references(() => procedures.id, { onDelete: "cascade" }),
 });
 
 export const doctorProceduresRelations = relations(

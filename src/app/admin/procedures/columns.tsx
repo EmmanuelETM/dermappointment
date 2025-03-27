@@ -1,7 +1,7 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, ArrowUpDown } from "lucide-react";
+import { MoreHorizontal, ArrowUpDown, Copy } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -90,7 +90,7 @@ export const columns: ColumnDef<Procedure>[] = [
     header: () => <div className="text-right">Actions</div>,
     enableHiding: false,
     cell: ({ row }) => {
-      const user = row.original;
+      const procedure = row.original;
 
       return (
         <div className="text-right">
@@ -103,9 +103,9 @@ export const columns: ColumnDef<Procedure>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(user.id!)}
+                onClick={() => navigator.clipboard.writeText(procedure.id!)}
               >
-                Copy User Id
+                <Copy /> Procedure Id
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Save Changes</DropdownMenuItem>
