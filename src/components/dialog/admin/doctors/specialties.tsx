@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -6,10 +7,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { type Specialty } from "@/schemas/admin/specialties";
 
 import { Eye } from "lucide-react";
 
-export function DoctorsSpecialties() {
+export function DoctorsSpecialties({
+  specialties,
+}: {
+  specialties: Specialty[];
+}) {
+  console.log(specialties);
   return (
     <Dialog>
       <DialogTrigger>
@@ -20,10 +27,21 @@ export function DoctorsSpecialties() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            {specialties.map((specialty) => {
+              return (
+                <div
+                  key={specialty.id}
+                  className="flex items-center justify-evenly gap-2"
+                >
+                  <p>{specialty.id}</p>
+                  <p>{specialty.name}</p>
+                  <p>{specialty.description}</p>
+                  <Button>Add</Button>
+                  <Button>remove</Button>
+                </div>
+              );
+            })}
           </DialogDescription>
         </DialogHeader>
       </DialogContent>

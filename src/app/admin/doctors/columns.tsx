@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { DoctorsProcedures } from "@/components/dialog/admin/doctors/procedures";
 import { DoctorsSpecialties } from "@/components/dialog/admin/doctors/specialties";
 import { ProceduresArraySchema } from "@/schemas/admin/procedures";
-import { z } from "zod";
+import { SpecialtyArraySchema } from "@/schemas/admin/specialties";
 
 export const columns: ColumnDef<Doctor>[] = [
   {
@@ -46,8 +46,10 @@ export const columns: ColumnDef<Doctor>[] = [
     id: "specialties",
     accessorKey: "specialties",
     header: () => <div className="pl-2">Specialties</div>,
-    cell: () => {
-      return <DoctorsSpecialties />;
+    cell: ({ row }) => {
+      const specialties = row.getValue("specialties");
+      const parsed = SpecialtyArraySchema.parse(specialties);
+      return <DoctorsSpecialties specialties={parsed} />;
     },
   },
   {
