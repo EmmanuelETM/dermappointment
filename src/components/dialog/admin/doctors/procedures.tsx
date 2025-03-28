@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-
 import {
   Dialog,
   DialogContent,
@@ -11,7 +9,10 @@ import {
 
 import { Eye } from "lucide-react";
 
-export function DoctorsProcedures() {
+import { type Procedure } from "@/schemas/admin/procedures";
+
+export function DoctorsProcedures({ procedures }: { procedures: Procedure[] }) {
+  console.log(procedures);
   return (
     <Dialog>
       <DialogTrigger>

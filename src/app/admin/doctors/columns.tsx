@@ -1,7 +1,7 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, ArrowUpDown, Eye, Copy, Edit } from "lucide-react";
+import { MoreHorizontal, ArrowUpDown, Copy, Edit } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +16,8 @@ import { type Doctor } from "@/schemas/doctor";
 import { useRouter } from "next/navigation";
 import { DoctorsProcedures } from "@/components/dialog/admin/doctors/procedures";
 import { DoctorsSpecialties } from "@/components/dialog/admin/doctors/specialties";
+import { ProceduresArraySchema } from "@/schemas/admin/procedures";
+import { z } from "zod";
 
 export const columns: ColumnDef<Doctor>[] = [
   {
@@ -52,8 +54,10 @@ export const columns: ColumnDef<Doctor>[] = [
     id: "procedures",
     accessorKey: "procedures",
     header: () => <div className="pl-2">Procedures</div>,
-    cell: () => {
-      return <DoctorsProcedures />;
+    cell: ({ row }) => {
+      const procedures = row.getValue("procedures");
+      const parsed = ProceduresArraySchema.parse(procedures);
+      return <DoctorsProcedures procedures={parsed} />;
     },
   },
   {

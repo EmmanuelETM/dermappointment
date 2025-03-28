@@ -1,16 +1,22 @@
 import { z } from "zod";
 
-export const ProceduresSchema = z.object({
+export const ProceduresArraySchema = z.array(
+  z.object({
+    id: z.string().nullable(),
+    name: z.string().nullable(),
+    description: z.string().nullable(),
+    price: z.number(),
+  }),
+);
+
+export const ProcedureSchema = z.object({
   id: z.string().nullable(),
   name: z.string().nullable(),
   description: z.string().nullable(),
-  price: z
-    .string()
-    .transform((val) => Number(val))
-    .nullable(),
+  price: z.number(),
 });
 
-export type Procedure = z.infer<typeof ProceduresSchema>;
+export type Procedure = z.infer<typeof ProcedureSchema>;
 
 export const ProcedureFormSchema = z.object({
   name: z.string(),

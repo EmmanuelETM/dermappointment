@@ -16,7 +16,7 @@ export async function getFullDoctor() {
                 'id', p.id,
                 'name', p.name,
                 'description', p.description,
-                'price', p.price::TEXT  -- Convertimos price a string
+                'price', p.price
             )
         ) AS procedures,
         ARRAY_AGG(
