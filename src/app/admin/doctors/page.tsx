@@ -1,13 +1,11 @@
 import { DataTable } from "@/components/tables/data-table";
 import { columns } from "./columns";
-// import { popoverConfig } from "./popoverConfig";
-import { db } from "@/server/db";
 import { type Doctor } from "@/schemas/doctor";
 import { getFullDoctor } from "@/data/doctor";
 
 async function getDoctorData(): Promise<Doctor[]> {
   const data = await getFullDoctor();
-  return data!.rows;
+  return data?.rows ?? [];
 }
 
 export default async function TransactionsPage() {
@@ -20,12 +18,7 @@ export default async function TransactionsPage() {
           <p className="py-2 text-lg font-bold">Doctors</p>
           {/* <SpecialtiesDialog /> */}
         </div>
-        <DataTable
-          columns={columns}
-          data={data}
-          filter="name"
-          // popoverConfig={popoverConfig}
-        />
+        <DataTable columns={columns} data={data} filter="name" />
       </div>
     </>
   );

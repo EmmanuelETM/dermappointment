@@ -40,9 +40,8 @@ export async function getFullDoctor() {
   try {
     const data = await db.execute(query);
     const parsedData = DoctorSchema.array().parse(data.rows);
-
     return { rows: parsedData };
-  } catch {
-    console.log("Error fetching full doctor");
+  } catch (error) {
+    console.log(`Error fetching full doctor: ${String(error)}`);
   }
 }
