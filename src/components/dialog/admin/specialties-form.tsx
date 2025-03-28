@@ -33,7 +33,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SpecialtyFormSchema } from "@/schemas/admin/specialties";
 import { createSpecialty } from "@/actions/admin/specialties";
 
-export function SpecialtiesDialog() {
+export function SpecialtiesFormDialog() {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 

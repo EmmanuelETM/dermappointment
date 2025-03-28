@@ -33,7 +33,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ProcedureFormSchema } from "@/schemas/admin/procedures";
 import { createProcedure } from "@/actions/admin/procedures";
 
-export function ProceduresDialog() {
+export function ProceduresFormDialog() {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 

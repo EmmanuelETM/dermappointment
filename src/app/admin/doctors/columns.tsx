@@ -14,6 +14,8 @@ import {
 
 import { type Doctor } from "@/schemas/doctor";
 import { useRouter } from "next/navigation";
+import { DoctorsProcedures } from "@/components/dialog/admin/doctors/procedures";
+import { DoctorsSpecialties } from "@/components/dialog/admin/doctors/specialties";
 
 export const columns: ColumnDef<Doctor>[] = [
   {
@@ -43,11 +45,7 @@ export const columns: ColumnDef<Doctor>[] = [
     accessorKey: "specialties",
     header: () => <div className="pl-2">Specialties</div>,
     cell: () => {
-      return (
-        <Button variant="link" className="pl-0">
-          <Eye /> Specialties
-        </Button>
-      );
+      return <DoctorsSpecialties />;
     },
   },
   {
@@ -55,11 +53,7 @@ export const columns: ColumnDef<Doctor>[] = [
     accessorKey: "procedures",
     header: () => <div className="pl-2">Procedures</div>,
     cell: () => {
-      return (
-        <Button variant="link" className="pl-0">
-          <Eye /> Procedures
-        </Button>
-      );
+      return <DoctorsProcedures />;
     },
   },
   {
