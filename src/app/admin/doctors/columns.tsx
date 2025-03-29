@@ -14,8 +14,8 @@ import {
 
 import { type Doctor } from "@/schemas/doctor";
 import { useRouter } from "next/navigation";
-import { DoctorsProcedures } from "@/components/dialog/admin/doctors/procedures";
-import { DoctorsSpecialties } from "@/components/dialog/admin/doctors/specialties";
+import { DoctorsProcedures } from "@/components/dialog/admin/doctors/procedures/procedures";
+import { DoctorsSpecialties } from "@/components/dialog/admin/doctors/specialties/specialties";
 import { ProceduresArraySchema } from "@/schemas/admin/procedures";
 import { SpecialtyArraySchema } from "@/schemas/admin/specialties";
 

@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/tables/data-table";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -10,6 +9,7 @@ import {
 import { type Specialty } from "@/schemas/admin/specialties";
 
 import { Eye } from "lucide-react";
+import { columns } from "./column";
 
 export function DoctorsSpecialties({
   specialties,
@@ -27,23 +27,9 @@ export function DoctorsSpecialties({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogDescription>
-            {specialties.map((specialty) => {
-              return (
-                <div
-                  key={specialty.id}
-                  className="flex items-center justify-evenly gap-2"
-                >
-                  <p>{specialty.id}</p>
-                  <p>{specialty.name}</p>
-                  <p>{specialty.description}</p>
-                  <Button>Add</Button>
-                  <Button>remove</Button>
-                </div>
-              );
-            })}
-          </DialogDescription>
+          <DialogTitle>Procedures</DialogTitle>
         </DialogHeader>
+        <DataTable columns={columns} data={specialties} filter="name" />
       </DialogContent>
     </Dialog>
   );

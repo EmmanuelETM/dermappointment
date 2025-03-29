@@ -1,7 +1,6 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -10,9 +9,10 @@ import {
 import { Eye } from "lucide-react";
 
 import { type Procedure } from "@/schemas/admin/procedures";
+import { DataTable } from "@/components/tables/data-table";
+import { columns } from "./columns";
 
 export function DoctorsProcedures({ procedures }: { procedures: Procedure[] }) {
-  console.log(procedures);
   return (
     <Dialog>
       <DialogTrigger>
@@ -23,12 +23,9 @@ export function DoctorsProcedures({ procedures }: { procedures: Procedure[] }) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
+          <DialogTitle>Procedures</DialogTitle>
         </DialogHeader>
+        <DataTable columns={columns} data={procedures} filter="name" />
       </DialogContent>
     </Dialog>
   );

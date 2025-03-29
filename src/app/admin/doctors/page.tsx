@@ -1,11 +1,11 @@
 import { DataTable } from "@/components/tables/data-table";
 import { columns } from "./columns";
 import { type Doctor } from "@/schemas/doctor";
-import { getFullDoctor } from "@/data/doctor";
+import { getFullDoctor } from "@/data/allDoctors";
 
 async function getDoctorData(): Promise<Doctor[]> {
   const data = await getFullDoctor();
-  return data?.rows ?? [];
+  return Array.isArray(data?.rows) ? data.rows : [];
 }
 
 export default async function TransactionsPage() {
