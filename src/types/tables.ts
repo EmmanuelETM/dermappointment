@@ -4,7 +4,7 @@ export type PopoverItem = {
   options: {
     value: string;
     label: string;
-    iconKey?: string | null;
+    iconKey: string;
   }[];
 };
 

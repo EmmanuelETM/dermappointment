@@ -30,7 +30,7 @@ type DataTableFacetedFilterProps<TData, TValue> = {
   options: {
     label: string;
     value: string;
-    iconKey?: string;
+    iconKey: string;
   }[];
 };
 
@@ -92,9 +92,7 @@ export function DataTableFacetedFilter<TData, TValue>({
               <CommandGroup>
                 {options.map((option) => {
                   const isSelected = selectedValues.has(option.value);
-                  const Icon = option.iconKey
-                    ? iconMap[option.iconKey]
-                    : undefined; // Ensure iconKey is defined
+                  const Icon = iconMap[option.iconKey]; // Obtener el ícono dinámicamente
 
                   return (
                     <CommandItem
