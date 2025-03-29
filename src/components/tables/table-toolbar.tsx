@@ -40,7 +40,11 @@ export function DataTableToolbar<TData>({
             key={group.title}
             column={table.getColumn(group.column)}
             title={group.title}
-            options={group.options}
+            options={group.options.map(({ label, value, iconKey }) => ({
+              label,
+              value,
+              iconKey: iconKey ?? undefined,
+            }))}
           />
         ))}
 

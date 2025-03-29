@@ -1,44 +1,50 @@
-// import { type PopoverGroup, type PopoverItem } from "@/types/tables";
+import { type PopoverGroup, type PopoverItem } from "@/types/tables";
+import { db } from "@/server/db";
 
-// const RolePopover: PopoverItem = {
-//   column: "Role",
-//   title: "Role",
-//   options: [
-//     {
-//       value: "ADMIN",
-//       label: "Admin",
-//       iconKey: "ShieldUser",
-//     },
-//     {
-//       value: "DOCTOR",
-//       label: "Doctor",
-//       iconKey: "Hospital",
-//     },
-//     {
-//       value: "PATIENT",
-//       label: "Patient",
-//       iconKey: "User",
-//     },
-//   ],
-// };
+export const fetchProcedures = async () => {
+  return await db.query.procedures.findMany();
+};
 
-// const LocationPopover: PopoverItem = {
-//   column: "Location",
-//   title: "Location",
-//   options: [
-//     {
-//       value: "La Vega",
-//       label: "La Vega",
-//       iconKey: "Mountain",
-//     },
-//     {
-//       value: "Puerto Plata",
-//       label: "Puerto Plata",
-//       iconKey: "Waves",
-//     },
-//   ],
-// };
+export const fetchSpecialties = async () => {
+  return await db.query.specialties.findMany();
+};
 
-// export const popoverConfig: PopoverGroup = {
-//   items: [RolePopover, LocationPopover],
-// };
+const mapToPopoverItem = (data: { id: string; name: string }) => ({
+  value: data.id,
+  label: data.name,
+});
+
+export const createProceduresPopover = async (): Promise<PopoverItem> => {
+  const proceduresData = await fetchProcedures();
+
+  return {
+    column: "procedures",
+    title: "Procedures",
+    options: proceduresData.map(mapToPopoverItem),
+  };
+};
+
+export const createSpecialtiesPopover = async (): Promise<PopoverItem> => {
+  const specialtiesData = await fetchSpecialties();
+
+  return {
+    column: "specialties",
+    title: "Specialties",
+    options: specialtiesData.map(mapToPopoverItem),
+  };
+};
+
+export async function popoverConfig() {
+  const SpecialtiesPopover: PopoverItem = {
+    column: "specialties",
+    title: "Specialties",
+    options: (await fetchSpecialties()).map(mapToPopoverItem),
+  };
+  const ProcedurePopover: PopoverItem = {
+    column: "procedures",
+    title: "Procedures",
+    options: (await fetchProcedures()).map(mapToPopoverItem),
+  };
+
+  return { items: [SpecialtiesPopover, ProcedurePopover] } as PopoverGroup;
+}
