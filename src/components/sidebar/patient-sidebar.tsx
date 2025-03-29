@@ -24,7 +24,8 @@ import {
   Home,
   Send,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 const data = {
   user: {
@@ -86,14 +87,12 @@ const data = {
   ],
 };
 
-export function PatientSidebar({
-  ...props
-}: React.ComponentProps<typeof Sidebar>) {
+export function PatientSidebar() {
   const user = useCurrentUser();
+  const path = usePathname();
   data.user.name = user?.name ?? "";
   data.user.email = user?.email ?? "";
   data.user.image = user?.image ?? "";
-  const router = useRouter();
   return (
     <Sidebar>
       <SidebarHeader>
@@ -107,10 +106,12 @@ export function PatientSidebar({
               <SidebarMenu>
                 {item.items.map((subitem) => (
                   <SidebarMenuItem key={subitem.title}>
-                    <SidebarMenuButton onClick={() => router.push(subitem.url)}>
-                      {subitem.icon && <subitem.icon />}
-                      {subitem.title}
-                    </SidebarMenuButton>
+                    <Link href={subitem.url}>
+                      <SidebarMenuButton isActive={path === subitem.url}>
+                        {subitem.icon && <subitem.icon />}
+                        {subitem.title}
+                      </SidebarMenuButton>
+                    </Link>
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>

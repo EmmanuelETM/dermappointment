@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/sidebar";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/server/auth";
+import { CalendarRange } from "lucide-react";
 
 export default async function PatientLayout({
   children,
@@ -22,6 +23,7 @@ export default async function PatientLayout({
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
+            <CalendarRange className="size-6" />
             <p className="text-xl font-extrabold">DermAppointment</p>
           </header>
           <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
