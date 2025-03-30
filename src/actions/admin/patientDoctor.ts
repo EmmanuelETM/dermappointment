@@ -16,14 +16,14 @@ export async function changePatientToDoctor(
     return;
   }
 
-  const { id, role } = validatedData.data;
+  const { id, role } = validatedData.data as { id: string; role: string };
 
   if (role !== "PATIENT") {
     return { error: "Only Patients can become doctors" };
   }
 
   try {
-    const user = await getUserById(id!);
+    const user = await getUserById(id);
 
     if (!user || user.role !== "PATIENT") {
       return { error: "Only Patients can become doctors" };

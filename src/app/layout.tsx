@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "DermAppointment",
@@ -21,7 +22,7 @@ export default async function RootLayout({
       className={`${GeistSans.variable}`}
       suppressHydrationWarning
     >
-      <body>
+      <body className={cn("min-h-screen bg-background antialiased")}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

@@ -23,6 +23,7 @@ import {
   Hospital,
   Home,
   Send,
+  CalendarRange,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -45,27 +46,17 @@ const data = {
       ],
     },
     {
-      title: "Search",
+      title: "Actions",
       items: [
         {
           title: "Doctors",
-          url: "/patient/search-doctors",
+          url: "/patient/doctors",
           icon: Hospital,
         },
-      ],
-    },
-    {
-      title: "Appointments",
-      items: [
         {
-          title: "New Appointment",
-          url: "/patient/new-appointment",
-          icon: CalendarPlus,
-        },
-        {
-          title: "My Appointments",
-          url: "/patient/my-appointments",
-          icon: CalendarCheck,
+          title: "Appointments",
+          url: "/patient/appointments",
+          icon: CalendarRange,
         },
       ],
     },

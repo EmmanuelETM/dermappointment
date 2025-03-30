@@ -162,6 +162,23 @@ const combineDoctorData = (
   });
 };
 
+const realDoctorshi = async () => {
+  return await db.query.doctors.findMany({
+    with: {
+      doctorSpecialties: {
+        with: {
+          specialties: true,
+        },
+      },
+      doctorProcedures: {
+        with: {
+          procedures: true,
+        },
+      },
+    },
+  });
+};
+
 // const getAllDoctors = async () => {
 //   const doctorData = await fetchAllDoctors();
 //   const proceduresData = await fetchAllProcedures();

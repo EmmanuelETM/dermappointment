@@ -4,7 +4,7 @@ import { db } from "@/server/db";
 import { type Procedure } from "@/schemas/admin/procedures";
 import { ProceduresFormDialog } from "@/components/dialog/admin/procedures-form";
 
-async function getProceduresData(): Promise<Procedure[]> {
+export async function getProceduresData(): Promise<Procedure[]> {
   return await db.query.procedures.findMany();
 }
 

@@ -8,6 +8,13 @@
       "when": 1742866756254,
       "tag": "0000_narrow_jack_power",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1743220493516,
+      "tag": "0001_lovely_silver_sable",
+      "breakpoints": true
     }
   ]
 }
