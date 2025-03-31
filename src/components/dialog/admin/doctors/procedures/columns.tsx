@@ -62,26 +62,22 @@ export const columns: ColumnDef<Procedure>[] = [
     header: "Description",
   },
   {
-    accessorKey: "price",
+    accessorKey: "duration",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Price
+          Duration
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const price = parseFloat(row.getValue("price"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(price);
+      const duration = parseFloat(row.getValue("duration"));
 
-      return <div className="ml-4 font-medium">{formatted}</div>;
+      return <div className="ml-4 font-medium">{duration}</div>;
     },
   },
   {
@@ -102,7 +98,7 @@ export const columns: ColumnDef<Procedure>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(procedure.id!)}
+                onClick={() => navigator.clipboard.writeText(procedure.id)}
               >
                 <Copy /> Procedure Id
               </DropdownMenuItem>

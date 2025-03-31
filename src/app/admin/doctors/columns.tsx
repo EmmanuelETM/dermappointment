@@ -14,10 +14,10 @@ import {
 
 import { type Doctor } from "@/schemas/doctor";
 import { useRouter } from "next/navigation";
-import { DoctorsProcedures } from "@/components/dialog/admin/doctors/procedures/procedures";
+import { SpecialtiesArraySchema } from "@/schemas/admin/specialties";
 import { DoctorsSpecialties } from "@/components/dialog/admin/doctors/specialties/specialties";
-import { ProceduresArraySchema } from "@/schemas/admin/procedures";
-import { SpecialtyArraySchema } from "@/schemas/admin/specialties";
+import { DoctorsProcedures } from "@/components/dialog/admin/doctors/procedures/procedures";
+import { ProcedureArraySchema } from "@/schemas/admin/procedures";
 
 export const columns: ColumnDef<Doctor>[] = [
   {
@@ -48,7 +48,7 @@ export const columns: ColumnDef<Doctor>[] = [
     header: () => <div className="pl-2">Specialties</div>,
     cell: ({ row }) => {
       const specialties = row.getValue("specialties");
-      const parsed = SpecialtyArraySchema.parse(specialties);
+      const parsed = SpecialtiesArraySchema.parse(specialties);
       return <DoctorsSpecialties specialties={parsed} />;
     },
   },
@@ -58,7 +58,7 @@ export const columns: ColumnDef<Doctor>[] = [
     header: () => <div className="pl-2">Procedures</div>,
     cell: ({ row }) => {
       const procedures = row.getValue("procedures");
-      const parsed = ProceduresArraySchema.parse(procedures);
+      const parsed = ProcedureArraySchema.parse(procedures);
       return <DoctorsProcedures procedures={parsed} />;
     },
   },
@@ -66,7 +66,7 @@ export const columns: ColumnDef<Doctor>[] = [
     id: "actions",
     header: () => <div className="text-right">Actions</div>,
     enableHiding: false,
-    cell: ({ row }) => <ActionMenu doctorId={row.original.doctorId} />,
+    cell: ({ row }) => <ActionMenu doctorId={row.original.doctors.id} />,
   },
 ];
 

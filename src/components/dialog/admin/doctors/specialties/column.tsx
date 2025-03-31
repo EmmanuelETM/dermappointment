@@ -60,6 +60,10 @@ export const columns: ColumnDef<Specialty>[] = [
     header: "Description",
   },
   {
+    accessorKey: "duration",
+    header: "Duration",
+  },
+  {
     id: "actions",
     header: () => <div className="text-right">Actions</div>,
     enableHiding: false,
@@ -77,7 +81,7 @@ export const columns: ColumnDef<Specialty>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(specialty.id!)}
+                onClick={() => navigator.clipboard.writeText(specialty.id)}
               >
                 <Copy /> Specialty Id
               </DropdownMenuItem>

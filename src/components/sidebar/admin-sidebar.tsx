@@ -66,7 +66,7 @@ const data = {
         },
         {
           title: "Appointments",
-          url: "/admin/new-appointment",
+          url: "/admin/appointments",
           icon: Calendar,
         },
         {

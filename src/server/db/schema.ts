@@ -234,7 +234,7 @@ export const procedures = createTable("procedures", {
     .$defaultFn(() => crypto.randomUUID()),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description").notNull(),
-  price: integer("price").notNull(),
+  duration: integer("duration").notNull(),
 });
 
 export const proceduresRelations = relations(procedures, ({ many }) => ({

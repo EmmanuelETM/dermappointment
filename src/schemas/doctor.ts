@@ -1,38 +1,18 @@
 import { z } from "zod";
-import {
-  DoctorSpecialtiesArraySchema,
-  SpecialtyArraySchema,
-} from "./admin/specialties";
-import {
-  DoctorProceduresArraySchema,
-  ProceduresArraySchema,
-} from "./admin/procedures";
-
-export const FullDoctorSchema = z.object({
-  userId: z.string(),
-  doctorId: z.string(),
-  name: z.string(),
-  email: z.string(),
-  specialties: SpecialtyArraySchema,
-  procedures: ProceduresArraySchema,
-});
-
-export type Doctor = z.infer<typeof FullDoctorSchema>;
-
-export const TestFullDoctor = z.object({
-  userId: z.string(),
-  doctorId: z.string(),
-  name: z.string(),
-  email: z.string(),
-  specialties: DoctorSpecialtiesArraySchema,
-  procedures: DoctorProceduresArraySchema,
-});
+import { DoctorProcedureSchema } from "@/schemas/admin/procedures";
+import { DoctorSpecialtiesSchema } from "@/schemas/admin/specialties";
 
 export const DoctorSchema = z.object({
-  userId: z.string(),
-  doctorId: z.string(),
+  id: z.string(),
   name: z.string(),
   email: z.string(),
+  doctors: z.object({
+    id: z.string(),
+    doctorProcedures: z.array(DoctorProcedureSchema),
+    doctorSpecialties: z.array(DoctorSpecialtiesSchema),
+  }),
 });
 
-export const DoctorArraySchema = z.array(DoctorSchema);
+export type Doctor = z.infer<typeof DoctorSchema>;
+
+export const DoctorsArraySchema = z.array(DoctorSchema);

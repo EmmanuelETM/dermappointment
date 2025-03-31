@@ -21,7 +21,7 @@ export function DoctorsProcedures({ procedures }: { procedures: Procedure[] }) {
           <p className="hover:underline">Procedures</p>
         </span>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="container max-h-[80vh] max-w-2xl overflow-auto">
         <DialogHeader>
           <DialogTitle>Procedures</DialogTitle>
         </DialogHeader>

@@ -16,7 +16,6 @@ export function DoctorsSpecialties({
 }: {
   specialties: Specialty[];
 }) {
-  console.log(specialties);
   return (
     <Dialog>
       <DialogTrigger>
@@ -25,7 +24,7 @@ export function DoctorsSpecialties({
           <p className="hover:underline">Specialties</p>
         </span>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="container max-h-[80vh] max-w-2xl overflow-auto">
         <DialogHeader>
           <DialogTitle>Procedures</DialogTitle>
         </DialogHeader>
