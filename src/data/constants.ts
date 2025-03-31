@@ -16,6 +16,21 @@ export const DAYS_OF_WEEK = [
   "sunday",
 ] as const;
 
+export const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 export const ROLES = ["ADMIN", "PATIENT", "DOCTOR"] as const;
 
 export const LOCATION = ["La Vega", "Puerto Plata"] as const;
