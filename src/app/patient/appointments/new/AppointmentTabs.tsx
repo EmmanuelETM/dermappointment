@@ -60,29 +60,23 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
           ? "doctor"
           : currentStep === 2
             ? "procedure"
-            : currentStep === 3
-              ? "dateTime"
-              : "details"
+            : "details"
       }
       className="m-2"
       onValueChange={(value) => {
         if (
           (value === "doctor" && currentStep > 1) ||
-          (value === "procedure" && currentStep > 2) ||
-          (value === "dateTime" && currentStep > 3)
+          (value === "procedure" && currentStep > 2)
         ) {
-          setCurrentStep(
-            value === "doctor" ? 1 : value === "procedure" ? 2 : 3,
-          );
+          setCurrentStep(value === "doctor" ? 1 : 2);
         }
       }}
     >
-      <TabsList className="grid w-full grid-cols-4 gap-2">
+      <TabsList className="grid w-full grid-cols-3 gap-2">
         {[
           { value: "doctor", label: "Doctor", step: 1 },
           { value: "procedure", label: "Procedure", step: 2 },
-          { value: "dateTime", label: "Date & Time", step: 3 },
-          { value: "details", label: "Details", step: 4 },
+          { value: "details", label: "Details", step: 3 },
         ].map((tab) => (
           <TabsTrigger
             key={tab.value}
@@ -156,26 +150,6 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
 
       {/* Paso 3 */}
 
-      <TabsContent value="dateTime">
-        <Card>
-          <CardHeader>
-            <CardTitle>Date & Time</CardTitle>
-            <CardDescription>
-              Set your date and time for the appointment
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">Content</CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={() => setCurrentStep(2)}>
-              Back
-            </Button>
-            <Button onClick={() => setCurrentStep(4)}>Next</Button>
-          </CardFooter>
-        </Card>
-      </TabsContent>
-
-      {/* Paso 4 */}
-
       <TabsContent value="details">
         <Card>
           <CardHeader>
@@ -194,6 +168,27 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
     </Tabs>
   );
 }
+
+// id: varchar("id", { length: 255 })
+//   .notNull()
+//   .primaryKey()
+//   .$defaultFn(() => crypto.randomUUID()),
+// userId: varchar("user_id", { length: 255 })
+//   .notNull()
+//   .references(() => users.id),
+// doctorId: varchar("doctor_id", { length: 255 })
+//   .notNull()
+//   .references(() => doctors.id),
+// procedureId: varchar("procedure_id", { length: 255 })
+//   .notNull()
+//   .references(() => procedures.id),
+// date: timestamp("date", { mode: "date" }),
+// duration: integer("duration").notNull(),
+// location: Location("location").notNull(),
+// reason: text("reason"),
+// status: varchar("status", { length: 20 }).notNull().default("pending"),
+// createdAt,
+// updatedAt,
 
 //   <div className="container mx-auto px-4">
 //     <div className="mb-2 flex items-center justify-between">
