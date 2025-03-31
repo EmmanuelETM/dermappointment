@@ -289,7 +289,7 @@ export const appointment = createTable("appointment", {
   duration: integer("duration").notNull(),
   location: Location("location").notNull(),
   reason: text("reason"),
-  status: varchar("status", { length: 20 }).notNull().default("pending"),
+  status: boolean("status"),
   createdAt,
   updatedAt,
 });

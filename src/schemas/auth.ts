@@ -12,7 +12,7 @@ export const LoginSchema = z.object({
 
 export const SignUpSchema = z.object({
   name: z.string().min(1, {
-    message: "First name is required",
+    message: "Name is required",
   }),
   email: z.string().email({
     message: "Invalid Email",
@@ -20,7 +20,7 @@ export const SignUpSchema = z.object({
   password: z.string().min(8, {
     message: "Minimum of 8 characters required",
   }),
-  location: z.string(),
+  location: z.enum(LOCATION),
   gender: z.string(),
   image: z.string(),
 });

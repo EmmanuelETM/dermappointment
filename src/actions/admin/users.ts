@@ -1,22 +1,24 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import { SignUpSchema } from "@/schemas/auth";
+import { UsersFormSchema } from "@/schemas/user";
 import type { z } from "zod";
 import { db } from "@/server/db";
-import { users } from "@/server/db/schema";
+import { doctors, users } from "@/server/db/schema";
 import { getUserByEmail } from "@/data/user";
 import { generateVToken } from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/mail/index";
+import { revalidatePath } from "next/cache";
 
-export const signup = async (values: z.infer<typeof SignUpSchema>) => {
-  const validatedFields = SignUpSchema.safeParse(values);
+export async function createUser(values: z.infer<typeof UsersFormSchema>) {
+  const validatedFields = UsersFormSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { error: "Invalid Fields" };
+    return { error: "Invalid Fields!" };
   }
 
-  const { name, email, password, location, gender } = validatedFields.data;
+  const { name, email, password, role, location, gender } =
+    validatedFields.data;
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -32,16 +34,19 @@ export const signup = async (values: z.infer<typeof SignUpSchema>) => {
       name,
       email,
       password: hashedPassword,
-      location: location,
+      role,
+      location,
       gender,
       image: "https://robohash.org/69",
     })
     .returning();
 
+  if (role === "DOCTOR") {
+    await db.insert(doctors).values({ userId: user!.id });
+  }
+
   const verificationToken = await generateVToken(user!.id, email);
   console.log(verificationToken[0]);
-
-  // const callbackUrl = "";
 
   if (verificationToken[0]) {
     await sendVerificationEmail(
@@ -52,5 +57,6 @@ export const signup = async (values: z.infer<typeof SignUpSchema>) => {
     return { error: "Failed to generate verification token" };
   }
 
+  revalidatePath("/admin/users");
   return { success: "Confirmation Email Sent!" };
-};
+}

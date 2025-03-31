@@ -69,8 +69,8 @@ export function SignUpForm({
       name: "",
       email: "",
       password: "",
-      location: "",
-      gender: "",
+      location: "La Vega",
+      gender: "Male",
       image: "",
     },
   });

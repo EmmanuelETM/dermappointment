@@ -32,23 +32,35 @@ import { type z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProcedureFormSchema } from "@/schemas/admin/procedures";
 import { createProcedure } from "@/actions/admin/procedures";
+import { UsersFormSchema } from "@/schemas/user";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { createUser } from "@/actions/admin/users";
 
-export function UsersDialog() {
+export function UsersFormDialog() {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof ProcedureFormSchema>>({
-    resolver: zodResolver(ProcedureFormSchema),
+  const form = useForm<z.infer<typeof UsersFormSchema>>({
+    resolver: zodResolver(UsersFormSchema),
     defaultValues: {
       name: "",
-      description: "",
-      duration: "",
+      email: "",
+      password: "",
+      role: "PATIENT",
+      location: "La Vega",
+      gender: "Male",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof ProcedureFormSchema>) => {
+  const onSubmit = (values: z.infer<typeof UsersFormSchema>) => {
     startTransition(async () => {
-      const response = await createProcedure(values);
+      const response = await createUser(values);
       setOpen(false);
 
       if (response?.success) toast(response?.success);
@@ -82,7 +94,7 @@ export function UsersDialog() {
                         <Input
                           {...field}
                           disabled={isPending}
-                          placeholder="Botox"
+                          placeholder="John Doe"
                           type="text"
                           className="col-span-3"
                         />
@@ -95,19 +107,16 @@ export function UsersDialog() {
               <div className="grid gap-2">
                 <FormField
                   control={form.control}
-                  name="duration"
+                  name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Price</FormLabel>
+                      <FormLabel>Email</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
                           disabled={isPending}
-                          step="0.01"
-                          min="0"
-                          inputMode="decimal"
-                          placeholder="0.00"
-                          type="number"
+                          placeholder="dud@example.com"
+                          type="email"
                           className="col-span-3"
                         />
                       </FormControl>
@@ -116,17 +125,19 @@ export function UsersDialog() {
                   )}
                 />
               </div>
-              <div className="mb-4 grid gap-2">
+              <div className="grid gap-2">
                 <FormField
                   control={form.control}
-                  name="description"
+                  name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Description</FormLabel>
+                      <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Textarea
+                        <Input
                           {...field}
                           disabled={isPending}
+                          placeholder="*******"
+                          type="password"
                           className="col-span-3"
                         />
                       </FormControl>
@@ -135,8 +146,91 @@ export function UsersDialog() {
                   )}
                 />
               </div>
+              <div className="grid gap-2">
+                <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormItem>
+                        <FormLabel>Role</FormLabel>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="PATIENT">PATIENT</SelectItem>
+                          <SelectItem value="DOCTOR">DOCTOR</SelectItem>
+                          <SelectItem value="ADMIN">ADMIN</SelectItem>
+                        </SelectContent>
+                        <FormMessage />
+                      </FormItem>
+                    </Select>
+                  )}
+                ></FormField>{" "}
+              </div>
+              <div className="grid gap-2">
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormItem>
+                        <FormLabel>Location</FormLabel>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="La Vega" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="La Vega">La Vega</SelectItem>
+                          <SelectItem value="Puerto Plata">
+                            Puerto Plata
+                          </SelectItem>
+                        </SelectContent>
+                        <FormMessage />
+                      </FormItem>
+                    </Select>
+                  )}
+                ></FormField>{" "}
+              </div>
+
+              <div className="grid gap-2">
+                <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormItem>
+                        <FormLabel>Gender</FormLabel>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Male" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Male">Male</SelectItem>
+                          <SelectItem value="Female">Female</SelectItem>
+                        </SelectContent>
+                        <FormMessage />
+                      </FormItem>
+                    </Select>
+                  )}
+                ></FormField>
+              </div>
             </div>
-            <DialogFooter>
+
+            <DialogFooter className="mt-4">
               <Button type="submit">
                 <Plus />
                 Create

@@ -1,3 +1,4 @@
+import { type User } from "@/schemas/user";
 import { db } from "@/server/db";
 import { users } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
@@ -23,3 +24,7 @@ export const getUserById = async (id: string) => {
     return null;
   }
 };
+
+export async function getUserData(): Promise<User[]> {
+  return await db.query.users.findMany();
+}

@@ -1,24 +1,7 @@
-// import { AppointmentForm } from "@/components/forms/appointment-form";
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-//49:17
-// export default function NewAppointmentPage() {
-//   return (
-//     <Card className="m-2">
-//       <CardHeader>
-//         <CardTitle>New Appointment</CardTitle>
-//       </CardHeader>
-//       <CardContent>
-//         <AppointmentForm />
-//       </CardContent>
-//     </Card>
-//   );
-// }
-
 "use client";
 
-import { useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+
 import {
   Card,
   CardHeader,
@@ -27,12 +10,19 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+
 import { Button } from "@/components/ui/button";
-import { type Doctor } from "@/schemas/doctor";
-import { getColumns } from "./columns";
+
 import { DataTable } from "@/components/tables/data-table";
-import { type Procedure } from "@/schemas/admin/procedures";
+
+import { useEffect, useState } from "react";
 import { useCurrentUser } from "@/hooks/user-current-user";
+import { useForm } from "react-hook-form";
+
+import { type Procedure } from "@/schemas/admin/procedures";
+import { type Doctor } from "@/schemas/doctor";
+
+import { getColumns } from "./columns";
 
 export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
   const user = useCurrentUser();
@@ -47,6 +37,8 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
     setCurrentStep,
   );
 
+  const form = useForm();
+
   // useEffect(() => {
   //   if (selectedProcedure) {
   //     console.log(selectedProcedure);
@@ -60,23 +52,29 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
           ? "doctor"
           : currentStep === 2
             ? "procedure"
-            : "details"
+            : currentStep === 3
+              ? "details"
+              : "payment"
       }
       className="m-2"
       onValueChange={(value) => {
         if (
           (value === "doctor" && currentStep > 1) ||
-          (value === "procedure" && currentStep > 2)
+          (value === "procedure" && currentStep > 2) ||
+          (value === "details" && currentStep > 3)
         ) {
-          setCurrentStep(value === "doctor" ? 1 : 2);
+          setCurrentStep(
+            value === "doctor" ? 1 : value === "procedure" ? 2 : 3,
+          );
         }
       }}
     >
-      <TabsList className="grid w-full grid-cols-3 gap-2">
+      <TabsList className="grid w-full grid-cols-4 gap-2">
         {[
           { value: "doctor", label: "Doctor", step: 1 },
           { value: "procedure", label: "Procedure", step: 2 },
           { value: "details", label: "Details", step: 3 },
+          { value: "payment", label: "Payment", step: 3 },
         ].map((tab) => (
           <TabsTrigger
             key={tab.value}
@@ -89,7 +87,7 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
         ))}
       </TabsList>
 
-      {/* Paso 1 */}
+      {/* Step 1 */}
       <TabsContent value="doctor">
         <Card>
           <CardHeader>
@@ -104,7 +102,7 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
         </Card>
       </TabsContent>
 
-      {/* Paso 2 */}
+      {/* Step 2 */}
       <TabsContent value="procedure">
         <Card>
           <CardHeader>
@@ -113,10 +111,7 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
           </CardHeader>
           <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {selectedDoctor?.procedures.map((procedure) => (
-              <Card
-                key={procedure.id}
-                className="rounded-2xl border border-gray-200 shadow-lg"
-              >
+              <Card key={procedure.id} className="rounded-2xl border shadow-lg">
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold">
                     {procedure.name}
@@ -148,13 +143,30 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
         </Card>
       </TabsContent>
 
-      {/* Paso 3 */}
+      {/* Step 3 */}
 
       <TabsContent value="details">
         <Card>
           <CardHeader>
-            <CardTitle>Time</CardTitle>
-            <CardDescription>Finish</CardDescription>
+            <CardTitle>Appointment Details</CardTitle>
+            <CardDescription>Set up Date, Time and more.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">Check everything</CardContent>
+          <CardFooter className="flex justify-between">
+            <Button variant="outline" onClick={() => setCurrentStep(2)}>
+              Back
+            </Button>
+            <Button onClick={() => setCurrentStep(4)}>Next</Button>
+          </CardFooter>
+        </Card>
+      </TabsContent>
+
+      {/* Step 4 */}
+      <TabsContent value="payment">
+        <Card>
+          <CardHeader>
+            <CardTitle>Appointment Details</CardTitle>
+            <CardDescription>Set up Date, Time and more.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">Check everything</CardContent>
           <CardFooter className="flex justify-between">
