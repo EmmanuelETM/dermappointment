@@ -28,14 +28,14 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { type Doctor } from "@/schemas/doctor";
 import { getColumns } from "./columns";
 import { DataTable } from "@/components/tables/data-table";
-import { Procedure } from "@/schemas/admin/procedures";
+import { type Procedure } from "@/schemas/admin/procedures";
+import { useCurrentUser } from "@/hooks/user-current-user";
 
 export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
+  const user = useCurrentUser();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [selectedProcedure, setSelectedProcedure] = useState<Procedure | null>(
@@ -46,6 +46,12 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
     setSelectedProcedure,
     setCurrentStep,
   );
+
+  // useEffect(() => {
+  //   if (selectedProcedure) {
+  //     console.log(selectedProcedure);
+  //   }
+  // }, [selectedProcedure]);
 
   return (
     <Tabs
@@ -71,17 +77,22 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
         }
       }}
     >
-      <TabsList className="grid w-full grid-cols-4">
-        <TabsTrigger value="doctor">Doctor</TabsTrigger>
-        <TabsTrigger value="procedure" disabled={currentStep < 2}>
-          Procedure
-        </TabsTrigger>
-        <TabsTrigger value="dateTime" disabled={currentStep < 3}>
-          Date & Time
-        </TabsTrigger>
-        <TabsTrigger value="details" disabled={currentStep < 4}>
-          Details
-        </TabsTrigger>
+      <TabsList className="grid w-full grid-cols-4 gap-2">
+        {[
+          { value: "doctor", label: "Doctor", step: 1 },
+          { value: "procedure", label: "Procedure", step: 2 },
+          { value: "dateTime", label: "Date & Time", step: 3 },
+          { value: "details", label: "Details", step: 4 },
+        ].map((tab) => (
+          <TabsTrigger
+            key={tab.value}
+            value={tab.value}
+            disabled={currentStep < tab.step}
+          >
+            <span className="block sm:hidden">{tab.step}</span>
+            <span className="hidden sm:block">{tab.label}</span>
+          </TabsTrigger>
+        ))}
       </TabsList>
 
       {/* Paso 1 */}
@@ -103,26 +114,42 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
       <TabsContent value="procedure">
         <Card>
           <CardHeader>
-            <CardTitle>Password</CardTitle>
-            <CardDescription>
-              Change your password. Click next when ready.
-            </CardDescription>
+            <CardTitle>Procedure</CardTitle>
+            <CardDescription>Select the procedure.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="space-y-1">
-              <Label htmlFor="current">Current password</Label>
-              <Input id="current" type="password" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="new">New password</Label>
-              <Input id="new" type="password" />
-            </div>
+          <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {selectedDoctor?.procedures.map((procedure) => (
+              <Card
+                key={procedure.id}
+                className="rounded-2xl border border-gray-200 shadow-lg"
+              >
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">
+                    {procedure.name}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-gray-600">
+                  {procedure.description}
+                </CardContent>
+                <CardFooter className="flex justify-end">
+                  <Button
+                    className="w-full"
+                    type="button"
+                    onClick={() => {
+                      setSelectedProcedure(procedure);
+                      setCurrentStep((prevStep) => prevStep + 1);
+                    }}
+                  >
+                    Select
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
           </CardContent>
           <CardFooter className="flex justify-between">
             <Button variant="outline" onClick={() => setCurrentStep(1)}>
               Back
             </Button>
-            <Button onClick={() => setCurrentStep(3)}>Next</Button>
           </CardFooter>
         </Card>
       </TabsContent>
@@ -132,9 +159,9 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
       <TabsContent value="dateTime">
         <Card>
           <CardHeader>
-            <CardTitle>Password</CardTitle>
+            <CardTitle>Date & Time</CardTitle>
             <CardDescription>
-              Change your password. Click next when ready.
+              Set your date and time for the appointment
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">Content</CardContent>
