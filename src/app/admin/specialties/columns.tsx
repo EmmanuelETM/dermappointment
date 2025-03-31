@@ -78,7 +78,7 @@ export const columns: ColumnDef<Specialty>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(specialty.id!)}
+                onClick={() => navigator.clipboard.writeText(specialty.id)}
               >
                 <Copy /> Specialty Id
               </DropdownMenuItem>

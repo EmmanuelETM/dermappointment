@@ -60,10 +60,6 @@ export const columns: ColumnDef<Specialty>[] = [
     header: "Description",
   },
   {
-    accessorKey: "duration",
-    header: "Duration",
-  },
-  {
     id: "actions",
     header: () => <div className="text-right">Actions</div>,
     enableHiding: false,

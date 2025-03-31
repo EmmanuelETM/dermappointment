@@ -26,7 +26,7 @@ export function DoctorsSpecialties({
       </DialogTrigger>
       <DialogContent className="container max-h-[80vh] max-w-2xl overflow-auto">
         <DialogHeader>
-          <DialogTitle>Procedures</DialogTitle>
+          <DialogTitle>Specialties</DialogTitle>
         </DialogHeader>
         <DataTable columns={columns} data={specialties} filter="name" />
       </DialogContent>

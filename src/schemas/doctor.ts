@@ -1,6 +1,12 @@
 import { z } from "zod";
-import { DoctorProcedureSchema } from "@/schemas/admin/procedures";
-import { DoctorSpecialtiesSchema } from "@/schemas/admin/specialties";
+import {
+  DoctorProcedureSchema,
+  ProcedureSchema,
+} from "@/schemas/admin/procedures";
+import {
+  DoctorSpecialtiesSchema,
+  SpecialtySchema,
+} from "@/schemas/admin/specialties";
 
 export const DoctorSchema = z.object({
   id: z.string(),
@@ -11,6 +17,8 @@ export const DoctorSchema = z.object({
     doctorProcedures: z.array(DoctorProcedureSchema),
     doctorSpecialties: z.array(DoctorSpecialtiesSchema),
   }),
+  specialties: z.array(SpecialtySchema),
+  procedures: z.array(ProcedureSchema),
 });
 
 export type Doctor = z.infer<typeof DoctorSchema>;
