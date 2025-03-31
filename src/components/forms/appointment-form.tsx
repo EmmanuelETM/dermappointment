@@ -64,10 +64,6 @@ render={({ field }) => (
 export function AppointmentForm() {
   const form = useForm<z.infer<typeof appointmentFormSchema>>({
     resolver: zodResolver(appointmentFormSchema),
-    defaultValues: {
-      isActive: true,
-      durationInMinutes: 30,
-    },
   });
 
   function onSubmit(values: z.infer<typeof appointmentFormSchema>) {
