@@ -15,13 +15,13 @@ export async function createProcedure(
     return { error: "Invalid Fields!" };
   }
 
-  const { name, description, price } = validatedFields.data;
+  const { name, description, duration } = validatedFields.data;
 
   try {
     await db.insert(procedures).values({
       name: name,
       description: description,
-      price: Number(price),
+      duration: Number(duration),
     });
 
     revalidatePath("/admin/procedures");
