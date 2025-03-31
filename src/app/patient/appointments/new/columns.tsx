@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 import { type Doctor } from "@/schemas/doctor";
 import { SpecialtiesArraySchema } from "@/schemas/admin/specialties";
-import { DoctorsSpecialties } from "@/components/dialog/admin/doctors/specialties/specialties";
+import { PatientDoctorsSpecialties } from "@/components/dialog/patient/specialties/specialties";
 
 export const getColumns = (
   setSelectedDoctor: (doctor: Doctor) => void,
@@ -44,7 +44,7 @@ export const getColumns = (
       cell: ({ row }) => {
         const specialties = row.getValue("specialties");
         const parsed = SpecialtiesArraySchema.parse(specialties);
-        return <DoctorsSpecialties specialties={parsed} />;
+        return <PatientDoctorsSpecialties specialties={parsed} />;
       },
     },
     {

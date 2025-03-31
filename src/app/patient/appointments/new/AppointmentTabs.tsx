@@ -47,12 +47,6 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
     setCurrentStep,
   );
 
-  useEffect(() => {
-    if (selectedDoctor) {
-      console.log("Doctor procedures: ", selectedDoctor.procedures);
-    }
-  }, [selectedDoctor]);
-
   return (
     <Tabs
       value={
