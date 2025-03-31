@@ -66,7 +66,7 @@ export const columns: ColumnDef<Doctor>[] = [
     id: "actions",
     header: () => <div className="text-right">Actions</div>,
     enableHiding: false,
-    cell: ({ row }) => <ActionMenu doctorId={row.original.doctors.id} />,
+    cell: ({ row }) => <ActionMenu doctorId={row.original.doctorId} />,
   },
 ];
 

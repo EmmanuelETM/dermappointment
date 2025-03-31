@@ -12,13 +12,22 @@ export const DoctorSchema = z.object({
   id: z.string(),
   name: z.string(),
   email: z.string(),
-  doctors: z.object({
-    id: z.string(),
-    doctorProcedures: z.array(DoctorProcedureSchema),
-    doctorSpecialties: z.array(DoctorSpecialtiesSchema),
-  }),
-  specialties: z.array(SpecialtySchema),
-  procedures: z.array(ProcedureSchema),
+  doctorId: z.string(),
+  specialties: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      description: z.string(),
+    }),
+  ),
+  procedures: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      description: z.string(),
+      duration: z.number(),
+    }),
+  ),
 });
 
 export type Doctor = z.infer<typeof DoctorSchema>;

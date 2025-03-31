@@ -9,7 +9,6 @@ import {
   text,
   timestamp,
   varchar,
-  numeric,
   boolean,
   time,
 } from "drizzle-orm/pg-core";

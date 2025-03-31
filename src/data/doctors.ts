@@ -51,9 +51,10 @@ export async function getDoctorData(): Promise<Doctor[]> {
   const data = await getFullDoctor();
 
   const flatDoctor = data.map((doctor) => ({
-    ...doctor,
+    id: doctor.id,
     name: doctor.name ?? "",
     email: doctor.email ?? "",
+    doctorId: doctor.doctors?.id ?? "",
     specialties:
       doctor.doctors?.doctorSpecialties?.map((ds) => ({
         id: ds.specialties.id,
@@ -61,11 +62,11 @@ export async function getDoctorData(): Promise<Doctor[]> {
         description: ds.specialties.description,
       })) ?? [],
     procedures:
-      doctor.doctors?.doctorProcedures?.map((ds) => ({
-        id: ds.procedures.id,
-        name: ds.procedures.name,
-        description: ds.procedures.description,
-        duration: ds.procedures.duration,
+      doctor.doctors?.doctorProcedures?.map((dp) => ({
+        id: dp.procedures.id,
+        name: dp.procedures.name,
+        description: dp.procedures.description,
+        duration: dp.procedures.duration,
       })) ?? [],
   }));
 

@@ -42,7 +42,7 @@ export function ProceduresFormDialog() {
     defaultValues: {
       name: "",
       description: "",
-      price: "",
+      duration: "",
     },
   });
 
@@ -95,7 +95,7 @@ export function ProceduresFormDialog() {
               <div className="grid gap-2">
                 <FormField
                   control={form.control}
-                  name="price"
+                  name="duration"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Price</FormLabel>
