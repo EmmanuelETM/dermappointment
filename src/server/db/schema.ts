@@ -321,6 +321,8 @@ export const schedule = createTable("schedule", {
     .notNull()
     .references(() => doctors.id, { onDelete: "cascade" })
     .unique(),
+  createdAt,
+  updatedAt,
 });
 
 export const scheduleRelations = relations(schedule, ({ one, many }) => ({
@@ -346,6 +348,8 @@ export const scheduleAvailability = createTable(
     weekDay: WeekDays("week_day").notNull(),
     start: time("start").notNull(),
     end: time("end").notNull(),
+    createdAt,
+    updatedAt,
   },
   (table) => ({
     scheduleIdIndx: index("scheduleIdIndex").on(table.scheduleId),

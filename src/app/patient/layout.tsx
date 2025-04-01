@@ -26,7 +26,7 @@ export default async function PatientLayout({
             <CalendarRange className="size-6" />
             <p className="text-xl font-extrabold">DermAppointment</p>
           </header>
-          <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
+          <div className="m-4 flex flex-1 flex-col gap-4 p-4">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </SessionProvider>

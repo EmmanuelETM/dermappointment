@@ -24,7 +24,7 @@ export default async function PatientLayout({
             <Separator orientation="vertical" className="mr-2 h-4" />
             <p className="text-xl font-extrabold">DermAppointment</p>
           </header>
-          <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
+          <div className="m-4 flex flex-1 flex-col gap-4 p-4">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </SessionProvider>

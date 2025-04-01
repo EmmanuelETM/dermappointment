@@ -12,6 +12,7 @@ import { type UserRole } from "@/server/db/schema";
 import { env } from "@/env";
 import { eq, sql } from "drizzle-orm";
 import { getAccountByUserId } from "@/data/account";
+import { getDoctorId } from "@/data/doctors";
 
 export const authConfig = {
   providers: [
@@ -69,6 +70,10 @@ export const authConfig = {
 
       if (token.role && session.user) {
         session.user.role = token.role as typeof UserRole;
+
+        if (session.user.role === "DOCTOR") {
+          session.user.doctorId = token.doctorId as string;
+        }
       }
 
       if (session.user) {
@@ -97,6 +102,12 @@ export const authConfig = {
       token.email = existingUser.email;
       token.image = existingUser.image;
       token.role = existingUser.role;
+
+      if (existingUser.role === "DOCTOR") {
+        const data = await getDoctorId(existingUser.id);
+        token.doctorId = data?.doctors.id;
+      } else token.doctorId = "";
+
       token.location = existingUser.location;
       token.isOauth =
         !!existingAccount && existingAccount.provider !== "credentials";

@@ -23,6 +23,7 @@ import { type Procedure } from "@/schemas/admin/procedures";
 import { type Doctor } from "@/schemas/doctor";
 
 import { getColumns } from "./columns";
+import { formatDurationDescription } from "@/lib/formatters";
 
 export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
   const user = useCurrentUser();
@@ -116,6 +117,9 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
                   <CardTitle className="text-lg font-semibold">
                     {procedure.name}
                   </CardTitle>
+                  <CardDescription>
+                    Duration: {formatDurationDescription(procedure.duration)}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="text-gray-600">
                   {procedure.description}
