@@ -266,7 +266,7 @@ export function SignUpForm({
                             <FormLabel>Gender</FormLabel>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Male" />
+                                <SelectValue />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>

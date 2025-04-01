@@ -8,19 +8,7 @@ import { eq } from "drizzle-orm";
 export const getDoctorId = async (userId: string) => {
   const doctorId = db.query.users.findFirst({
     where: eq(users.id, userId),
-    columns: {
-      name: false,
-      email: false,
-      location: false,
-      password: false,
-      role: false,
-      gender: false,
-      id: false,
-      emailVerified: false,
-      createdAt: false,
-      updatedAt: false,
-      image: false,
-    },
+    columns: {},
     with: {
       doctors: {
         columns: {
