@@ -24,28 +24,30 @@ export const ScheduleFormSchema = z.object({
     )
     .superRefine((availabilities, ctx) => {
       availabilities.forEach((availability, index) => {
-        const overlaps = availabilities.some((a, i) => {
-          return (
-            i !== index &&
-            a.weekDay === availability.weekDay &&
-            timeToInt(a.start) < timeToInt(availability.end) &&
-            timeToInt(a.end) > timeToInt(availability.start)
-          );
-        });
+        const startTime = timeToInt(availability.start);
+        const endTime = timeToInt(availability.end);
 
-        if (overlaps) {
-          ctx.addIssue({
-            code: "custom",
-            message: "Availability overlaps with another",
-            path: [index],
-          });
-        }
-
-        if (timeToInt(availability.start) >= timeToInt(availability.end)) {
+        if (startTime >= endTime) {
           ctx.addIssue({
             code: "custom",
             message: "End time must be after start time",
-            path: [index],
+            path: [index, "end"], // Se asigna el error al campo 'end'
+          });
+        }
+
+        const hasOverlap = availabilities.some(
+          (a, i) =>
+            i !== index &&
+            a.weekDay === availability.weekDay &&
+            timeToInt(a.start) < endTime &&
+            timeToInt(a.end) > startTime,
+        );
+
+        if (hasOverlap) {
+          ctx.addIssue({
+            code: "custom",
+            message: "Availability overlaps with another",
+            path: [index, "start"], // Se asigna el error al campo 'start'
           });
         }
       });

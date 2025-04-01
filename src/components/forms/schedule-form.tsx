@@ -4,7 +4,7 @@ import { DAYS_OF_WEEK } from "@/data/constants";
 import { ScheduleFormSchema } from "@/schemas/schedule";
 import { type z } from "zod";
 import { useFieldArray, useForm } from "react-hook-form";
-import { Fragment, useState } from "react";
+import { Fragment, useMemo, useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { timeToInt } from "@/lib/utils";
 
@@ -29,6 +29,8 @@ import { formatTimezoneOffset } from "@/lib/formatters";
 import { Button } from "../ui/button";
 import { Plus, X } from "lucide-react";
 import { saveSchedule } from "@/actions/doctor/schedule";
+import { FormError } from "../auth/form-error";
+import { FormSuccess } from "../auth/form-success";
 
 type Availability = {
   start: string;
@@ -36,16 +38,18 @@ type Availability = {
   weekDay: (typeof DAYS_OF_WEEK)[number];
 };
 
-export function ScheduleForm({
-  schedule,
-}: {
+type Schedule = {
   schedule?: {
     id: string;
     timezone: string;
     scheduleAvailability: Availability[];
   };
-}) {
-  const [successMessage, setSuccessMessage] = useState<string>();
+};
+
+export function ScheduleForm({ schedule }: Schedule) {
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof ScheduleFormSchema>>({
     resolver: zodResolver(ScheduleFormSchema),
@@ -60,6 +64,30 @@ export function ScheduleForm({
     },
   });
 
+  const timeZones = useMemo(() => {
+    const relevantTimeZones = [
+      "UTC",
+      "America/New_York",
+      "America/La_Paz",
+      "America/Los_Angeles",
+      "America/Chicago",
+      "America/Denver",
+      "America/Sao_Paulo",
+      "Europe/London",
+      "Europe/Berlin",
+      "Europe/Madrid",
+      "Asia/Tokyo",
+      "Asia/Shanghai",
+      "Asia/Kolkata",
+      "Asia/Dubai",
+    ];
+
+    return relevantTimeZones.map((tz) => ({
+      name: tz,
+      offset: formatTimezoneOffset(tz) ?? "",
+    }));
+  }, []);
+
   const {
     append: addAvailability,
     remove: removeAvailability,
@@ -71,33 +99,32 @@ export function ScheduleForm({
     (availability) => availability.weekDay,
   );
 
-  const onSubmit = async (values: z.infer<typeof ScheduleFormSchema>) => {
-    console.log("submiting");
+  const onSubmit = (values: z.infer<typeof ScheduleFormSchema>) => {
+    setError("");
+    setSuccess("");
 
-    console.log(values);
-    // const data = await saveSchedule(values);
-    // if (data?.error) {
-    //   form.setError("root", {
-    //     message: "There was an error saving you schedule",
-    //   });
-    // } else {
-    //   setSuccessMessage("Schedule saved!");
-    // }
+    startTransition(async () => {
+      try {
+        const response = await saveSchedule(values);
+
+        if (response?.success) {
+          setSuccess(response?.success);
+        } else if (response?.error) {
+          setError(response?.error);
+        }
+      } catch {
+        setError("Something went wrong!");
+      }
+    });
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="mt-4 grid gap-6">
-          <div className="grid gap-2 space-y-2">
-            {form.formState.errors.root && (
-              <div className="text-sm text-destructive">
-                {form.formState.errors.root.message}
-              </div>
-            )}
-            {successMessage && (
-              <div className="text-sm text-green-500">{successMessage}</div>
-            )}
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="flex flex-col items-start gap-6 sm:flex-row">
+          <div className="w-full flex-1 space-y-4">
+            <FormError message={error} />
+            <FormSuccess message={success} />
             <FormField
               control={form.control}
               name="timezone"
@@ -107,7 +134,7 @@ export function ScheduleForm({
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    disabled={form.formState.isSubmitting}
+                    disabled={isPending}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -115,10 +142,9 @@ export function ScheduleForm({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Intl.supportedValuesOf("timeZone").map((timezone) => (
-                        <SelectItem key={timezone} value={timezone}>
-                          {timezone}
-                          {` (${formatTimezoneOffset(timezone)})`}
+                      {timeZones.map(({ name, offset }) => (
+                        <SelectItem key={name} value={name}>
+                          {name} {offset && `(${offset})`}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -128,114 +154,112 @@ export function ScheduleForm({
               )}
             />
           </div>
+        </div>
 
-          <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-6">
-            {DAYS_OF_WEEK.map((weekDay) => (
-              <Fragment key={weekDay}>
-                <div className="text-sm font-semibold capitalize">
-                  {weekDay.substring(0, 3)}
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Button
-                    type="button"
-                    className="size-6 p-1"
-                    variant="outline"
-                    disabled={form.formState.isSubmitting}
-                    onClick={() => {
-                      addAvailability({
-                        weekDay,
-                        start: "9:00",
-                        end: "17:00",
-                      });
-                    }}
-                  >
-                    <Plus className="size-full" />
-                  </Button>
-                  {groupedAvailabilityFields[weekDay]?.map(
-                    (field, labelIndex) => (
-                      <div className="flex flex-col gap-1" key={field.id}>
-                        <div className="flex items-center gap-2">
-                          <FormField
-                            control={form.control}
-                            name={`availabilities.${field.index}.start`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormControl>
-                                  <Input
-                                    className="w-24"
-                                    disabled={form.formState.isSubmitting}
-                                    aria-label={`${weekDay} Start Time ${
-                                      labelIndex + 1
-                                    }`}
-                                    {...field}
-                                  />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
-                          -
-                          <FormField
-                            control={form.control}
-                            name={`availabilities.${field.index}.end`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormControl>
-                                  <Input
-                                    className="w-24"
-                                    disabled={form.formState.isSubmitting}
-                                    aria-label={`${weekDay} End Time ${
-                                      labelIndex + 1
-                                    }`}
-                                    {...field}
-                                  />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
-                          <Button
-                            type="button"
-                            className="size-6 p-1"
-                            disabled={form.formState.isSubmitting}
-                            variant="destructiveGhost"
-                            onClick={() => removeAvailability(field.index)}
-                          >
-                            <X />
-                          </Button>
-                        </div>
-                        <FormMessage>
-                          {
-                            form.formState.errors.availabilities?.at?.(
-                              field.index,
-                            )?.root?.message
-                          }
-                        </FormMessage>
-                        <FormMessage>
-                          {
-                            form.formState.errors.availabilities?.at?.(
-                              field.index,
-                            )?.start?.message
-                          }
-                        </FormMessage>
-                        <FormMessage>
-                          {
-                            form.formState.errors.availabilities?.at?.(
-                              field.index,
-                            )?.end?.message
-                          }
-                        </FormMessage>
+        <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-6">
+          {DAYS_OF_WEEK.map((weekDay) => (
+            <Fragment key={weekDay}>
+              <div className="text-sm font-semibold capitalize">
+                {weekDay.substring(0, 3)}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button
+                  type="button"
+                  className="size-6 p-1"
+                  variant="outline"
+                  disabled={isPending}
+                  onClick={() => {
+                    addAvailability({
+                      weekDay,
+                      start: "9:00",
+                      end: "17:00",
+                    });
+                  }}
+                >
+                  <Plus className="size-full" />
+                </Button>
+                {groupedAvailabilityFields[weekDay]?.map(
+                  (field, labelIndex) => (
+                    <div className="flex flex-col gap-1" key={field.id}>
+                      <div className="flex items-center gap-2">
+                        <FormField
+                          control={form.control}
+                          name={`availabilities.${field.index}.start`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  className="w-24"
+                                  disabled={isPending}
+                                  aria-label={`${weekDay} Start Time ${
+                                    labelIndex + 1
+                                  }`}
+                                  {...field}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        -
+                        <FormField
+                          control={form.control}
+                          name={`availabilities.${field.index}.end`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  className="w-24"
+                                  disabled={isPending}
+                                  aria-label={`${weekDay} End Time ${
+                                    labelIndex + 1
+                                  }`}
+                                  {...field}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <Button
+                          type="button"
+                          className="size-6 p-1"
+                          disabled={isPending}
+                          variant="destructiveGhost"
+                          onClick={() => removeAvailability(field.index)}
+                        >
+                          <X />
+                        </Button>
                       </div>
-                    ),
-                  )}
-                </div>
-              </Fragment>
-            ))}
-          </div>
+                      <FormMessage>
+                        {
+                          form.formState.errors.availabilities?.at?.(
+                            field.index,
+                          )?.root?.message
+                        }
+                      </FormMessage>
+                      <FormMessage>
+                        {
+                          form.formState.errors.availabilities?.at?.(
+                            field.index,
+                          )?.start?.message
+                        }
+                      </FormMessage>
+                      <FormMessage>
+                        {
+                          form.formState.errors.availabilities?.at?.(
+                            field.index,
+                          )?.end?.message
+                        }
+                      </FormMessage>
+                    </div>
+                  ),
+                )}
+              </div>
+            </Fragment>
+          ))}
+        </div>
 
-          <div className="flex justify-end gap-2">
-            <Button disabled={form.formState.isSubmitting} type="submit">
-              Save
-            </Button>
-          </div>
+        <div className="flex justify-start">
+          <Button type="submit">Save</Button>
         </div>
       </form>
     </Form>

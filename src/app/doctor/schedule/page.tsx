@@ -2,7 +2,7 @@ import { ScheduleForm } from "@/components/forms/schedule-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { currentUser } from "@/lib/currentUser";
 import { db } from "@/server/db";
-import { schedule, scheduleAvailability } from "@/server/db/schema";
+import { schedule } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
 export default async function SchedulePage() {

@@ -345,6 +345,7 @@ export const scheduleAvailability = createTable(
     scheduleId: varchar("schedule_id", { length: 255 })
       .notNull()
       .references(() => schedule.id, { onDelete: "cascade" }),
+    location: Location("location"),
     weekDay: WeekDays("week_day").notNull(),
     start: time("start").notNull(),
     end: time("end").notNull(),

@@ -9,42 +9,52 @@ import { type BatchItem } from "drizzle-orm/batch";
 import { type z } from "zod";
 
 export async function saveSchedule(values: z.infer<typeof ScheduleFormSchema>) {
-  const user = await currentUser();
+  try {
+    const user = await currentUser();
+    if (!user) return { error: "No doctor found" };
 
-  const validatedFields = ScheduleFormSchema.safeParse(values);
+    const validatedFields = ScheduleFormSchema.safeParse(values);
+    if (!validatedFields.success) return { error: "Invalid schedule data" };
 
-  if (!validatedFields.success) return { error: "Invalid schedule data" };
-  if (!user) return { error: "No doctor found" };
+    const { availabilities = [], ...scheduleData } = validatedFields.data;
 
-  const { availabilities, ...scheduleData } = validatedFields.data;
+    const insertedSchedule = await db
+      .insert(schedule)
+      .values({ ...scheduleData, doctorId: user.doctorId })
+      .onConflictDoUpdate({
+        target: schedule.doctorId,
+        set: scheduleData,
+      })
+      .returning({ id: schedule.id });
 
-  const insertedSchedule = await db
-    .insert(schedule)
-    .values({ ...scheduleData, doctorId: user.doctorId })
-    .onConflictDoUpdate({
-      target: schedule.doctorId,
-      set: scheduleData,
-    })
-    .returning({ id: schedule.id });
+    if (!insertedSchedule.length || !insertedSchedule[0]?.id) {
+      return { error: "Failed to save schedule" };
+    }
 
-  const statements: BatchItem<"pg">[] = [];
+    const scheduleId = insertedSchedule[0]?.id;
 
-  if (insertedSchedule[0]) {
-    statements.push(
+    const statements: [BatchItem<"pg">] = [
       db
         .delete(scheduleAvailability)
-        .where(eq(scheduleAvailability.scheduleId, insertedSchedule[0].id)),
-    );
+        .where(eq(scheduleAvailability.scheduleId, scheduleId)),
+    ];
 
     if (availabilities.length > 0) {
       statements.push(
         db.insert(scheduleAvailability).values(
           availabilities.map((availability) => ({
             ...availability,
-            scheduleId: insertedSchedule[0]!.id,
+            scheduleId,
           })),
         ),
       );
     }
+
+    await db.batch(statements);
+
+    return { success: "Schedule Saved!" };
+  } catch (error) {
+    console.error("Error saving schedule:", error);
+    return { error: "Something went wrong in Server" };
   }
 }
