@@ -17,13 +17,12 @@ import {
 import { NavUser } from "@/components/nav-user";
 
 import {
-  CalendarCheck,
-  CalendarPlus,
   DollarSign,
   Hospital,
   Home,
   Send,
   CalendarRange,
+  CalendarDays,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -32,7 +31,7 @@ const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
-    image: "https://robohash.org/1",
+    image: "",
   },
   sidebar: [
     {
@@ -42,6 +41,11 @@ const data = {
           title: "Home",
           url: "/patient/home",
           icon: Home,
+        },
+        {
+          title: "Calendar",
+          url: "/patient/calendar",
+          icon: CalendarDays,
         },
       ],
     },

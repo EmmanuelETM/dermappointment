@@ -1,6 +1,7 @@
+import { APPOINTMENT_STATUS, LOCATION } from "@/data/constants";
 import { z } from "zod";
 
-export const appointmentFormSchema = z.object({
+export const AppointmentFormSchema = z.object({
   userId: z.string(),
   doctorId: z.string(),
   procedureId: z.string(),
@@ -15,23 +16,16 @@ export const appointmentFormSchema = z.object({
     .max(60 * 12, `Duration must be less than 12 hours (${60 * 12} minutes)`),
 });
 
-// id: varchar("id", { length: 255 })
-// .notNull()
-// .primaryKey()
-// .$defaultFn(() => crypto.randomUUID()),
-// userId: varchar("user_id", { length: 255 })
-// .notNull()
-// .references(() => users.id),
-// doctorId: varchar("doctor_id", { length: 255 })
-// .notNull()
-// .references(() => doctors.id),
-// procedureId: varchar("procedure_id", { length: 255 })
-// .notNull()
-// .references(() => procedures.id),
-// date: timestamp("date", { mode: "date" }),
-// duration: integer("duration").notNull(),
-// location: Location("location").notNull(),
-// reason: text("reason"),
-// status: varchar("status", { length: 20 }).notNull().default("pending"),
-// createdAt,
-// updatedAt,
+export const AppointmentSchema = z.object({
+  id: z.string().nullable(),
+  startTime: z.date().nullable(),
+  endTime: z.date().nullable(),
+  patient: z.string().nullable(),
+  doctor: z.string().nullable(),
+  procedure: z.string().nullable(),
+  location: z.enum(LOCATION).nullable(),
+  description: z.string().nullable(),
+  status: z.enum(APPOINTMENT_STATUS).nullable(),
+});
+
+export type Appointment = z.infer<typeof AppointmentSchema>;

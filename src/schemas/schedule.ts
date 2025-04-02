@@ -8,13 +8,13 @@ export const ScheduleFormSchema = z.object({
     .array(
       z.object({
         weekDay: z.enum(DAYS_OF_WEEK),
-        start: z
+        startTime: z
           .string()
           .regex(
             /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/,
             "Time must be in the format HH:MM",
           ),
-        end: z
+        endTime: z
           .string()
           .regex(
             /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/,
@@ -24,14 +24,14 @@ export const ScheduleFormSchema = z.object({
     )
     .superRefine((availabilities, ctx) => {
       availabilities.forEach((availability, index) => {
-        const startTime = timeToInt(availability.start);
-        const endTime = timeToInt(availability.end);
+        const startTime = timeToInt(availability.startTime);
+        const endTime = timeToInt(availability.endTime);
 
         if (startTime >= endTime) {
           ctx.addIssue({
             code: "custom",
             message: "End time must be after start time",
-            path: [index, "end"], // Se asigna el error al campo 'end'
+            path: [index, "endTime"], // Se asigna el error al campo 'end'
           });
         }
 
@@ -39,15 +39,15 @@ export const ScheduleFormSchema = z.object({
           (a, i) =>
             i !== index &&
             a.weekDay === availability.weekDay &&
-            timeToInt(a.start) < endTime &&
-            timeToInt(a.end) > startTime,
+            timeToInt(a.startTime) < endTime &&
+            timeToInt(a.endTime) > startTime,
         );
 
         if (hasOverlap) {
           ctx.addIssue({
             code: "custom",
             message: "Availability overlaps with another",
-            path: [index, "start"], // Se asigna el error al campo 'start'
+            path: [index, "startTime"], // Se asigna el error al campo 'start'
           });
         }
       });

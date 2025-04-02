@@ -1,6 +1,6 @@
 "use client";
 
-import { appointmentFormSchema } from "@/schemas/appointment";
+import { AppointmentFormSchema } from "@/schemas/appointment";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
@@ -62,11 +62,11 @@ render={({ field }) => (
 }
 
 export function AppointmentForm() {
-  const form = useForm<z.infer<typeof appointmentFormSchema>>({
-    resolver: zodResolver(appointmentFormSchema),
+  const form = useForm<z.infer<typeof AppointmentFormSchema>>({
+    resolver: zodResolver(AppointmentFormSchema),
   });
 
-  function onSubmit(values: z.infer<typeof appointmentFormSchema>) {
+  function onSubmit(values: z.infer<typeof AppointmentFormSchema>) {
     console.log(values);
   }
 

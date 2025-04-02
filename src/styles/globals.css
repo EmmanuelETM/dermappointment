@@ -78,6 +78,38 @@
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217.2 32.6% 17.5%;
     --sidebar-ring: 224.3 76.3% 48%;
+
+    --sx-color-primary: hsl(217.2, 91.2%, 59.8%);
+    --sx-color-on-primary: hsl(222.2, 47.4%, 11.2%);
+    --sx-color-primary-container: hsl(217.2, 32.6%, 17.5%);
+    --sx-color-on-primary-container: hsl(210, 40%, 98%);
+    --sx-color-secondary: hsl(217.2, 32.6%, 17.5%);
+    --sx-color-on-secondary: hsl(210, 40%, 98%);
+    --sx-color-secondary-container: hsl(217.2, 32.6%, 17.5%);
+    --sx-color-on-secondary-container: hsl(210, 40%, 98%);
+    --sx-color-tertiary: hsl(215, 20.2%, 65.1%);
+    --sx-color-on-tertiary: hsl(210, 40%, 98%);
+    --sx-color-tertiary-container: hsl(217.2, 32.6%, 17.5%);
+    --sx-color-on-tertiary-container: hsl(210, 40%, 98%);
+    --sx-color-surface: hsl(222.2, 84%, 4.9%);
+    --sx-color-surface-dim: hsl(217.2, 32.6%, 17.5%);
+    --sx-color-surface-bright: hsl(222.2, 84%, 4.9%);
+    --sx-color-on-surface: hsl(210, 40%, 98%);
+    --sx-color-surface-container: hsl(217.2, 32.6%, 17.5%);
+    --sx-color-surface-container-low: hsl(217.2, 32.6%, 17.5%);
+    --sx-color-surface-container-high: hsl(217.2, 32.6%, 17.5%);
+    --sx-color-background: hsl(222.2, 84%, 4.9%);
+    --sx-color-on-background: hsl(210, 40%, 98%);
+    --sx-color-outline: hsl(215, 20.2%, 65.1%);
+    --sx-color-outline-variant: hsl(217.2, 32.6%, 17.5%);
+    --sx-color-shadow: hsl(0, 0%, 0%);
+    --sx-color-surface-tint: hsl(224.3, 76.3%, 48%);
+    --sx-color-neutral: var(--sx-color-outline);
+    --sx-color-neutral-variant: var(--sx-color-outline-variant);
+
+    --sx-internal-color-gray-ripple-background: hsl(217.2, 32.6%, 17.5%);
+    --sx-internal-color-light-gray: hsl(210, 40%, 98%);
+    --sx-internal-color-text: hsl(210, 40%, 98%);
   }
 }
 

@@ -31,6 +31,13 @@ export const MONTHS = [
   "December",
 ];
 
+export const APPOINTMENT_STATUS = [
+  "Pending",
+  "Confirmed",
+  "Cancelled",
+  "Completed",
+] as const;
+
 export const ROLES = ["ADMIN", "PATIENT", "DOCTOR"] as const;
 
 export const LOCATION = ["La Vega", "Puerto Plata"] as const;

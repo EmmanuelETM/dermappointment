@@ -17,8 +17,8 @@ export default async function SchedulePage() {
     with: {
       scheduleAvailability: {
         columns: {
-          start: true,
-          end: true,
+          startTime: true,
+          endTime: true,
           weekDay: true,
         },
       },

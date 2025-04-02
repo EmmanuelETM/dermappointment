@@ -1,4 +1,10 @@
-import { DAYS_OF_WEEK, LOCATION, ROLES, SKIN_TYPES } from "@/data/constants";
+import {
+  APPOINTMENT_STATUS,
+  DAYS_OF_WEEK,
+  LOCATION,
+  ROLES,
+  SKIN_TYPES,
+} from "@/data/constants";
 import { relations } from "drizzle-orm";
 import {
   index,
@@ -38,6 +44,7 @@ export const users = createTable("users", {
   role: UserRole("role").default("PATIENT"),
   location: Location("location").default("La Vega"),
   gender: varchar("gender", { length: 128 }),
+  // birthdate: timestamp("birthdate", { mode: "date" }),
   emailVerified: timestamp("email_verified", {
     mode: "date",
     withTimezone: true,
@@ -271,6 +278,8 @@ export const doctorProceduresRelations = relations(
 
 // appointment
 
+export const status = pgEnum("status", APPOINTMENT_STATUS);
+
 export const appointment = createTable("appointment", {
   id: varchar("id", { length: 255 })
     .notNull()
@@ -285,11 +294,11 @@ export const appointment = createTable("appointment", {
   procedureId: varchar("procedure_id", { length: 255 })
     .notNull()
     .references(() => procedures.id),
-  date: timestamp("date", { mode: "date" }),
-  duration: integer("duration").notNull(),
+  startTime: timestamp("start_time").notNull(),
+  endTime: timestamp("end_time").notNull(),
   location: Location("location").notNull(),
-  reason: text("reason"),
-  status: boolean("status"),
+  description: text("description"),
+  status: status("status").default("Pending"),
   createdAt,
   updatedAt,
 });
@@ -347,8 +356,8 @@ export const scheduleAvailability = createTable(
       .references(() => schedule.id, { onDelete: "cascade" }),
     location: Location("location"),
     weekDay: WeekDays("week_day").notNull(),
-    start: time("start").notNull(),
-    end: time("end").notNull(),
+    startTime: time("start_time").notNull(),
+    endTime: time("end_time").notNull(),
     createdAt,
     updatedAt,
   },

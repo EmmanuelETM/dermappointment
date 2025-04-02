@@ -33,8 +33,8 @@ import { FormError } from "../auth/form-error";
 import { FormSuccess } from "../auth/form-success";
 
 type Availability = {
-  start: string;
-  end: string;
+  startTime: string;
+  endTime: string;
   weekDay: (typeof DAYS_OF_WEEK)[number];
 };
 
@@ -58,7 +58,7 @@ export function ScheduleForm({ schedule }: Schedule) {
         schedule?.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone,
       availabilities: schedule?.scheduleAvailability
         ? [...schedule.scheduleAvailability].sort(
-            (a, b) => timeToInt(a.start) - timeToInt(b.start),
+            (a, b) => timeToInt(a.startTime) - timeToInt(b.startTime),
           )
         : [],
     },
@@ -171,8 +171,8 @@ export function ScheduleForm({ schedule }: Schedule) {
                   onClick={() => {
                     addAvailability({
                       weekDay,
-                      start: "9:00",
-                      end: "17:00",
+                      startTime: "9:00",
+                      endTime: "17:00",
                     });
                   }}
                 >
@@ -184,7 +184,7 @@ export function ScheduleForm({ schedule }: Schedule) {
                       <div className="flex items-center gap-2">
                         <FormField
                           control={form.control}
-                          name={`availabilities.${field.index}.start`}
+                          name={`availabilities.${field.index}.startTime`}
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
@@ -203,7 +203,7 @@ export function ScheduleForm({ schedule }: Schedule) {
                         -
                         <FormField
                           control={form.control}
-                          name={`availabilities.${field.index}.end`}
+                          name={`availabilities.${field.index}.endTime`}
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
@@ -240,14 +240,14 @@ export function ScheduleForm({ schedule }: Schedule) {
                         {
                           form.formState.errors.availabilities?.at?.(
                             field.index,
-                          )?.start?.message
+                          )?.startTime?.message
                         }
                       </FormMessage>
                       <FormMessage>
                         {
                           form.formState.errors.availabilities?.at?.(
                             field.index,
-                          )?.end?.message
+                          )?.endTime?.message
                         }
                       </FormMessage>
                     </div>

@@ -7,6 +7,7 @@
         "@auth/drizzle-adapter": "^1.8.0",
         "@hookform/resolvers": "^4.1.3",
         "@neondatabase/serverless": "^0.10.4",
+        "@preact/signals": "^2.0.2",
         "@radix-ui/react-alert-dialog": "^1.1.6",
         "@radix-ui/react-avatar": "^1.1.3",
         "@radix-ui/react-checkbox": "^1.1.4",
@@ -21,6 +22,13 @@
         "@radix-ui/react-switch": "^1.1.3",
         "@radix-ui/react-tabs": "^1.1.3",
         "@radix-ui/react-tooltip": "^1.1.8",
+        "@schedule-x/calendar": "^2.26.0",
+        "@schedule-x/current-time": "^2.26.0",
+        "@schedule-x/event-modal": "^2.26.0",
+        "@schedule-x/events-service": "^2.26.0",
+        "@schedule-x/react": "^2.25.0",
+        "@schedule-x/scroll-controller": "^2.26.0",
+        "@schedule-x/theme-default": "^2.26.0",
         "@t3-oss/env-nextjs": "^0.10.1",
         "@tanstack/react-table": "^8.21.2",
         "@types/nodemailer": "^6.4.17",
@@ -32,7 +40,7 @@
         "date-fns": "^3.6.0",
         "drizzle-orm": "^0.33.0",
         "geist": "^1.3.1",
-        "googleapis": "^146.0.0",
+        "googleapis": "^148.0.0",
         "lucide-react": "^0.477.0",
         "next": "^15.2.4",
         "next-auth": "5.0.0-beta.25",
@@ -40,6 +48,7 @@
         "nodemailer": "^6.10.0",
         "npm": "^11.2.0",
         "postgres": "^3.4.5",
+        "preact": "^10.26.4",
         "react": "^18.3.1",
         "react-day-picker": "^8.10.1",
         "react-dom": "^18.3.1",
@@ -165,6 +174,10 @@
 
     "@pkgjs/parseargs": ["@pkgjs/parseargs@0.11.0", "", {}, ""],
 
+    "@preact/signals": ["@preact/signals@2.0.2", "", { "dependencies": { "@preact/signals-core": "^1.7.0" }, "peerDependencies": { "preact": "10.x" } }, "sha512-Qvu30QoIswaWXmFQZwzBc1CdyB+biIZCpHxoYcNplRTySLkCH6f7RMlHtwb0tmkfQJ+WBkUqR7ajPjdsc1Uq+w=="],
+
+    "@preact/signals-core": ["@preact/signals-core@1.8.0", "", {}, "sha512-OBvUsRZqNmjzCZXWLxkZfhcgT+Fk8DDcT/8vD6a1xhDemodyy87UJRJfASMuSD8FaAIeGgGm85ydXhm7lr4fyA=="],
+
     "@radix-ui/number": ["@radix-ui/number@1.1.0", "", {}, ""],
 
     "@radix-ui/primitive": ["@radix-ui/primitive@1.1.1", "", {}, ""],
@@ -250,6 +263,20 @@
     "@rtsao/scc": ["@rtsao/scc@1.1.0", "", {}, ""],
 
     "@rushstack/eslint-patch": ["@rushstack/eslint-patch@1.10.5", "", {}, ""],
+
+    "@schedule-x/calendar": ["@schedule-x/calendar@2.26.0", "", { "peerDependencies": { "@preact/signals": "^2.0.2", "preact": "^10.19.2" } }, "sha512-sOiYnsk54ipLdvANQiwXJUpUAl9O5OKr7V8H0lHydYwOzZBi+z3W2ihYQaeFUnti+F9Wlrr91Ye2kI9NWWu/OQ=="],
+
+    "@schedule-x/current-time": ["@schedule-x/current-time@2.26.0", "", {}, "sha512-pP7k/Fb7kp/EQxkk8iY3/iywUfhK9hX8IM5qaRGPvy11muvrIoIoi3Og8szTxCJb0UT4l8D9utsauqJS97tZBg=="],
+
+    "@schedule-x/event-modal": ["@schedule-x/event-modal@2.26.0", "", { "peerDependencies": { "@preact/signals": "^2.0.2", "preact": "^10.19.2" } }, "sha512-aJSIoc/0aiPvX0QPa2CqSPes2ELP2pjfOu8TWpkyIVzoHGAiwEsiGcEO920euS8C+vVZEkpvuj4r9InNA6JXDg=="],
+
+    "@schedule-x/events-service": ["@schedule-x/events-service@2.26.0", "", {}, "sha512-DXKmHojVSQZ5Jf15xcWEikbIulExv4Zu3PODNoTar8Kv/gM5MYR+AESwDstiwfZh3WS92wM6g4yDPxo10jSoTQ=="],
+
+    "@schedule-x/react": ["@schedule-x/react@2.25.0", "", { "peerDependencies": { "@schedule-x/calendar": "^2.25.0", "react": "^16.7.0 || ^17 || ^18 || ^19", "react-dom": "^16.7.0 || ^17 || ^18 || ^19" } }, "sha512-Uxc5YfWNFxRvAapi+MT7vDZx+0Iq0Bb/ARhlAbLS3Bi8VJRSwB6I8X+cemfgAQ4oOmDgIKdbX3znlUpyd/dB3w=="],
+
+    "@schedule-x/scroll-controller": ["@schedule-x/scroll-controller@2.26.0", "", { "peerDependencies": { "@preact/signals": "^2.0.2" } }, "sha512-bM0ZrjF3S54CLUba8F2HhvHlToBpLwyB1o6UL0XgYj5lqnQSNTEKbT6Z9T2PH9b4bsITN8UfarLgWMtMRF/hkw=="],
+
+    "@schedule-x/theme-default": ["@schedule-x/theme-default@2.26.0", "", {}, "sha512-WBmZH2Y/L1d5tBWaPhktAiBEu660YBLwaVkJIpMzCQh1AacH5+EqB/kMZK7J3jCWVGkrqYD+KaU7d9vpwpLUSg=="],
 
     "@selderee/plugin-htmlparser2": ["@selderee/plugin-htmlparser2@0.11.0", "", { "dependencies": { "domhandler": "^5.0.3", "selderee": "^0.11.0" } }, ""],
 
@@ -621,7 +648,7 @@
 
     "google-logging-utils": ["google-logging-utils@0.0.2", "", {}, ""],
 
-    "googleapis": ["googleapis@146.0.0", "", { "dependencies": { "google-auth-library": "^9.0.0", "googleapis-common": "^7.0.0" } }, ""],
+    "googleapis": ["googleapis@148.0.0", "", { "dependencies": { "google-auth-library": "^9.0.0", "googleapis-common": "^7.0.0" } }, "sha512-8PDG5VItm6E1TdZWDqtRrUJSlBcNwz0/MwCa6AL81y/RxPGXJRUwKqGZfCoVX1ZBbfr3I4NkDxBmeTyOAZSWqw=="],
 
     "googleapis-common": ["googleapis-common@7.2.0", "", { "dependencies": { "extend": "^3.0.2", "gaxios": "^6.0.3", "google-auth-library": "^9.7.0", "qs": "^6.7.0", "url-template": "^2.0.8", "uuid": "^9.0.0" } }, ""],
 
@@ -913,7 +940,7 @@
 
     "postgres-range": ["postgres-range@1.1.4", "", {}, ""],
 
-    "preact": ["preact@10.24.3", "", {}, ""],
+    "preact": ["preact@10.26.4", "", {}, "sha512-KJhO7LBFTjP71d83trW+Ilnjbo+ySsaAgCfXOXUlmGzJ4ygYPWmysm77yg4emwfmoz3b22yvH5IsVFHbhUaH5w=="],
 
     "preact-render-to-string": ["preact-render-to-string@6.5.11", "", { "peerDependencies": { "preact": ">=10" } }, ""],
 
@@ -1152,6 +1179,8 @@
     "yocto-queue": ["yocto-queue@0.1.0", "", {}, ""],
 
     "zod": ["zod@3.24.2", "", {}, ""],
+
+    "@auth/core/preact": ["preact@10.24.3", "", {}, ""],
 
     "@esbuild-kit/core-utils/esbuild": ["esbuild@0.18.20", "", { "optionalDependencies": { "@esbuild/win32-x64": "0.18.20" }, "bin": "bin/esbuild" }, ""],
 

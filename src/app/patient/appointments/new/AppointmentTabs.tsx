@@ -25,7 +25,13 @@ import { type Doctor } from "@/schemas/doctor";
 import { getColumns } from "./columns";
 import { formatDurationDescription } from "@/lib/formatters";
 
-export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
+export function AppointmentTabs({
+  doctors,
+  doctor,
+}: {
+  doctors: Doctor[];
+  doctor?: Doctor;
+}) {
   const user = useCurrentUser();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
@@ -40,11 +46,12 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
 
   const form = useForm();
 
-  // useEffect(() => {
-  //   if (selectedProcedure) {
-  //     console.log(selectedProcedure);
-  //   }
-  // }, [selectedProcedure]);
+  useEffect(() => {
+    if (doctor) {
+      setSelectedDoctor(doctor);
+      setCurrentStep(2);
+    }
+  }, [doctor]);
 
   return (
     <Tabs

@@ -17,15 +17,14 @@ import {
 import { NavUser } from "@/components/nav-user";
 
 import {
-  CalendarCheck,
   CalendarClock,
-  CalendarPlus,
   DollarSign,
   Home,
   Send,
   CalendarDays,
   ClipboardPlus,
   User,
+  CalendarRange,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -66,14 +65,9 @@ const data = {
       title: "Appointments",
       items: [
         {
-          title: "New Appointment",
-          url: "/doctor/new-appointment",
-          icon: CalendarPlus,
-        },
-        {
-          title: "My Appointments",
-          url: "/doctor/my-appointments",
-          icon: CalendarCheck,
+          title: "Appointments",
+          url: "/doctor/appointments",
+          icon: CalendarRange,
         },
       ],
     },
