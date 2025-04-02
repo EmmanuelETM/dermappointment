@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { currentUser } from "@/lib/currentUser";
 import { db } from "@/server/db";
 import { and, desc, eq } from "drizzle-orm";
-import { appointment, procedures } from "@/server/db/schema";
+import { appointment } from "@/server/db/schema";
 import { CalendarPlus, CalendarRange } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -16,7 +15,10 @@ export default async function AppointmentPage() {
   }
 
   const appointments = await db.query.appointment.findMany({
-    where: and(eq(appointment.userId, user.id), eq(appointment.status, true)),
+    where: and(
+      eq(appointment.userId, user.id),
+      eq(appointment.status, "Confirmed"),
+    ),
     with: {
       doctors: {
         with: {
@@ -33,7 +35,7 @@ export default async function AppointmentPage() {
         },
       },
     },
-    orderBy: desc(appointment.date),
+    orderBy: desc(appointment.createdAt),
   });
 
   return (
