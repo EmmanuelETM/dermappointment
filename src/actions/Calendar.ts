@@ -1,6 +1,6 @@
 "use server";
 
-import { getAppointmentsData } from "@/data/appointments";
+import { getAppointmentScheduleData } from "@/data/appointments";
 import { endOfDay, startOfDay } from "date-fns";
 
 type AppointmentTimesProp = {
@@ -15,10 +15,11 @@ export async function getAppointmentTimes({
   doctorId,
   date,
 }: AppointmentTimesProp) {
-  const appointments = await getAppointmentsData(
+  const appointments = await getAppointmentScheduleData(
     "doctorId",
     doctorId,
     "Confirmed",
+    date,
   );
 
   return appointments

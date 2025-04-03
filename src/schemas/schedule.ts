@@ -1,4 +1,4 @@
-import { DAYS_OF_WEEK } from "@/data/constants";
+import { DAYS_OF_WEEK, LOCATION } from "@/data/constants";
 import { timeToInt } from "@/lib/utils";
 import { z } from "zod";
 
@@ -8,6 +8,7 @@ export const ScheduleFormSchema = z.object({
     .array(
       z.object({
         weekDay: z.enum(DAYS_OF_WEEK),
+        location: z.enum(LOCATION),
         startTime: z
           .string()
           .regex(

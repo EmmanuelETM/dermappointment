@@ -20,6 +20,7 @@ export default async function SchedulePage() {
           startTime: true,
           endTime: true,
           weekDay: true,
+          location: true,
         },
       },
     },

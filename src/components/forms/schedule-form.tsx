@@ -1,6 +1,6 @@
 "use client";
 
-import { DAYS_OF_WEEK } from "@/data/constants";
+import { DAYS_OF_WEEK, type LOCATION } from "@/data/constants";
 import { ScheduleFormSchema } from "@/schemas/schedule";
 import { type z } from "zod";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -25,17 +25,21 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+
 import { formatTimezoneOffset } from "@/lib/formatters";
 import { Button } from "../ui/button";
 import { Plus, X } from "lucide-react";
 import { saveSchedule } from "@/actions/doctor/schedule";
 import { FormError } from "../auth/form-error";
 import { FormSuccess } from "../auth/form-success";
+import { useCurrentUser } from "@/hooks/user-current-user";
+import { useRouter } from "next/navigation";
 
 type Availability = {
   startTime: string;
   endTime: string;
   weekDay: (typeof DAYS_OF_WEEK)[number];
+  location: (typeof LOCATION)[number];
 };
 
 type Schedule = {
@@ -47,6 +51,13 @@ type Schedule = {
 };
 
 export function ScheduleForm({ schedule }: Schedule) {
+  const user = useCurrentUser();
+  const router = useRouter();
+
+  if (!user || !user.id) {
+    router.push("/login");
+  }
+
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -56,10 +67,19 @@ export function ScheduleForm({ schedule }: Schedule) {
     defaultValues: {
       timezone:
         schedule?.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone,
+
       availabilities: schedule?.scheduleAvailability
-        ? [...schedule.scheduleAvailability].sort(
-            (a, b) => timeToInt(a.startTime) - timeToInt(b.startTime),
-          )
+        ? [...schedule.scheduleAvailability]
+            .sort((a, b) => timeToInt(a.startTime) - timeToInt(b.startTime))
+            .map((availability) => ({
+              ...availability,
+              startTime: availability.startTime
+                .split(":")
+                .slice(0, 2)
+                .join(":"),
+              endTime: availability.endTime.split(":").slice(0, 2).join(":"),
+              location: availability.location,
+            }))
         : [],
     },
   });
@@ -173,6 +193,7 @@ export function ScheduleForm({ schedule }: Schedule) {
                       weekDay,
                       startTime: "9:00",
                       endTime: "17:00",
+                      location: "La Vega",
                     });
                   }}
                 >
@@ -215,6 +236,38 @@ export function ScheduleForm({ schedule }: Schedule) {
                                   }`}
                                   {...field}
                                 />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`availabilities.${field.index}.location`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                  disabled={isPending}
+                                >
+                                  <FormItem>
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="La Vega">
+                                        <p className="mx-2">La Vega</p>
+                                      </SelectItem>
+                                      <SelectItem value="Puerto Plata">
+                                        <p className="mx-2">Puerto Plata</p>
+                                      </SelectItem>
+                                    </SelectContent>
+                                    <FormMessage />
+                                  </FormItem>
+                                </Select>
                               </FormControl>
                             </FormItem>
                           )}
