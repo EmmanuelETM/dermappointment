@@ -298,7 +298,7 @@ export const appointment = createTable("appointment", {
   endTime: timestamp("end_time").notNull(),
   location: Location("location").notNull(),
   description: text("description"),
-  status: status("status").default("Pending"),
+  status: status("status").default("Pending").notNull(),
   createdAt,
   updatedAt,
 });

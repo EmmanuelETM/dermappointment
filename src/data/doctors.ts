@@ -1,5 +1,3 @@
-"use server";
-
 import { type Doctor } from "@/schemas/doctor";
 import { db } from "@/server/db";
 import { users } from "@/server/db/schema";

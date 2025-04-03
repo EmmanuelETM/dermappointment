@@ -10,9 +10,11 @@ export default async function CalendarPage() {
     redirect("/login");
   }
 
-  const data = await getAppointmentsData("doctorId", doctor.doctorId);
-
-  console.log(data);
+  const data = await getAppointmentsData(
+    "doctorId",
+    doctor.doctorId,
+    "Confirmed",
+  );
 
   return <Calendar appointments={data} />;
 }

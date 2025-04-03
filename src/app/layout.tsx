@@ -2,8 +2,7 @@ import "@/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
+import Providers from "./providers";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -23,16 +22,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <body className={cn("min-h-screen bg-background antialiased")}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-
-          <Toaster />
-        </ThemeProvider>
+        <Providers>{children} </Providers>
       </body>
     </html>
   );

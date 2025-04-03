@@ -18,12 +18,20 @@ import { DataTable } from "@/components/tables/data-table";
 import { useEffect, useState } from "react";
 import { useCurrentUser } from "@/hooks/user-current-user";
 import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
 
 import { type Procedure } from "@/schemas/admin/procedures";
 import { type Doctor } from "@/schemas/doctor";
 
 import { getColumns } from "./columns";
 import { formatDurationDescription } from "@/lib/formatters";
+import {
+  addMonths,
+  eachMinuteOfInterval,
+  endOfDay,
+  roundToNearestMinutes,
+} from "date-fns";
+import { getValidTimesFromSchedule } from "@/lib/getValidTimesFromSchedule";
 
 export function AppointmentTabs({
   doctors,
@@ -52,6 +60,41 @@ export function AppointmentTabs({
       setCurrentStep(2);
     }
   }, [doctor]);
+
+  //React Query
+  const {
+    data: availableTimes,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: [
+      "availableTimes",
+      selectedDoctor?.doctorId,
+      selectedProcedure?.id,
+    ],
+    queryFn: async () => {
+      if (!selectedDoctor || !selectedProcedure) return [];
+
+      const startDate = roundToNearestMinutes(new Date(), {
+        nearestTo: 15,
+        roundingMethod: "ceil",
+      });
+      const endDate = endOfDay(addMonths(startDate, 2));
+
+      const validTimes = await getValidTimesFromSchedule(
+        eachMinuteOfInterval({ start: startDate, end: endDate }, { step: 15 }),
+        selectedProcedure,
+        selectedDoctor.doctorId,
+      );
+
+      if (validTimes.length === 0) {
+        console.log("no shenaningans");
+      }
+
+      return validTimes;
+    },
+    enabled: !!selectedDoctor && !!selectedProcedure,
+  });
 
   return (
     <Tabs
@@ -192,31 +235,21 @@ export function AppointmentTabs({
   );
 }
 
-// id: varchar("id", { length: 255 })
-//   .notNull()
-//   .primaryKey()
-//   .$defaultFn(() => crypto.randomUUID()),
-// userId: varchar("user_id", { length: 255 })
-//   .notNull()
-//   .references(() => users.id),
-// doctorId: varchar("doctor_id", { length: 255 })
-//   .notNull()
-//   .references(() => doctors.id),
-// procedureId: varchar("procedure_id", { length: 255 })
-//   .notNull()
-//   .references(() => procedures.id),
-// date: timestamp("date", { mode: "date" }),
-// duration: integer("duration").notNull(),
-// location: Location("location").notNull(),
-// reason: text("reason"),
-// status: varchar("status", { length: 20 }).notNull().default("pending"),
-// createdAt,
-// updatedAt,
+// if (selectedProcedure) {
+//   const startDate = roundToNearestMinutes(new Date(), {
+//     nearestTo: 15,
+//     roundingMethod: "ceil",
+//   });
+//   const endDate = endOfDay(addMonths(startDate, 2));
 
-//   <div className="container mx-auto px-4">
-//     <div className="mb-2 flex items-center justify-between">
-//       <p className="py-2 text-lg font-bold">Procedures</p>
-//       <ProceduresFormDialog />
-//     </div>
-//     <DataTable columns={columns} data={data} filter="name" />
-//   </div>
+//   const fetchValidTimes = async () => {
+//     const times = await getValidTimesFromSchedule(
+//       eachMinuteOfInterval(
+//         { start: startDate, end: endDate },
+//         { step: 15 },
+//       ),
+//       selectedProcedure,
+//       selectedDoctor!.doctorId,
+//     );
+//   };
+// }

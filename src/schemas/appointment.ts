@@ -2,30 +2,44 @@ import { APPOINTMENT_STATUS, LOCATION } from "@/data/constants";
 import { z } from "zod";
 
 export const AppointmentFormSchema = z.object({
-  userId: z.string(),
-  doctorId: z.string(),
-  procedureId: z.string(),
-
-  name: z.string().min(1, "Required"),
+  startTime: z.date(),
+  endTime: z.date(),
   description: z.string().optional(),
-  status: z.boolean().default(true),
-  durationInMinutes: z.coerce
-    .number()
-    .int()
-    .positive("Duration must be greater than 0")
-    .max(60 * 12, `Duration must be less than 12 hours (${60 * 12} minutes)`),
 });
 
+// export const appointment = createTable("appointment", {
+//   id: varchar("id", { length: 255 })
+//     .notNull()
+//     .primaryKey()
+//     .$defaultFn(() => crypto.randomUUID()),
+//   userId: varchar("user_id", { length: 255 })
+//     .notNull()
+//     .references(() => users.id),
+//   doctorId: varchar("doctor_id", { length: 255 })
+//     .notNull()
+//     .references(() => doctors.id),
+//   procedureId: varchar("procedure_id", { length: 255 })
+//     .notNull()
+//     .references(() => procedures.id),
+//   startTime: timestamp("start_time").notNull(),
+//   endTime: timestamp("end_time").notNull(),
+//   location: Location("location").notNull(),
+//   description: text("description"),
+//   status: status("status").default("Pending").notNull(),
+//   createdAt,
+//   updatedAt,
+// });
+
 export const AppointmentSchema = z.object({
-  id: z.string().nullable(),
-  startTime: z.date().nullable(),
-  endTime: z.date().nullable(),
+  id: z.string(),
+  startTime: z.date(),
+  endTime: z.date(),
   patient: z.string().nullable(),
   doctor: z.string().nullable(),
   procedure: z.string().nullable(),
-  location: z.enum(LOCATION).nullable(),
+  location: z.enum(LOCATION),
   description: z.string().nullable(),
-  status: z.enum(APPOINTMENT_STATUS).nullable(),
+  status: z.enum(APPOINTMENT_STATUS),
 });
 
 export type Appointment = z.infer<typeof AppointmentSchema>;
