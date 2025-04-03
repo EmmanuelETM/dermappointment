@@ -17,3 +17,28 @@ export function formatTimezoneOffset(timezone: string) {
     .formatToParts(new Date())
     .find((part) => part.type == "timeZoneName")?.value;
 }
+
+const dateFormatter = new Intl.DateTimeFormat(undefined, {
+  dateStyle: "medium",
+});
+
+const timeFormatter = new Intl.DateTimeFormat(undefined, {
+  timeStyle: "short",
+});
+
+const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
+  dateStyle: "medium",
+  timeStyle: "short",
+});
+
+export function formatDate(date: Date) {
+  return dateFormatter.format(date);
+}
+
+export function formatTimeToString(time: Date) {
+  return timeFormatter.format(time);
+}
+
+export function formatDateTime(date: Date) {
+  return dateTimeFormatter.format(date);
+}

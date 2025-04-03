@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
 import { useState, useTransition } from "react";
@@ -30,9 +29,8 @@ import { useForm } from "react-hook-form";
 
 import { type z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProcedureFormSchema } from "@/schemas/admin/procedures";
-import { createProcedure } from "@/actions/admin/procedures";
 import { UsersFormSchema } from "@/schemas/user";
+
 import {
   Select,
   SelectContent,
@@ -40,6 +38,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import { createUser } from "@/actions/admin/users";
 
 export function UsersFormDialog() {

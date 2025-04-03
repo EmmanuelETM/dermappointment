@@ -1,10 +1,13 @@
 import { APPOINTMENT_STATUS, LOCATION } from "@/data/constants";
+import { startOfDay } from "date-fns";
 import { z } from "zod";
 
 export const AppointmentFormSchema = z.object({
   startTime: z.date(),
   endTime: z.date(),
   description: z.string().optional(),
+  timezone: z.string().min(1, "Required"),
+  date: z.date().min(startOfDay(new Date()), "Must be in the future!"),
 });
 
 // export const appointment = createTable("appointment", {

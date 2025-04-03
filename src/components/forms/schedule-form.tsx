@@ -1,6 +1,10 @@
 "use client";
 
-import { DAYS_OF_WEEK, type LOCATION } from "@/data/constants";
+import {
+  DAYS_OF_WEEK,
+  RELEVANT_TIMEZONES,
+  type LOCATION,
+} from "@/data/constants";
 import { ScheduleFormSchema } from "@/schemas/schedule";
 import { type z } from "zod";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -85,24 +89,7 @@ export function ScheduleForm({ schedule }: Schedule) {
   });
 
   const timeZones = useMemo(() => {
-    const relevantTimeZones = [
-      "UTC",
-      "America/New_York",
-      "America/La_Paz",
-      "America/Los_Angeles",
-      "America/Chicago",
-      "America/Denver",
-      "America/Sao_Paulo",
-      "Europe/London",
-      "Europe/Berlin",
-      "Europe/Madrid",
-      "Asia/Tokyo",
-      "Asia/Shanghai",
-      "Asia/Kolkata",
-      "Asia/Dubai",
-    ];
-
-    return relevantTimeZones.map((tz) => ({
+    return RELEVANT_TIMEZONES.map((tz) => ({
       name: tz,
       offset: formatTimezoneOffset(tz) ?? "",
     }));

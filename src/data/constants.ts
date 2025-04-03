@@ -38,6 +38,22 @@ export const APPOINTMENT_STATUS = [
   "Completed",
 ] as const;
 
+export const RELEVANT_TIMEZONES = [
+  "UTC",
+  "America/New_York",
+  "America/La_Paz",
+  "America/Los_Angeles",
+  "America/Chicago",
+  "America/Denver",
+  "America/Sao_Paulo",
+  "Europe/London",
+  "Europe/Berlin",
+  "Europe/Madrid",
+  "Asia/Tokyo",
+  "Asia/Shanghai",
+  "Asia/Kolkata",
+] as const;
+
 export const ROLES = ["ADMIN", "PATIENT", "DOCTOR"] as const;
 
 export const LOCATION = ["La Vega", "Puerto Plata"] as const;
