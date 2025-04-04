@@ -1,37 +1,28 @@
 import { APPOINTMENT_STATUS, LOCATION } from "@/data/constants";
 import { startOfDay } from "date-fns";
 import { z } from "zod";
+import { ProcedureSchema } from "./admin/procedures";
 
-export const AppointmentFormSchema = z.object({
-  startTime: z.date(),
-  endTime: z.date(),
+export const AppointmentSchemaBase = z.object({
+  startTime: z.date().min(new Date()),
   description: z.string().optional(),
   timezone: z.string().min(1, "Required"),
-  date: z.date().min(startOfDay(new Date()), "Must be in the future!"),
+  location: z.enum(LOCATION),
 });
 
-// export const appointment = createTable("appointment", {
-//   id: varchar("id", { length: 255 })
-//     .notNull()
-//     .primaryKey()
-//     .$defaultFn(() => crypto.randomUUID()),
-//   userId: varchar("user_id", { length: 255 })
-//     .notNull()
-//     .references(() => users.id),
-//   doctorId: varchar("doctor_id", { length: 255 })
-//     .notNull()
-//     .references(() => doctors.id),
-//   procedureId: varchar("procedure_id", { length: 255 })
-//     .notNull()
-//     .references(() => procedures.id),
-//   startTime: timestamp("start_time").notNull(),
-//   endTime: timestamp("end_time").notNull(),
-//   location: Location("location").notNull(),
-//   description: text("description"),
-//   status: status("status").default("Pending").notNull(),
-//   createdAt,
-//   updatedAt,
-// });
+export const AppointmentFormSchema = z
+  .object({
+    date: z.date().min(startOfDay(new Date()), "Must be in the future"),
+  })
+  .merge(AppointmentSchemaBase);
+
+export const AppointmentActionSchema = z
+  .object({
+    userId: z.string(),
+    doctorId: z.string(),
+    procedure: ProcedureSchema,
+  })
+  .merge(AppointmentSchemaBase);
 
 export const AppointmentSchema = z.object({
   id: z.string(),

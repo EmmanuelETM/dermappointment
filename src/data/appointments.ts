@@ -1,7 +1,7 @@
 import { type Appointment } from "@/schemas/appointment";
 import { db } from "@/server/db";
 import { appointment } from "@/server/db/schema";
-import { and, eq, gte, lte } from "drizzle-orm";
+import { and, eq, gte, lte, ne } from "drizzle-orm";
 import { type APPOINTMENT_STATUS } from "./constants";
 
 const getAppointmentSchedule = async (
@@ -13,7 +13,10 @@ const getAppointmentSchedule = async (
   const data = await db.query.appointment.findMany({
     where: and(
       eq(appointment[filterKey], id),
-      eq(appointment.status, status),
+      and(
+        ne(appointment.status, "Cancelled"),
+        ne(appointment.status, "Completed"),
+      ),
       gte(appointment.startTime, date.start),
       lte(appointment.endTime, date.end),
     ),

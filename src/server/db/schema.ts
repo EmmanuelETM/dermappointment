@@ -296,6 +296,7 @@ export const appointment = createTable("appointment", {
     .references(() => procedures.id),
   startTime: timestamp("start_time").notNull(),
   endTime: timestamp("end_time").notNull(),
+  timezone: text("timezone").notNull(),
   location: Location("location").notNull(),
   description: text("description"),
   status: status("status").default("Pending").notNull(),

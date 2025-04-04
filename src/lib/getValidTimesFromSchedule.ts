@@ -1,10 +1,10 @@
 "use server";
 
-import { getAppointmentTimes } from "@/actions/Calendar";
-import { type DAYS_OF_WEEK } from "@/data/constants";
+import { getAppointmentTimes } from "@/actions/appointment";
+import { type LOCATION, type DAYS_OF_WEEK } from "@/data/constants";
 import { type Procedure } from "@/schemas/admin/procedures";
 import { db } from "@/server/db";
-import { schedule, type scheduleAvailability } from "@/server/db/schema";
+import { schedule, scheduleAvailability } from "@/server/db/schema";
 
 import {
   addMinutes,
@@ -21,22 +21,27 @@ import {
   setMinutes,
 } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export async function getValidTimesFromSchedule(
   timesInOrder: Date[],
   procedure: Procedure,
   doctorId: string,
+  location: (typeof LOCATION)[number],
 ) {
   const start = timesInOrder[0];
   const end = timesInOrder[timesInOrder.length - 1];
 
-  if (!start || !end) return [];
+  console.log("start", start, "end", end);
+
+  if (start == null || end == null) return [];
 
   const doctorSchedule = await db.query.schedule.findFirst({
-    where: eq(schedule?.doctorId, doctorId),
+    where: and(eq(schedule.doctorId, doctorId)),
     with: {
-      scheduleAvailability: true,
+      scheduleAvailability: {
+        where: eq(scheduleAvailability.location, location),
+      },
     },
   });
 
@@ -139,51 +144,3 @@ function getAvailabilities(
     return { start, end };
   });
 }
-
-// export async function getValidTimesFromSchedule(
-//   timesInOrder: Date[],
-//   procedure: Procedure,
-//   doctorId: string,
-// ) {
-//   const start = timesInOrder[0];
-//   const end = timesInOrder[timesInOrder.length - 1];
-
-//   if (!start || !end) return [];
-
-//   const doctorSchedule = await db.query.schedule.findFirst({
-//     where: eq(schedule?.doctorId, doctorId),
-//     with: {
-//       scheduleAvailability: true,
-//     },
-//   });
-
-//   if (!doctorSchedule) return [];
-
-//   const groupedAvailabilites = Object.groupBy(
-//     doctorSchedule.scheduleAvailability,
-//     (a) => a.weekDay,
-//   );
-
-//   const date = { start, end };
-
-//   const appointmentTimes = await getAppointmentTimes({ doctorId, date });
-
-//   return timesInOrder.filter((intervalDate) => {
-//     const availabilities = getAvailabilities(
-//       groupedAvailabilites,
-//       intervalDate,
-//       doctorSchedule.timezone,
-//     );
-
-//     const appointmentInterval = {
-//       start: intervalDate,
-//       end: addMinutes(intervalDate, procedure.duration),
-//     };
-
-//     return appointmentTimes
-//       .filter((appointmentTime): appointmentTime is { start: Date; end: Date } => appointmentTime !== null)
-//       .every((appointmentTime) => {
-//         return !areIntervalsOverlapping(appointmentTime, appointmentInterval);
-//       });
-//   });
-// }

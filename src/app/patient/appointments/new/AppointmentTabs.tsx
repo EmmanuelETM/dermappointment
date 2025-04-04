@@ -28,13 +28,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { DataTable } from "@/components/tables/data-table";
 import { getColumns } from "./columns";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useCurrentUser } from "@/hooks/user-current-user";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
@@ -54,7 +53,6 @@ import {
   addMonths,
   eachMinuteOfInterval,
   endOfDay,
-  format,
   isSameDay,
   roundToNearestMinutes,
 } from "date-fns";
@@ -65,19 +63,22 @@ import { AppointmentFormSchema } from "@/schemas/appointment";
 import { type z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormError } from "@/components/auth/form-error";
-import { FormSuccess } from "@/components/auth/form-success";
-import { RELEVANT_TIMEZONES } from "@/data/constants";
 import { useTheme } from "next-themes";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Frown } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { toZonedTime } from "date-fns-tz";
 import { Textarea } from "@/components/ui/textarea";
+import { useRouter } from "next/navigation";
+
+import { createAppointment } from "@/actions/appointment";
+import { toast } from "sonner";
+import { type LOCATION, RELEVANT_TIMEZONES } from "@/data/constants";
 
 export function AppointmentTabs({
   doctors,
@@ -87,26 +88,75 @@ export function AppointmentTabs({
   doctor?: Doctor;
 }) {
   const user = useCurrentUser();
+  const router = useRouter();
+
+  if (!user || !user.id) {
+    router.push("/login");
+  }
+
   const theme = useTheme();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [selectedProcedure, setSelectedProcedure] = useState<Procedure | null>(
     null,
   );
+  const [selectedLocation, setSelectedLocation] = useState<
+    (typeof LOCATION)[number]
+  >(user!.location as (typeof LOCATION)[number]);
+
+  const [formError, setFormError] = useState<string | undefined>("");
+  const [isPending, startTransition] = useTransition();
+
   const columns = getColumns(
     setSelectedDoctor,
     setSelectedProcedure,
     setCurrentStep,
   );
 
+  //Form stuff
+
+  const form = useForm<z.infer<typeof AppointmentFormSchema>>({
+    resolver: zodResolver(AppointmentFormSchema),
+    defaultValues: {
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      location:
+        user!.location === "La Vega" || user!.location === "Puerto Plata"
+          ? user!.location
+          : "La Vega",
+    },
+  });
+
+  const timezone = form.watch("timezone");
+  const date = form.watch("date");
+  const time = form.watch("startTime");
+
+  function onSubmit(values: z.infer<typeof AppointmentFormSchema>) {
+    setFormError("");
+    startTransition(async () => {
+      const response = await createAppointment({
+        ...values,
+        doctorId: selectedDoctor!.doctorId,
+        userId: user!.id ?? "",
+        procedure: selectedProcedure!,
+      });
+      if (response?.success) {
+        toast(response?.success);
+        setCurrentStep(4);
+      }
+
+      if (response?.error) setFormError(response?.error);
+    });
+  }
+
+  //Data fetching stuff
+
   useEffect(() => {
     if (doctor) {
       setSelectedDoctor(doctor);
       setCurrentStep(2);
     }
-  }, [doctor]);
+  }, [doctor, user]);
 
-  //React Query
   const {
     data: availableTimes,
     isLoading,
@@ -116,11 +166,10 @@ export function AppointmentTabs({
       "availableTimes",
       selectedDoctor?.doctorId,
       selectedProcedure?.id,
+      selectedLocation,
     ],
     queryFn: async () => {
       if (!selectedDoctor || !selectedProcedure) return [];
-
-      console.log("we fetching bois");
 
       const startDate = roundToNearestMinutes(new Date(), {
         nearestTo: 15,
@@ -132,7 +181,10 @@ export function AppointmentTabs({
         eachMinuteOfInterval({ start: startDate, end: endDate }, { step: 15 }),
         selectedProcedure,
         selectedDoctor.doctorId,
+        selectedLocation,
       );
+
+      setTimeout(() => console.log("we submited"), 10000);
 
       if (validTimes.length === 0) {
         console.log("no shenaningans");
@@ -140,32 +192,19 @@ export function AppointmentTabs({
 
       return validTimes;
     },
-    enabled: !!selectedDoctor && !!selectedProcedure,
+    enabled: !!selectedDoctor && !!selectedProcedure && !!selectedLocation,
   });
 
-  const timeZones = useMemo(() => {
-    return RELEVANT_TIMEZONES.map((tz) => ({
-      name: tz,
-      offset: formatTimezoneOffset(tz) ?? "",
-    }));
-  }, []);
+  if (error) setFormError(error.message);
 
-  const form = useForm<z.infer<typeof AppointmentFormSchema>>({
-    resolver: zodResolver(AppointmentFormSchema),
-    defaultValues: {
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    },
-  });
+  //Date, time and availabiliteis stuff
 
-  function onSubmit(values: z.infer<typeof AppointmentFormSchema>) {
-    console.log(values);
-  }
-
-  const timezone = form.watch("timezone");
-  const date = form.watch("date");
   const validTimesInTimezone = useMemo(() => {
     return availableTimes?.map((date) => toZonedTime(date, timezone));
   }, [availableTimes, timezone]);
+
+  const timesForSelectedDate =
+    validTimesInTimezone?.filter((time) => isSameDay(time, date)) ?? [];
 
   return (
     <Tabs
@@ -210,80 +249,87 @@ export function AppointmentTabs({
       </TabsList>
 
       {/* Step 1 */}
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <TabsContent value="doctor">
-            <Card>
-              <CardHeader>
-                <CardTitle>Doctors</CardTitle>
-                <CardDescription>Choose the doctor.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="mx-auto">
-                  <DataTable columns={columns} data={doctors} filter="name" />
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+      <TabsContent value="doctor">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Doctors</CardTitle>
+            <CardDescription className="text-md">
+              Choose the doctor.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="mx-auto">
+              <DataTable columns={columns} data={doctors} filter="name" />
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
 
-          {/* Step 2 */}
-          <TabsContent value="procedure">
-            <Card>
-              <CardHeader>
-                <CardTitle>Procedure</CardTitle>
-                <CardDescription>Select the procedure.</CardDescription>
-              </CardHeader>
-              <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {selectedDoctor?.procedures.map((procedure) => (
-                  <Card
-                    key={procedure.id}
-                    className="rounded-2xl border shadow-lg"
+      {/* Step 2 */}
+      <TabsContent value="procedure">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Procedure</CardTitle>
+            <CardDescription className="text-md">
+              Select the procedure.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {selectedDoctor?.procedures.map((procedure) => (
+              <Card key={procedure.id} className="rounded-2xl border shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">
+                    {procedure.name}
+                  </CardTitle>
+                  <CardDescription>
+                    Duration: {formatDurationDescription(procedure.duration)}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="text-gray-600">
+                  {procedure.description}
+                </CardContent>
+                <CardFooter className="flex justify-end">
+                  <Button
+                    className="w-full"
+                    type="button"
+                    onClick={() => {
+                      setSelectedProcedure(procedure);
+                      setCurrentStep((prevStep) => prevStep + 1);
+                    }}
                   >
-                    <CardHeader>
-                      <CardTitle className="text-lg font-semibold">
-                        {procedure.name}
-                      </CardTitle>
-                      <CardDescription>
-                        Duration:{" "}
-                        {formatDurationDescription(procedure.duration)}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="text-gray-600">
-                      {procedure.description}
-                    </CardContent>
-                    <CardFooter className="flex justify-end">
-                      <Button
-                        className="w-full"
-                        type="button"
-                        onClick={() => {
-                          setSelectedProcedure(procedure);
-                          setCurrentStep((prevStep) => prevStep + 1);
-                        }}
-                      >
-                        Select
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button variant="outline" onClick={() => setCurrentStep(1)}>
-                  Back
-                </Button>
-              </CardFooter>
-            </Card>
-          </TabsContent>
+                    Select
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <Button variant="outline" onClick={() => setCurrentStep(1)}>
+              Back
+            </Button>
+          </CardFooter>
+        </Card>
+      </TabsContent>
 
-          {/* Step 3 */}
+      {/* Step 3 */}
 
-          {/* form stuff from here on 
-          down */}
-          <TabsContent value="details">
-            <Card>
-              <CardHeader>
-                <CardTitle>Appointment Details</CardTitle>
-                <CardDescription>Set up Date, Time and more.</CardDescription>
-              </CardHeader>
+      {/* Form stuff from here on down */}
+
+      <TabsContent value="details">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">
+              Appointment Details
+            </CardTitle>
+            <CardDescription className="text-md">
+              Set up Date, Time and more.
+            </CardDescription>
+          </CardHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="mb-6 w-full px-6">
+                <FormError message={formError} />
+              </div>
               {isLoading === true ? (
                 <div className="flex flex-col items-center justify-center gap-2">
                   Loading Doctor{"'"}s Schedule
@@ -304,6 +350,7 @@ export function AppointmentTabs({
                             <Select
                               onValueChange={field.onChange}
                               defaultValue={field.value}
+                              disabled={isPending}
                             >
                               <FormControl>
                                 <SelectTrigger>
@@ -311,11 +358,45 @@ export function AppointmentTabs({
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {timeZones.map(({ name, offset }) => (
-                                  <SelectItem key={name} value={name}>
-                                    {name} {offset && `(${offset})`}
+                                {RELEVANT_TIMEZONES.map((timezone) => (
+                                  <SelectItem key={timezone} value={timezone}>
+                                    {timezone}
+                                    {` (${formatTimezoneOffset(timezone)})`}
                                   </SelectItem>
                                 ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="location"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Location</FormLabel>
+                            <Select
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                setSelectedLocation(
+                                  value as (typeof LOCATION)[number],
+                                );
+                              }}
+                              defaultValue={field.value}
+                              disabled={isPending}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="La Vega">La Vega</SelectItem>
+                                <SelectItem value="Puerto Plata">
+                                  Puerto Plata
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -331,15 +412,14 @@ export function AppointmentTabs({
                             render={({ field }) => (
                               <Popover>
                                 <FormItem className="flex flex-1 flex-col">
-                                  {" "}
-                                  {/* Se agrega flex-1 */}
                                   <FormLabel>Date</FormLabel>
                                   <PopoverTrigger asChild>
                                     <FormControl>
                                       <Button
+                                        disabled={isPending}
                                         variant="outline"
                                         className={cn(
-                                          "w-full justify-start text-left font-normal", // Asegura que ocupe todo el ancho disponible
+                                          "flex w-full pl-3 text-left font-normal",
                                           !field.value &&
                                             "text-muted-foreground",
                                         )}
@@ -364,11 +444,12 @@ export function AppointmentTabs({
                                       disabled={(date) =>
                                         !validTimesInTimezone!.some((time) =>
                                           isSameDay(date, time),
-                                        )
+                                        ) || isPending
                                       }
                                       initialFocus
                                     />
                                   </PopoverContent>
+                                  <FormMessage />
                                 </FormItem>
                               </Popover>
                             )}
@@ -379,11 +460,13 @@ export function AppointmentTabs({
                             name="startTime"
                             render={({ field }) => (
                               <FormItem className="flex flex-1 flex-col">
-                                {" "}
-                                {/* Se agrega flex-1 */}
                                 <FormLabel>Time</FormLabel>
                                 <Select
-                                  disabled={date == null || timezone == null}
+                                  disabled={
+                                    date == null ||
+                                    timezone == null ||
+                                    isPending
+                                  }
                                   onValueChange={(value) =>
                                     field.onChange(new Date(Date.parse(value)))
                                   }
@@ -391,12 +474,10 @@ export function AppointmentTabs({
                                 >
                                   <FormControl>
                                     <SelectTrigger className="w-full">
-                                      {" "}
-                                      {/* Asegura ancho completo */}
                                       <SelectValue
                                         placeholder={
                                           date == null || timezone == null
-                                            ? "Select a date/timezone first"
+                                            ? "Select a date first"
                                             : "Select an Appointment Time"
                                         }
                                       />
@@ -407,27 +488,32 @@ export function AppointmentTabs({
                                     align="start"
                                     className="max-h-60 overflow-auto"
                                   >
-                                    {validTimesInTimezone
-                                      ?.filter((time) => isSameDay(time, date))
-                                      .map((time) => (
+                                    {timesForSelectedDate.length === 0 ? (
+                                      <SelectItem value="nofin" disabled>
+                                        No Available Times for this Date
+                                      </SelectItem>
+                                    ) : (
+                                      timesForSelectedDate.map((time) => (
                                         <SelectItem
                                           key={time.toISOString()}
-                                          value={time?.toISOString()}
+                                          value={time.toISOString()}
                                         >
                                           {formatTimeToString(time)}
                                         </SelectItem>
-                                      ))}
+                                      ))
+                                    )}
                                   </SelectContent>
                                 </Select>
+                                <FormMessage />
                               </FormItem>
                             )}
                           />
                         </div>
                       </div>
-
                       <div className="w-full">
                         <FormField
                           control={form.control}
+                          disabled={isPending}
                           name="description"
                           render={({ field }) => (
                             <FormItem>
@@ -444,61 +530,45 @@ export function AppointmentTabs({
                   </div>
                 </CardContent>
               ) : (
-                <div>No Schedule Available</div>
+                <div className="flex flex-col items-center justify-center gap-4 py-4 text-xl font-semibold">
+                  No Schedule Available for this Doctor
+                  <Frown size={48} />
+                </div>
               )}
-
               <CardFooter className="flex justify-between">
                 <Button variant="outline" onClick={() => setCurrentStep(2)}>
                   Back
                 </Button>
-                {availableTimes !== undefined ? (
-                  <Button onClick={() => setCurrentStep(4)}>Next</Button>
-                ) : (
-                  <Button disabled={true}>Next</Button>
-                )}
-              </CardFooter>
-            </Card>
-          </TabsContent>
-
-          {/* Step 4 */}
-          <TabsContent value="payment">
-            <Card>
-              <CardHeader>
-                <CardTitle>Payment</CardTitle>
-                <CardDescription>
-                  Pay the reservation for the Appointment.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">Check everything</CardContent>
-              <CardFooter className="flex justify-between">
-                <Button variant="outline" onClick={() => setCurrentStep(3)}>
-                  Back
+                <Button
+                  type="submit"
+                  disabled={time != null ? false : true || isPending}
+                >
+                  Create Appointment
                 </Button>
-                <Button onClick={() => alert("Finished!")}>Finish</Button>
               </CardFooter>
-            </Card>
-          </TabsContent>
-        </form>
-      </Form>
+            </form>
+          </Form>
+        </Card>
+      </TabsContent>
+
+      {/* Step 4 */}
+      <TabsContent value="payment">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Payment</CardTitle>
+            <CardDescription className="text-md">
+              Pay the reservation for the Appointment.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">Check everything</CardContent>
+          <CardFooter className="flex justify-between">
+            <Button variant="outline" onClick={() => setCurrentStep(3)}>
+              Back
+            </Button>
+            <Button onClick={() => alert("this is cool")}>Finish</Button>
+          </CardFooter>
+        </Card>
+      </TabsContent>
     </Tabs>
   );
 }
-
-// if (selectedProcedure) {
-//   const startDate = roundToNearestMinutes(new Date(), {
-//     nearestTo: 15,
-//     roundingMethod: "ceil",
-//   });
-//   const endDate = endOfDay(addMonths(startDate, 2));
-
-//   const fetchValidTimes = async () => {
-//     const times = await getValidTimesFromSchedule(
-//       eachMinuteOfInterval(
-//         { start: startDate, end: endDate },
-//         { step: 15 },
-//       ),
-//       selectedProcedure,
-//       selectedDoctor!.doctorId,
-//     );
-//   };
-// }

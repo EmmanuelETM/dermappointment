@@ -12,7 +12,6 @@ import { NextResponse } from "next/server";
 
 export default auth(async (req) => {
   const { nextUrl } = req;
-
   const session = await auth();
   const isLoggedIn = !!session;
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);

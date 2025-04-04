@@ -36,16 +36,6 @@ export const authConfig = {
     GoogleProvider({
       clientId: env.AUTH_GOOGLE_CLIENT_ID,
       clientSecret: env.AUTH_GOOGLE_CLIENT_SECRET,
-      authorization: {
-        params: {
-          scope: [
-            "openid",
-            "https://www.googleapis.com/auth/userinfo.email",
-            "https://www.googleapis.com/auth/userinfo.profile",
-            "https://www.googleapis.com/auth/calendar.events",
-          ],
-        },
-      },
     }),
   ],
   pages: {
