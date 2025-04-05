@@ -5,7 +5,7 @@ import { AppointmentActionSchema } from "@/schemas/appointment";
 import { db } from "@/server/db";
 import { appointment } from "@/server/db/schema";
 import { addMinutes } from "date-fns";
-import { fromZonedTime } from "date-fns-tz";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { revalidatePath } from "next/cache";
 import { type z } from "zod";
 import { getAppointmentTimes } from "./getAppointment";
@@ -15,6 +15,7 @@ export async function createAppointment(
 ) {
   console.log("values from server");
   console.log(values);
+
   const { success, data } = AppointmentActionSchema.safeParse(values);
 
   if (!success) {
@@ -22,13 +23,20 @@ export async function createAppointment(
   }
 
   const startInTimeZone = fromZonedTime(data.startTime, data.timezone);
-  const endTime = addMinutes(startInTimeZone, data.procedure.duration + 15);
+  const startInDoctorTimeZone = toZonedTime(startInTimeZone, data.timezone);
+  const endTime = addMinutes(data.startTime, data.procedure.duration + 15);
+  const endIndDoctorTimeZone = toZonedTime(endTime, data.timezone);
 
+  console.log("start in timezone, and end time");
   console.log(startInTimeZone);
   console.log(endTime);
 
+  console.log("tozoned time start and end");
+  console.log(startInDoctorTimeZone);
+  console.log(endIndDoctorTimeZone);
+
   const validTimes = await getValidTimesFromSchedule(
-    [startInTimeZone],
+    [startInDoctorTimeZone],
     data.procedure,
     data.doctorId,
     data.location,
@@ -41,7 +49,7 @@ export async function createAppointment(
 
   const appointments = await getAppointmentTimes({
     doctorId: data.doctorId,
-    date: { start: startInTimeZone, end: endTime },
+    date: { start: startInDoctorTimeZone, end: endTime },
   });
 
   if (appointments.length != 0)
