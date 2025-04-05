@@ -22,8 +22,8 @@ export async function createAppointment(
   const startInTimeZone = fromZonedTime(data.startTime, data.timezone);
   const startInDoctorTimeZone = toZonedTime(startInTimeZone, data.timezone);
 
-  const endTime = addMinutes(data.startTime, data.procedure.duration + 15);
-  const endIndDoctorTimeZone = toZonedTime(endTime, data.timezone);
+  const endTime = addMinutes(startInTimeZone, data.procedure.duration + 15);
+  const endInDoctorTimeZone = toZonedTime(endTime, data.timezone);
 
   const validTimes = await getValidTimesFromSchedule(
     [startInDoctorTimeZone],
@@ -48,7 +48,7 @@ export async function createAppointment(
       doctorId: data.doctorId,
       procedureId: data.procedure.id,
       startTime: startInDoctorTimeZone,
-      endTime: endIndDoctorTimeZone,
+      endTime: endInDoctorTimeZone,
       timezone: data.timezone,
       location: data.location,
       description: data.description,
