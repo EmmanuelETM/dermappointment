@@ -34,8 +34,6 @@ export async function getValidTimesFromSchedule(
 
   if (start == null || end == null) return [];
 
-  console.log("before doctorSchedule");
-
   const doctorSchedule = await db.query.schedule.findFirst({
     where: and(eq(schedule.doctorId, doctorId)),
     with: {
@@ -45,21 +43,24 @@ export async function getValidTimesFromSchedule(
     },
   });
 
-  if (!doctorSchedule) return [];
+  console.log("doctorSchedule");
+  console.log(doctorSchedule);
 
-  console.log("after doctorSchedule");
+  if (!doctorSchedule) return [];
 
   const groupedAvailabilites = Object.groupBy(
     doctorSchedule.scheduleAvailability,
     (a) => a.weekDay,
   );
 
+  console.log("groupedAvailabilites");
+  console.log(groupedAvailabilites);
+
   const date = { start, end };
 
   const appointmentTimes = await getAppointmentTimes({ doctorId, date });
 
-  console.log("after get appointment times");
-
+  console.log("appointment times");
   console.log(appointmentTimes);
 
   return timesInOrder.filter((intervalDate) => {
@@ -69,10 +70,30 @@ export async function getValidTimesFromSchedule(
       doctorSchedule.timezone,
     );
 
+    console.log("timesInOrder");
+    console.log(timesInOrder);
+
     const appointmentInterval = {
       start: intervalDate,
       end: addMinutes(intervalDate, procedure.duration),
     };
+
+    console.log(appointmentInterval);
+    console.log(appointmentInterval);
+
+    const overlaps =
+      appointmentTimes.every((appointmentTime) => {
+        return !areIntervalsOverlapping(appointmentTime, appointmentInterval);
+      }) &&
+      availabilities.some((availability) => {
+        return (
+          isWithinInterval(appointmentInterval.start, availability) &&
+          isWithinInterval(appointmentInterval.end, availability)
+        );
+      });
+
+    console.log("overlaps");
+    console.log(overlaps);
 
     return (
       appointmentTimes.every((appointmentTime) => {

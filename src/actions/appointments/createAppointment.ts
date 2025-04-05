@@ -33,6 +33,7 @@ export async function createAppointment(
     data.location,
   );
 
+  console.log("validTimes");
   console.log(validTimes);
 
   if (validTimes.length === 0) return { error: "Invalid Schedule Time" };
@@ -45,23 +46,24 @@ export async function createAppointment(
   if (appointments.length != 0)
     return { error: "This time overlaps with another!" };
 
-  try {
-    await db.insert(appointment).values({
-      userId: data.userId,
-      doctorId: data.doctorId,
-      procedureId: data.procedure.id,
-      startTime: startInTimeZone,
-      endTime: endTime,
-      timezone: data.timezone,
-      location: data.location,
-      description: data.description,
-      status: "Pending",
-    });
+  // try {
+  //   await db.insert(appointment).values({
+  //     userId: data.userId,
+  //     doctorId: data.doctorId,
+  //     procedureId: data.procedure.id,
+  //     startTime: startInTimeZone,
+  //     endTime: endTime,
+  //     timezone: data.timezone,
+  //     location: data.location,
+  //     description: data.description,
+  //     status: "Pending",
+  //   });
 
-    revalidatePath("/patients/appointments/new");
-    return { success: "Appointment Created!" };
-  } catch (error) {
-    console.log("Error creating appointment: ", error);
-    return { error: "Something went wrong!" };
-  }
+  //   revalidatePath("/patients/appointments/new");
+  //   return { success: "Appointment Created!" };
+  // } catch (error) {
+  //   console.log("Error creating appointment: ", error);
+  //   return { error: "Something went wrong!" };
+  // }
+  return { success: "Appointment Created!" };
 }

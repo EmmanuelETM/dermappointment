@@ -141,7 +141,7 @@ export function AppointmentTabs({
       });
       if (response?.success) {
         toast(response?.success);
-        router.push("/patient/appointments/");
+        // router.push("/patient/appointments/");
       }
 
       if (response?.error) setFormError(response?.error);
