@@ -43,18 +43,12 @@ export async function getValidTimesFromSchedule(
     },
   });
 
-  console.log("doctorSchedule");
-  console.log(doctorSchedule);
-
   if (!doctorSchedule) return [];
 
   const groupedAvailabilites = Object.groupBy(
     doctorSchedule.scheduleAvailability,
     (a) => a.weekDay,
   );
-
-  console.log("groupedAvailabilites");
-  console.log(groupedAvailabilites);
 
   const date = { start, end };
 
@@ -70,30 +64,10 @@ export async function getValidTimesFromSchedule(
       doctorSchedule.timezone,
     );
 
-    console.log("timesInOrder");
-    console.log(timesInOrder);
-
     const appointmentInterval = {
       start: intervalDate,
       end: addMinutes(intervalDate, procedure.duration),
     };
-
-    console.log(appointmentInterval);
-    console.log(appointmentInterval);
-
-    const overlaps =
-      appointmentTimes.every((appointmentTime) => {
-        return !areIntervalsOverlapping(appointmentTime, appointmentInterval);
-      }) &&
-      availabilities.some((availability) => {
-        return (
-          isWithinInterval(appointmentInterval.start, availability) &&
-          isWithinInterval(appointmentInterval.end, availability)
-        );
-      });
-
-    console.log("overlaps");
-    console.log(overlaps);
 
     return (
       appointmentTimes.every((appointmentTime) => {

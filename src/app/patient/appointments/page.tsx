@@ -1,11 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { currentUser } from "@/lib/currentUser";
-import { db } from "@/server/db";
-import { and, desc, eq } from "drizzle-orm";
-import { appointment } from "@/server/db/schema";
 import { CalendarPlus, CalendarRange } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getAppointmentsData } from "@/data/appointments";
 
 export default async function AppointmentPage() {
   const user = await currentUser();
@@ -14,30 +12,11 @@ export default async function AppointmentPage() {
     redirect("/login");
   }
 
-  const appointments = await db.query.appointment.findMany({
-    where: and(
-      eq(appointment.userId, user.id),
-      eq(appointment.status, "Confirmed"),
-    ),
-    with: {
-      doctors: {
-        with: {
-          users: {
-            columns: {
-              name: true,
-            },
-          },
-        },
-      },
-      procedures: {
-        columns: {
-          name: true,
-        },
-      },
-    },
-    orderBy: desc(appointment.createdAt),
-  });
+  const appointments = await getAppointmentsData("userId", user?.id, "Pending");
 
+  if (!user || !user.id) {
+    redirect("/login");
+  }
   return (
     <div className="container mx-auto px-4">
       <div className="mb-6 flex items-center justify-between">

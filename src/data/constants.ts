@@ -42,6 +42,7 @@ export const RELEVANT_TIMEZONES = [
   "UTC",
   "America/New_York",
   "America/La_Paz",
+  "America/Santo_Domingo",
   "America/Los_Angeles",
   "America/Chicago",
   "America/Denver",

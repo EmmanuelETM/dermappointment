@@ -118,7 +118,7 @@ export function AppointmentTabs({
   const form = useForm<z.infer<typeof AppointmentFormSchema>>({
     resolver: zodResolver(AppointmentFormSchema),
     defaultValues: {
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      timezone: "America/Santo_Domingo",
       location:
         user!.location === "La Vega" || user!.location === "Puerto Plata"
           ? user!.location
@@ -126,14 +126,13 @@ export function AppointmentTabs({
     },
   });
 
+  console.log;
   const timezone = form.watch("timezone");
   const date = form.watch("date");
   const time = form.watch("startTime");
 
   function onSubmit(values: z.infer<typeof AppointmentFormSchema>) {
     setFormError("");
-    console.log("values from client");
-    console.log(values);
     startTransition(async () => {
       const response = await createAppointment({
         ...values,
@@ -357,7 +356,7 @@ export function AppointmentTabs({
                             <FormLabel>Timezone</FormLabel>
                             <Select
                               onValueChange={field.onChange}
-                              defaultValue={field.value}
+                              defaultValue={"America/Santo_Domingo"}
                               disabled={isPending}
                             >
                               <FormControl>
@@ -366,12 +365,9 @@ export function AppointmentTabs({
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {RELEVANT_TIMEZONES.map((timezone) => (
-                                  <SelectItem key={timezone} value={timezone}>
-                                    {timezone}
-                                    {` (${formatTimezoneOffset(timezone)})`}
-                                  </SelectItem>
-                                ))}
+                                <SelectItem value={"America/Santo_Domingo"}>
+                                  America/Santo_Domingo
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
