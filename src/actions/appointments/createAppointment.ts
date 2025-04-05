@@ -27,6 +27,9 @@ export async function createAppointment(
   const endTime = addMinutes(data.startTime, data.procedure.duration + 15);
   const endIndDoctorTimeZone = toZonedTime(endTime, data.timezone);
 
+  console.log("timezone");
+  console.log(data.timezone);
+
   console.log("start in timezone, and end time");
   console.log(startInTimeZone);
   console.log(endTime);
