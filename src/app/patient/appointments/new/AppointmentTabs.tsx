@@ -47,8 +47,8 @@ import {
   formatDate,
   formatDurationDescription,
   formatTimeToString,
-  formatTimezoneOffset,
 } from "@/lib/formatters";
+
 import {
   addMonths,
   eachMinuteOfInterval,
@@ -78,7 +78,7 @@ import { useRouter } from "next/navigation";
 
 import { createAppointment } from "@/actions/appointments/createAppointment";
 import { toast } from "sonner";
-import { type LOCATION, RELEVANT_TIMEZONES } from "@/data/constants";
+import { type LOCATION } from "@/data/constants";
 
 export function AppointmentTabs({
   doctors,
