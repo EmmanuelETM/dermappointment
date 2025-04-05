@@ -7,7 +7,6 @@ import { type APPOINTMENT_STATUS } from "./constants";
 const getAppointmentSchedule = async (
   filterKey: "doctorId" | "userId",
   id: string,
-  status: (typeof APPOINTMENT_STATUS)[number],
   date: { start: Date; end: Date },
 ) => {
   const data = await db.query.appointment.findMany({
@@ -58,10 +57,9 @@ const getAppointmentSchedule = async (
 export async function getAppointmentScheduleData(
   filterKey: "doctorId" | "userId",
   id: string,
-  status: (typeof APPOINTMENT_STATUS)[number],
   date: { start: Date; end: Date },
 ): Promise<Appointment[]> {
-  const data = await getAppointmentSchedule(filterKey, id, status, date);
+  const data = await getAppointmentSchedule(filterKey, id, date);
 
   const flatten = data.map((appointment) => ({
     id: appointment.id,

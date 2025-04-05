@@ -1,6 +1,6 @@
 "use server";
 
-import { getAppointmentTimes } from "@/actions/appointment";
+import { getAppointmentTimes } from "@/actions/appointments/getAppointment";
 import { type LOCATION, type DAYS_OF_WEEK } from "@/data/constants";
 import { type Procedure } from "@/schemas/admin/procedures";
 import { db } from "@/server/db";

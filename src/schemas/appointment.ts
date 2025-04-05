@@ -21,6 +21,7 @@ export const AppointmentActionSchema = z
     userId: z.string(),
     doctorId: z.string(),
     procedure: ProcedureSchema,
+    date: z.date().min(startOfDay(new Date()), "Must be in the future"),
   })
   .merge(AppointmentSchemaBase);
 

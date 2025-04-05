@@ -76,7 +76,7 @@ import { toZonedTime } from "date-fns-tz";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 
-import { createAppointment } from "@/actions/appointment";
+import { createAppointment } from "@/actions/appointments/createAppointment";
 import { toast } from "sonner";
 import { type LOCATION, RELEVANT_TIMEZONES } from "@/data/constants";
 
@@ -141,7 +141,7 @@ export function AppointmentTabs({
       });
       if (response?.success) {
         toast(response?.success);
-        setCurrentStep(4);
+        router.push("/patient/appointments/");
       }
 
       if (response?.error) setFormError(response?.error);
@@ -184,10 +184,9 @@ export function AppointmentTabs({
         selectedLocation,
       );
 
-      setTimeout(() => console.log("we submited"), 10000);
-
       if (validTimes.length === 0) {
-        console.log("no shenaningans");
+        setFormError("No availabilities for this Doctor");
+        return;
       }
 
       return validTimes;
@@ -240,7 +239,7 @@ export function AppointmentTabs({
           <TabsTrigger
             key={tab.value}
             value={tab.value}
-            disabled={currentStep < tab.step}
+            disabled={currentStep < tab.step || isPending}
           >
             <span className="block sm:hidden">{tab.step}</span>
             <span className="hidden sm:block">{tab.label}</span>
@@ -248,85 +247,92 @@ export function AppointmentTabs({
         ))}
       </TabsList>
 
-      {/* Step 1 */}
-      <TabsContent value="doctor">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">Doctors</CardTitle>
-            <CardDescription className="text-md">
-              Choose the doctor.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="mx-auto">
-              <DataTable columns={columns} data={doctors} filter="name" />
-            </div>
-          </CardContent>
-        </Card>
-      </TabsContent>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          {/* Step 1 */}
+          <TabsContent value="doctor">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">Doctors</CardTitle>
+                <CardDescription className="text-md">
+                  Choose the doctor.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="mx-auto">
+                  <DataTable columns={columns} data={doctors} filter="name" />
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-      {/* Step 2 */}
-      <TabsContent value="procedure">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">Procedure</CardTitle>
-            <CardDescription className="text-md">
-              Select the procedure.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {selectedDoctor?.procedures.map((procedure) => (
-              <Card key={procedure.id} className="rounded-2xl border shadow-lg">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold">
-                    {procedure.name}
-                  </CardTitle>
-                  <CardDescription>
-                    Duration: {formatDurationDescription(procedure.duration)}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="text-gray-600">
-                  {procedure.description}
-                </CardContent>
-                <CardFooter className="flex justify-end">
-                  <Button
-                    className="w-full"
-                    type="button"
-                    onClick={() => {
-                      setSelectedProcedure(procedure);
-                      setCurrentStep((prevStep) => prevStep + 1);
-                    }}
+          {/* Step 2 */}
+          <TabsContent value="procedure">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">
+                  Procedure
+                </CardTitle>
+                <CardDescription className="text-md">
+                  Select the procedure.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {selectedDoctor?.procedures.map((procedure) => (
+                  <Card
+                    key={procedure.id}
+                    className="rounded-2xl border shadow-lg"
                   >
-                    Select
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={() => setCurrentStep(1)}>
-              Back
-            </Button>
-          </CardFooter>
-        </Card>
-      </TabsContent>
+                    <CardHeader>
+                      <CardTitle className="text-lg font-semibold">
+                        {procedure.name}
+                      </CardTitle>
+                      <CardDescription>
+                        Duration:{" "}
+                        {formatDurationDescription(procedure.duration)}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="text-gray-600">
+                      {procedure.description}
+                    </CardContent>
+                    <CardFooter className="flex justify-end">
+                      <Button
+                        className="w-full"
+                        type="button"
+                        onClick={() => {
+                          setSelectedProcedure(procedure);
+                          setCurrentStep((prevStep) => prevStep + 1);
+                        }}
+                      >
+                        Select
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                <Button variant="outline" onClick={() => setCurrentStep(1)}>
+                  Back
+                </Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
 
-      {/* Step 3 */}
+          {/* Step 3 */}
 
-      {/* Form stuff from here on down */}
+          {/* Form stuff from here on down */}
 
-      <TabsContent value="details">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">
-              Appointment Details
-            </CardTitle>
-            <CardDescription className="text-md">
-              Set up Date, Time and more.
-            </CardDescription>
-          </CardHeader>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+          <TabsContent value="details">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">
+                  Appointment Details
+                </CardTitle>
+                <CardDescription className="text-md">
+                  Set up Date, Time and more.
+                </CardDescription>
+              </CardHeader>
+
               <div className="mb-6 w-full px-6">
                 <FormError message={formError} />
               </div>
@@ -540,35 +546,41 @@ export function AppointmentTabs({
                   Back
                 </Button>
                 <Button
-                  type="submit"
-                  disabled={time != null ? false : true || isPending}
+                  disabled={time != null ? false : true}
+                  onClick={() => setCurrentStep(4)}
                 >
-                  Create Appointment
+                  Next
                 </Button>
               </CardFooter>
-            </form>
-          </Form>
-        </Card>
-      </TabsContent>
+            </Card>
+          </TabsContent>
 
-      {/* Step 4 */}
-      <TabsContent value="payment">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">Payment</CardTitle>
-            <CardDescription className="text-md">
-              Pay the reservation for the Appointment.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">Check everything</CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={() => setCurrentStep(3)}>
-              Back
-            </Button>
-            <Button onClick={() => alert("this is cool")}>Finish</Button>
-          </CardFooter>
-        </Card>
-      </TabsContent>
+          {/* Step 4 */}
+          <TabsContent value="payment">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">Payment</CardTitle>
+                <CardDescription className="text-md">
+                  Pay the reservation for the Appointment.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">Check everything</CardContent>
+              <CardFooter className="flex justify-between">
+                <Button
+                  variant="outline"
+                  disabled={isPending}
+                  onClick={() => setCurrentStep(3)}
+                >
+                  Back
+                </Button>
+                <Button type="submit" disabled={isPending}>
+                  Finish
+                </Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+        </form>
+      </Form>
     </Tabs>
   );
 }
