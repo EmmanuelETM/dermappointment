@@ -126,7 +126,6 @@ export function AppointmentTabs({
     },
   });
 
-  console.log;
   const timezone = form.watch("timezone");
   const date = form.watch("date");
   const time = form.watch("startTime");
