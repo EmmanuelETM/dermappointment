@@ -32,9 +32,9 @@ export async function getValidTimesFromSchedule(
   const start = timesInOrder[0];
   const end = timesInOrder[timesInOrder.length - 1];
 
-  console.log("start", start, "end", end);
-
   if (start == null || end == null) return [];
+
+  console.log("before doctorSchedule");
 
   const doctorSchedule = await db.query.schedule.findFirst({
     where: and(eq(schedule.doctorId, doctorId)),
@@ -47,6 +47,8 @@ export async function getValidTimesFromSchedule(
 
   if (!doctorSchedule) return [];
 
+  console.log("after doctorSchedule");
+
   const groupedAvailabilites = Object.groupBy(
     doctorSchedule.scheduleAvailability,
     (a) => a.weekDay,
@@ -55,6 +57,10 @@ export async function getValidTimesFromSchedule(
   const date = { start, end };
 
   const appointmentTimes = await getAppointmentTimes({ doctorId, date });
+
+  console.log("after get appointment times");
+
+  console.log(appointmentTimes);
 
   return timesInOrder.filter((intervalDate) => {
     const availabilities = getAvailabilities(

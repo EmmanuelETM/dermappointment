@@ -23,12 +23,17 @@ export async function createAppointment(
   const startInTimeZone = fromZonedTime(data.startTime, data.timezone);
   const endTime = addMinutes(startInTimeZone, data.procedure.duration + 15);
 
+  console.log(startInTimeZone);
+  console.log(endTime);
+
   const validTimes = await getValidTimesFromSchedule(
     [startInTimeZone],
     data.procedure,
     data.doctorId,
     data.location,
   );
+
+  console.log(validTimes);
 
   if (validTimes.length === 0) return { error: "Invalid Schedule Time" };
 
