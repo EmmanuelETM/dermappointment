@@ -132,6 +132,8 @@ export function AppointmentTabs({
 
   function onSubmit(values: z.infer<typeof AppointmentFormSchema>) {
     setFormError("");
+    console.log("values from client");
+    console.log(values);
     startTransition(async () => {
       const response = await createAppointment({
         ...values,

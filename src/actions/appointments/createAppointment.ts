@@ -13,7 +13,8 @@ import { getAppointmentTimes } from "./getAppointment";
 export async function createAppointment(
   values: z.infer<typeof AppointmentActionSchema>,
 ) {
-  console.log(values.startTime);
+  console.log("values from server");
+  console.log(values);
   const { success, data } = AppointmentActionSchema.safeParse(values);
 
   if (!success) {
