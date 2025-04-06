@@ -49,7 +49,7 @@ export default async function AppointmentPage() {
           className="flex items-center space-x-2"
           variant="outline"
         >
-          <Link href="/patient/appointments/new">
+          <Link href="/patient/appointments/new/">
             <CalendarPlus />
             <span>New</span>
           </Link>

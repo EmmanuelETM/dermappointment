@@ -72,18 +72,21 @@ import { useRouter } from "next/navigation";
 import { createAppointment } from "@/actions/appointments/createAppointment";
 import { toast } from "sonner";
 import { type LOCATION } from "@/data/constants";
-import { DoctorTab } from "@/app/patient/appointments/new/tabs/Doctor";
+import { DoctorTab } from "./tabs/Doctor";
 import { ProcedureTab } from "./tabs/Procedure";
 
-export function AppointmentTabs({
-  doctors,
-  doctor,
-}: {
-  doctors: Doctor[];
-  doctor?: Doctor;
-}) {
+import { useSearchParams } from "next/navigation";
+
+export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
   const user = useCurrentUser();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const doctorId = searchParams.get("doctor");
+
+  //filter logic
+  if (doctorId) {
+    console.log(doctorId);
+  }
 
   if (!user || !user.id) {
     router.push("/login");
@@ -139,12 +142,12 @@ export function AppointmentTabs({
 
   //Data fetching stuff
 
-  useEffect(() => {
-    if (doctor) {
-      setSelectedDoctor(doctor);
-      setCurrentStep(2);
-    }
-  }, [doctor, user]);
+  // useEffect(() => {
+  //   if (doctor) {
+  //     setSelectedDoctor(doctor);
+  //     setCurrentStep(2);
+  //   }
+  // }, [doctor, user]);
 
   const {
     data: availableTimes,
