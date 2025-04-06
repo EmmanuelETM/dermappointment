@@ -30,9 +30,6 @@ import {
 
 import { Button } from "@/components/ui/button";
 
-import { DataTable } from "@/components/tables/data-table";
-import { getColumns } from "./columns";
-
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useCurrentUser } from "@/hooks/user-current-user";
 import { useForm } from "react-hook-form";
@@ -43,11 +40,7 @@ import { type Doctor } from "@/schemas/doctor";
 
 import { HashLoader } from "react-spinners";
 
-import {
-  formatDate,
-  formatDurationDescription,
-  formatTimeToString,
-} from "@/lib/formatters";
+import { formatDate, formatTimeToString } from "@/lib/formatters";
 
 import {
   addMonths,
@@ -79,6 +72,8 @@ import { useRouter } from "next/navigation";
 import { createAppointment } from "@/actions/appointments/createAppointment";
 import { toast } from "sonner";
 import { type LOCATION } from "@/data/constants";
+import { DoctorTab } from "@/app/patient/appointments/new/tabs/Doctor";
+import { ProcedureTab } from "./tabs/Procedure";
 
 export function AppointmentTabs({
   doctors,
@@ -106,12 +101,6 @@ export function AppointmentTabs({
 
   const [formError, setFormError] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-
-  const columns = getColumns(
-    setSelectedDoctor,
-    setSelectedProcedure,
-    setCurrentStep,
-  );
 
   //Form stuff
 
@@ -141,7 +130,7 @@ export function AppointmentTabs({
       });
       if (response?.success) {
         toast(response?.success);
-        // router.push("/patient/appointments/");
+        router.push("/patient/appointments/");
       }
 
       if (response?.error) setFormError(response?.error);
@@ -251,71 +240,21 @@ export function AppointmentTabs({
         <form onSubmit={form.handleSubmit(onSubmit)}>
           {/* Step 1 */}
           <TabsContent value="doctor">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">Doctors</CardTitle>
-                <CardDescription className="text-md">
-                  Choose the doctor.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="mx-auto">
-                  <DataTable columns={columns} data={doctors} filter="name" />
-                </div>
-              </CardContent>
-            </Card>
+            <DoctorTab
+              doctors={doctors}
+              setCurrentStepAction={setCurrentStep}
+              setSelectedDoctorAction={setSelectedDoctor}
+              setSelectedProcedureAction={setSelectedProcedure}
+            />
           </TabsContent>
 
           {/* Step 2 */}
           <TabsContent value="procedure">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">
-                  Procedure
-                </CardTitle>
-                <CardDescription className="text-md">
-                  Select the procedure.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {selectedDoctor?.procedures.map((procedure) => (
-                  <Card
-                    key={procedure.id}
-                    className="rounded-2xl border shadow-lg"
-                  >
-                    <CardHeader>
-                      <CardTitle className="text-lg font-semibold">
-                        {procedure.name}
-                      </CardTitle>
-                      <CardDescription>
-                        Duration:{" "}
-                        {formatDurationDescription(procedure.duration)}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="text-gray-600">
-                      {procedure.description}
-                    </CardContent>
-                    <CardFooter className="flex justify-end">
-                      <Button
-                        className="w-full"
-                        type="button"
-                        onClick={() => {
-                          setSelectedProcedure(procedure);
-                          setCurrentStep((prevStep) => prevStep + 1);
-                        }}
-                      >
-                        Select
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button variant="outline" onClick={() => setCurrentStep(1)}>
-                  Back
-                </Button>
-              </CardFooter>
-            </Card>
+            <ProcedureTab
+              selectedDoctor={selectedDoctor}
+              setSelectedProcedureAction={setSelectedProcedure}
+              setCurrentStepAction={setCurrentStep}
+            />
           </TabsContent>
 
           {/* Step 3 */}
