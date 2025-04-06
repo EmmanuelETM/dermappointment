@@ -116,7 +116,7 @@ export const columns: ColumnDef<Appointment>[] = [
     cell: ({ row }) => {
       const date = row.getValue("startTime");
       return (
-        <div>
+        <div className="ml-4">
           {format(subMinutes(date as string, 15), "yyyy/MM/dd", {
             timeZone: row.original.timezone!,
           })}

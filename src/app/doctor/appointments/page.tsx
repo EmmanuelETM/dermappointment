@@ -27,6 +27,7 @@ import {
 import { format } from "date-fns-tz/format";
 import { subMinutes } from "date-fns";
 import { Footer } from "./Footer";
+import { cn } from "@/lib/utils";
 
 export default async function AppointmentPage() {
   const user = await currentUser();
@@ -93,12 +94,23 @@ export default async function AppointmentPage() {
                   <div className="flex flex-col gap-2">
                     <div className="flex flex-row items-center gap-2">
                       <User size={20} />
-                      {appointment.patient ?? ""}
+                      {appointment.patient}
                     </div>
-                    <div className="flex flex-row items-center gap-2">
-                      <MapPin size={20} />
-                      {appointment.location ?? ""}
+                    <div></div>
+                    <div
+                      className={cn(
+                        "inline-flex items-center gap-2 rounded-md px-2 py-1 text-sm font-medium", // nota el uso de `inline-flex` y `px-2`
+                        appointment.location === "Puerto Plata" &&
+                          "bg-blue-900/10 text-blue-900 dark:bg-blue-500/20 dark:text-blue-200",
+                        appointment.location === "La Vega" &&
+                          "bg-green-900/10 text-green-900 dark:bg-green-500/20 dark:text-green-200",
+                        !appointment.location && "text-muted-foreground",
+                      )}
+                    >
+                      <MapPin size={16} className="shrink-0" />
+                      {appointment.location}
                     </div>
+
                     <CardDescription className="mt-2 flex flex-col gap-2">
                       <div>
                         <HoverCard openDelay={2}>
