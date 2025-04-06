@@ -32,6 +32,7 @@ export const AppointmentSchema = z.object({
   patient: z.string().nullable(),
   doctor: z.string().nullable(),
   procedure: z.string().nullable(),
+  timezone: z.string().nullable(),
   location: z.enum(LOCATION),
   description: z.string().nullable(),
   status: z.enum(APPOINTMENT_STATUS),

@@ -3,6 +3,7 @@ import { db } from "@/server/db";
 import { appointment } from "@/server/db/schema";
 import { and, eq, gte, lte, ne } from "drizzle-orm";
 import { type APPOINTMENT_STATUS } from "./constants";
+import { format, toZonedTime } from "date-fns-tz";
 
 const getAppointmentSchedule = async (
   filterKey: "doctorId" | "userId",
@@ -45,6 +46,7 @@ const getAppointmentSchedule = async (
       id: true,
       startTime: true,
       endTime: true,
+      timezone: true,
       location: true,
       description: true,
       status: true,
@@ -68,6 +70,7 @@ export async function getAppointmentScheduleData(
     procedure: appointment.procedures?.name,
     startTime: appointment.startTime,
     endTime: appointment.endTime,
+    timezone: appointment.timezone,
     location: appointment.location,
     description: appointment.description,
     status: appointment.status,
@@ -109,6 +112,7 @@ const getAppointments = async (
       id: true,
       startTime: true,
       endTime: true,
+      timezone: true,
       location: true,
       description: true,
       status: true,
@@ -125,17 +129,23 @@ export async function getAppointmentsData(
 ): Promise<Appointment[]> {
   const data = await getAppointments(filterKey, id, status);
 
-  const flatten = data.map((appointment) => ({
-    id: appointment.id,
-    patient: appointment.patients?.name,
-    doctor: appointment.doctors.users.name,
-    procedure: appointment.procedures?.name,
-    startTime: appointment.startTime,
-    endTime: appointment.endTime,
-    location: appointment.location,
-    description: appointment.description,
-    status: appointment.status,
-  }));
+  const flatten = data.map((appointment) => {
+    const start = toZonedTime(appointment.startTime, appointment.timezone);
+    const end = toZonedTime(appointment.endTime, appointment.timezone);
+
+    return {
+      id: appointment.id,
+      patient: appointment.patients?.name,
+      doctor: appointment.doctors.users.name,
+      procedure: appointment.procedures?.name,
+      startTime: start,
+      endTime: end,
+      timezone: appointment.timezone,
+      location: appointment.location,
+      description: appointment.description,
+      status: appointment.status,
+    };
+  });
 
   return flatten;
 }

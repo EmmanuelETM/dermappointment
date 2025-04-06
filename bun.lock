@@ -27,7 +27,7 @@
         "@schedule-x/event-modal": "^2.26.0",
         "@schedule-x/events-service": "^2.26.0",
         "@schedule-x/react": "^2.25.0",
-        "@schedule-x/scroll-controller": "^2.26.0",
+        "@schedule-x/scroll-controller": "^2.27.0",
         "@schedule-x/theme-default": "^2.26.0",
         "@t3-oss/env-nextjs": "^0.10.1",
         "@tanstack/react-query": "^5.71.5",
@@ -276,7 +276,7 @@
 
     "@schedule-x/react": ["@schedule-x/react@2.25.0", "", { "peerDependencies": { "@schedule-x/calendar": "^2.25.0", "react": "^16.7.0 || ^17 || ^18 || ^19", "react-dom": "^16.7.0 || ^17 || ^18 || ^19" } }, "sha512-Uxc5YfWNFxRvAapi+MT7vDZx+0Iq0Bb/ARhlAbLS3Bi8VJRSwB6I8X+cemfgAQ4oOmDgIKdbX3znlUpyd/dB3w=="],
 
-    "@schedule-x/scroll-controller": ["@schedule-x/scroll-controller@2.26.0", "", { "peerDependencies": { "@preact/signals": "^2.0.2" } }, "sha512-bM0ZrjF3S54CLUba8F2HhvHlToBpLwyB1o6UL0XgYj5lqnQSNTEKbT6Z9T2PH9b4bsITN8UfarLgWMtMRF/hkw=="],
+    "@schedule-x/scroll-controller": ["@schedule-x/scroll-controller@2.27.0", "", { "peerDependencies": { "@preact/signals": "^2.0.2" } }, "sha512-UuctgbBvkCJf+VRHfMDk3lcn0atrHVI/gutxsXE6p+agjiazX1MCsSA2oiTQ/wEeLEIjOHTAbWF2o6PPGh60yQ=="],
 
     "@schedule-x/theme-default": ["@schedule-x/theme-default@2.26.0", "", {}, "sha512-WBmZH2Y/L1d5tBWaPhktAiBEu660YBLwaVkJIpMzCQh1AacH5+EqB/kMZK7J3jCWVGkrqYD+KaU7d9vpwpLUSg=="],
 
