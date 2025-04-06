@@ -10,13 +10,14 @@ import {
 import { createEventsServicePlugin } from "@schedule-x/events-service";
 import { createEventModalPlugin } from "@schedule-x/event-modal";
 import { createCurrentTimePlugin } from "@schedule-x/current-time";
+import { createScrollControllerPlugin } from "@schedule-x/scroll-controller";
 
 import "@schedule-x/theme-default/dist/index.css";
-import { useState } from "react";
 import { type Appointment } from "@/schemas/appointment";
+import { format } from "date-fns-tz/format";
 
 export function Calendar({ appointments }: { appointments: Appointment[] }) {
-  const eventsService = useState(() => createEventsServicePlugin())[0];
+  const eventsService = createEventsServicePlugin();
 
   const calendar = useNextCalendarApp({
     views: [
@@ -26,28 +27,55 @@ export function Calendar({ appointments }: { appointments: Appointment[] }) {
       createViewMonthAgenda(),
     ],
     dayBoundaries: {
-      start: "08:00",
+      start: "07:00",
       end: "19:00",
     },
-    events: [
-      {
-        id: "1",
-        title: "Consultation",
-        start: "2025-04-02 09:00",
-        end: "2025-04-02 10:00",
-        description: "asdfasdfasdf",
-        status: "CONFIRMED",
-      },
-    ],
+    events: appointments.map((appointment) => ({
+      id: appointment.id,
+      title: appointment.procedure ?? "Appointment",
+      start: format(appointment.startTime, "yyyy-MM-dd HH:mm", {
+        timeZone: appointment.timezone!,
+      }),
+      end: format(appointment.endTime, "yyyy-MM-dd HH:mm", {
+        timeZone: appointment.timezone!,
+      }),
+      location: appointment.location,
+      people: appointment.patient ? [appointment.patient] : undefined,
+      description: appointment.description ?? "",
+      calendarId: appointment.location,
+    })),
     plugins: [
       eventsService,
       createEventModalPlugin(),
       createCurrentTimePlugin(),
+      createScrollControllerPlugin(),
     ],
-    callbacks: {
-      onRender: () => {
-        // get all events
-        eventsService.getAll();
+    calendars: {
+      "Puerto Plata": {
+        colorName: "oceanside",
+        lightColors: {
+          main: "#5db8f7",
+          container: "#bde6fc",
+          onContainer: "#1a3f61",
+        },
+        darkColors: {
+          main: "#3d74a3",
+          onContainer: "#d1e7ff",
+          container: "#1b3c5f",
+        },
+      },
+      "La Vega": {
+        colorName: "elegant",
+        lightColors: {
+          main: "#6c8e4f",
+          container: "#e1f0d3",
+          onContainer: "#2f3a21",
+        },
+        darkColors: {
+          main: "#4f7041",
+          onContainer: "#c5d8b0",
+          container: "#2b3d1f",
+        },
       },
     },
   });
@@ -58,12 +86,3 @@ export function Calendar({ appointments }: { appointments: Appointment[] }) {
     </div>
   );
 }
-
-// events: appointments.map((appointment) => ({
-//   id: appointment.id,
-//   title: appointment.procedure, // Asegúrate de que cada appointment tenga un nombre de procedimiento
-//   start: appointment.start,
-//   end: appointment.end,
-//   description: appointment.reason,
-//   status: appointment.status?.toUpperCase(), // Asumiendo que `status` es un string
-// })),

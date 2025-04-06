@@ -25,6 +25,8 @@ import {
   ClipboardPlus,
   User,
   CalendarRange,
+  CalendarCheck,
+  SquareChartGantt,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -68,6 +70,11 @@ const data = {
           title: "Appointments",
           url: "/doctor/appointments",
           icon: CalendarRange,
+        },
+        {
+          title: "Management",
+          url: "/doctor/appointment-confirmation",
+          icon: SquareChartGantt,
         },
       ],
     },

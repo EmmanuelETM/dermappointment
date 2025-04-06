@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { formatDurationDescription } from "@/lib/formatters";
+import { formatDuration } from "@/lib/formatters";
 import { type Procedure } from "@/schemas/admin/procedures";
 import { type Doctor } from "@/schemas/doctor";
 
@@ -36,7 +36,7 @@ export const ProcedureTab = ({
                 {procedure.name}
               </CardTitle>
               <CardDescription>
-                Duration: {formatDurationDescription(procedure.duration)}
+                Duration: {formatDuration(procedure.duration)}
               </CardDescription>
             </CardHeader>
             <CardContent className="text-gray-600">

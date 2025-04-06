@@ -36,6 +36,7 @@ export const AppointmentSchema = z.object({
   location: z.enum(LOCATION),
   description: z.string().nullable(),
   status: z.enum(APPOINTMENT_STATUS),
+  createdAt: z.date(),
 });
 
 export type Appointment = z.infer<typeof AppointmentSchema>;

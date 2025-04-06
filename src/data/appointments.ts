@@ -2,8 +2,7 @@ import { type Appointment } from "@/schemas/appointment";
 import { db } from "@/server/db";
 import { appointment } from "@/server/db/schema";
 import { and, eq, gte, lte, ne } from "drizzle-orm";
-import { type APPOINTMENT_STATUS } from "./constants";
-import { format, toZonedTime } from "date-fns-tz";
+import { toZonedTime } from "date-fns-tz";
 
 const getAppointmentSchedule = async (
   filterKey: "doctorId" | "userId",
@@ -50,6 +49,7 @@ const getAppointmentSchedule = async (
       location: true,
       description: true,
       status: true,
+      createdAt: true,
     },
   });
 
@@ -74,6 +74,7 @@ export async function getAppointmentScheduleData(
     location: appointment.location,
     description: appointment.description,
     status: appointment.status,
+    createdAt: appointment.createdAt,
   }));
 
   return flatten;
@@ -82,10 +83,10 @@ export async function getAppointmentScheduleData(
 const getAppointments = async (
   filterKey: "doctorId" | "userId",
   id: string,
-  status: (typeof APPOINTMENT_STATUS)[number],
 ) => {
   const data = await db.query.appointment.findMany({
-    where: and(eq(appointment[filterKey], id), eq(appointment.status, status)),
+    where: eq(appointment[filterKey], id),
+    orderBy: appointment.startTime,
     with: {
       doctors: {
         columns: {},
@@ -116,6 +117,7 @@ const getAppointments = async (
       location: true,
       description: true,
       status: true,
+      createdAt: true,
     },
   });
 
@@ -125,9 +127,8 @@ const getAppointments = async (
 export async function getAppointmentsData(
   filterKey: "doctorId" | "userId",
   id: string,
-  status: (typeof APPOINTMENT_STATUS)[number],
 ): Promise<Appointment[]> {
-  const data = await getAppointments(filterKey, id, status);
+  const data = await getAppointments(filterKey, id);
 
   const flatten = data.map((appointment) => {
     const start = toZonedTime(appointment.startTime, appointment.timezone);
@@ -144,6 +145,7 @@ export async function getAppointmentsData(
       location: appointment.location,
       description: appointment.description,
       status: appointment.status,
+      createdAt: appointment.createdAt,
     };
   });
 

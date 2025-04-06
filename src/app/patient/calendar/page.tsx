@@ -12,7 +12,7 @@ export default async function CalendarPage() {
     redirect("/login");
   }
 
-  const appointments = await getAppointmentsData("userId", user.id, "Pending");
+  const appointments = await getAppointmentsData("userId", user.id);
 
   return (
     <div className="max-h-[80vh] overflow-hidden rounded-lg">

@@ -5,15 +5,20 @@ import {
   CalendarPlus,
   CalendarRange,
   Clock2,
-  ClockArrowDown,
-  ClockArrowUp,
   MapPin,
   Trash2,
   User,
+  Text,
 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getAppointmentsData } from "@/data/appointments";
+
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 import {
   Card,
@@ -24,6 +29,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { format } from "date-fns-tz/format";
+import { subMinutes } from "date-fns";
 
 export default async function AppointmentPage() {
   const user = await currentUser();
@@ -32,7 +38,7 @@ export default async function AppointmentPage() {
     redirect("/login");
   }
 
-  const appointments = await getAppointmentsData("userId", user?.id, "Pending");
+  const appointments = await getAppointmentsData("userId", user?.id);
 
   if (!user || !user.id) {
     redirect("/login");
@@ -56,7 +62,6 @@ export default async function AppointmentPage() {
         </Button>
       </div>
 
-      {/* Conditionally render appointments */}
       {appointments.length > 0 ? (
         <div className="flex flex-col gap-6">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -83,9 +88,13 @@ export default async function AppointmentPage() {
                           timeZone: appointment.timezone!,
                         })}{" "}
                         -{" "}
-                        {format(appointment.endTime, "hh:mm a", {
-                          timeZone: appointment.timezone!,
-                        })}
+                        {format(
+                          subMinutes(appointment.endTime, 15),
+                          "hh:mm a",
+                          {
+                            timeZone: appointment.timezone!,
+                          },
+                        )}
                       </span>
                     </div>
                   </CardDescription>
@@ -101,6 +110,19 @@ export default async function AppointmentPage() {
                       {appointment.doctor ?? ""}
                     </div>
                   </div>
+                  <CardDescription className="mt-2 flex flex-col gap-2">
+                    <HoverCard openDelay={2}>
+                      <HoverCardTrigger>
+                        <Button variant="link" className="p-0">
+                          <Text size={20} />
+                          Description
+                        </Button>
+                      </HoverCardTrigger>
+                      <HoverCardContent>
+                        {appointment.description ?? ""}
+                      </HoverCardContent>
+                    </HoverCard>
+                  </CardDescription>
                 </CardContent>
                 <CardFooter className="flex justify-end gap-2">
                   <Button variant="destructiveGhost">

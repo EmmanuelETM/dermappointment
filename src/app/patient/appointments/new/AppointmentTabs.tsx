@@ -80,19 +80,8 @@ import { useSearchParams } from "next/navigation";
 export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
   const user = useCurrentUser();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const doctorId = searchParams.get("doctor");
-
-  //filter logic
-  if (doctorId) {
-    console.log(doctorId);
-  }
-
-  if (!user || !user.id) {
-    router.push("/login");
-  }
-
   const theme = useTheme();
+  const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [selectedProcedure, setSelectedProcedure] = useState<Procedure | null>(
@@ -104,6 +93,23 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
 
   const [formError, setFormError] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    const doctorId = searchParams.get("doctor");
+
+    if (!doctorId) return;
+
+    const doctor = doctors.find((doctor) => doctor.doctorId === doctorId);
+
+    if (doctor) {
+      setSelectedDoctor(doctor);
+      setCurrentStep(2);
+    }
+  }, [searchParams, doctors]);
+
+  if (!user || !user.id) {
+    router.push("/login");
+  }
 
   //Form stuff
 
