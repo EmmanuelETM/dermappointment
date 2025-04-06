@@ -2,17 +2,14 @@ import { Button } from "@/components/ui/button";
 import { currentUser } from "@/lib/currentUser";
 import {
   CalendarDays,
-  CalendarPlus,
   CalendarRange,
   Clock2,
   MapPin,
-  Trash2,
   User,
   Text,
 } from "lucide-react";
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getAppointmentsData } from "@/data/appointments";
+import { getActiveAppointmentsData } from "@/data/appointments";
 
 import {
   HoverCard,
@@ -24,12 +21,12 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { format } from "date-fns-tz/format";
 import { subMinutes } from "date-fns";
+import { Footer } from "./Footer";
 
 export default async function AppointmentPage() {
   const user = await currentUser();
@@ -38,7 +35,10 @@ export default async function AppointmentPage() {
     redirect("/login");
   }
 
-  const appointments = await getAppointmentsData("doctorId", user?.doctorId);
+  const appointments = await getActiveAppointmentsData(
+    "doctorId",
+    user?.doctorId,
+  );
 
   if (!user || !user.id) {
     redirect("/login");
@@ -100,27 +100,23 @@ export default async function AppointmentPage() {
                       {appointment.location ?? ""}
                     </div>
                     <CardDescription className="mt-2 flex flex-col gap-2">
-                      <HoverCard openDelay={2}>
-                        <HoverCardTrigger>
-                          <Button variant="link" className="p-0">
-                            <Text size={20} />
-                            Description
-                          </Button>
-                        </HoverCardTrigger>
-                        <HoverCardContent>
-                          {appointment.description ?? ""}
-                        </HoverCardContent>
-                      </HoverCard>
+                      <div>
+                        <HoverCard openDelay={2}>
+                          <HoverCardTrigger>
+                            <Button variant="link" className="p-0">
+                              <Text size={20} />
+                              Description
+                            </Button>
+                          </HoverCardTrigger>
+                          <HoverCardContent>
+                            {appointment.description ?? ""}
+                          </HoverCardContent>
+                        </HoverCard>
+                      </div>
                     </CardDescription>
                   </div>
                 </CardContent>
-
-                <CardFooter className="flex justify-end gap-2">
-                  <Button variant="destructiveGhost">
-                    <Trash2 />
-                  </Button>
-                  <Button type="button">Edit</Button>
-                </CardFooter>
+                <Footer status={appointment.status} />
               </Card>
             ))}
           </div>
@@ -128,13 +124,7 @@ export default async function AppointmentPage() {
       ) : (
         <div className="mt-20 flex flex-col items-center justify-center gap-4 text-center">
           <CalendarRange className="mx-auto size-16" />
-          You do not have any appointments yet. Create a new Appointment to get
-          Started!
-          <Button asChild className="flex flex-row" variant="outline">
-            <Link href="/patient/appointments/new">
-              <CalendarPlus /> New Appointment
-            </Link>
-          </Button>
+          No Appointments Available
         </div>
       )}
     </div>

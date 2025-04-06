@@ -28,7 +28,7 @@ export function CancelAppointmentDialog({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Cancel Appointment</DialogTitle>
-          <p className="text-sm text-muted-foreground">
+          <p className="py-2 text-sm text-muted-foreground">
             Are you sure you want to cancel this appointment? This action cannot
             be undone.
           </p>

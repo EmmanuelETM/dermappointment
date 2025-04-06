@@ -19,7 +19,7 @@ export default async function ManageAppointmentsPage() {
       <div className="container mx-auto px-4">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="py-2 text-2xl font-semibold text-gray-900 dark:text-white lg:text-3xl">
-            Appointment Management
+            Management
           </h1>
         </div>
         <DataTable

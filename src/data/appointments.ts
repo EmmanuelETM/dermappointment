@@ -151,3 +151,36 @@ export async function getAppointmentsData(
 
   return flatten;
 }
+
+export async function getActiveAppointmentsData(
+  filterKey: "doctorId" | "userId",
+  id: string,
+): Promise<Appointment[]> {
+  const data = await getAppointments(filterKey, id);
+
+  const flatten = data
+    .filter(
+      (appointment) =>
+        appointment.status === "Pending" || appointment.status === "Confirmed",
+    )
+    .map((appointment) => {
+      const start = toZonedTime(appointment.startTime, appointment.timezone);
+      const end = toZonedTime(appointment.endTime, appointment.timezone);
+
+      return {
+        id: appointment.id,
+        patient: appointment.patients?.name,
+        doctor: appointment.doctors.users.name,
+        procedure: appointment.procedures?.name,
+        startTime: start,
+        endTime: end,
+        timezone: appointment.timezone,
+        location: appointment.location,
+        description: appointment.description,
+        status: appointment.status,
+        createdAt: appointment.createdAt,
+      };
+    });
+
+  return flatten;
+}

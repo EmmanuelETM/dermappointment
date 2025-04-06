@@ -4,12 +4,10 @@ import { type ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,
   Check,
-  X,
   CircleDot,
   CalendarCheck,
   Ban,
   BookCheck,
-  CheckCircle,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -17,9 +15,8 @@ import { Button } from "@/components/ui/button";
 import { type Appointment } from "@/schemas/appointment";
 import { format } from "date-fns-tz/format";
 import { subMinutes } from "date-fns";
-import { useRouter } from "next/router";
 import { cn } from "@/lib/utils";
-import { APPOINTMENT_STATUS } from "@/data/constants";
+import { type APPOINTMENT_STATUS } from "@/data/constants";
 import { updateAppointmentStatus } from "@/actions/appointments/updateAppointmentStatus";
 import { toast } from "sonner";
 import { CancelAppointmentDialog } from "@/components/dialog/doctor/appointment/cancel-appointment";
@@ -105,13 +102,21 @@ export const columns: ColumnDef<Appointment>[] = [
     },
   },
   {
-    accessorKey: "date",
-    header: "Date",
+    accessorKey: "startTime",
+    id: "date",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Date
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const date = row.getValue("startTime");
       return (
-        <div className="">
-          {" "}
+        <div>
           {format(subMinutes(date as string, 15), "yyyy/MM/dd", {
             timeZone: row.original.timezone!,
           })}
@@ -147,7 +152,6 @@ export const columns: ColumnDef<Appointment>[] = [
       );
     },
   },
-
   {
     id: "actions",
     enableHiding: false,
@@ -209,9 +213,3 @@ function ActionButtons({
     );
   }
 }
-
-// "ml-4 flex w-32 flex-row items-center gap-2 rounded-lg p-2 py-1.5 text-sm font-medium",
-// status === "Pending" && "bg-yellow-500/40 dark:bg-yellow-400/50",
-// status === "Confirmed" && "bg-cyan-500/40 dark:bg-cyan-400/50",
-// status === "Cancelled" && "bg-rose-500/40 dark:bg-rose-400/50",
-// status === "Completed" && "bg-green-700/40 dark:bg-green-400/50",

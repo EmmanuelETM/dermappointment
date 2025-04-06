@@ -73,7 +73,7 @@ const data = {
         },
         {
           title: "Management",
-          url: "/doctor/appointment-confirmation",
+          url: "/doctor/appointment-management",
           icon: SquareChartGantt,
         },
       ],
