@@ -10,7 +10,7 @@ import { currentUser } from "@/lib/currentUser";
 import { eq } from "drizzle-orm";
 import { users } from "@/server/db/schema";
 import { generateVToken } from "@/lib/tokens";
-import { sendVerificationEmail } from "@/lib/mail";
+import { sendVerificationEmail } from "@/lib/mail/verification";
 
 export const settings = async (values: z.infer<typeof SettingsSchema>) => {
   const user = await currentUser();

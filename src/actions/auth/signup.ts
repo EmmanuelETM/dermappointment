@@ -7,7 +7,7 @@ import { db } from "@/server/db";
 import { users } from "@/server/db/schema";
 import { getUserByEmail } from "@/data/user";
 import { generateVToken } from "@/lib/tokens";
-import { sendVerificationEmail } from "@/lib/mail/index";
+import { sendVerificationEmail } from "@/lib/mail/verification";
 
 export const signup = async (values: z.infer<typeof SignUpSchema>) => {
   const validatedFields = SignUpSchema.safeParse(values);

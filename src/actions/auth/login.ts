@@ -8,7 +8,7 @@ import { getDefaultRedirect } from "@/routes";
 import { generateVToken } from "@/lib/tokens";
 import { getUserByEmail } from "@/data/user";
 import bcrypt from "bcryptjs";
-import { sendVerificationEmail } from "@/lib/mail/index";
+import { sendVerificationEmail } from "@/lib/mail/verification";
 
 export const login = async (
   values: z.infer<typeof LoginSchema>,

@@ -7,7 +7,7 @@ import { db } from "@/server/db";
 import { doctors, users } from "@/server/db/schema";
 import { getUserByEmail } from "@/data/user";
 import { generateVToken } from "@/lib/tokens";
-import { sendVerificationEmail } from "@/lib/mail/index";
+import { sendVerificationEmail } from "@/lib/mail/verification";
 import { revalidatePath } from "next/cache";
 
 export async function createUser(values: z.infer<typeof UsersFormSchema>) {
