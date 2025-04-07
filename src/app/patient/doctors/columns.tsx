@@ -1,7 +1,7 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Check, Send } from "lucide-react";
+import { ArrowUpDown, CalendarCheck, CalendarCheck2, Send } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -84,7 +84,7 @@ function ActionButtons({ doctorId }: { doctorId: string }) {
           router.push(`/patient/appointments/new?doctor=${encodedDoctor}`)
         }
       >
-        <Check />
+        <CalendarCheck2 />
       </Button>
     </div>
   );

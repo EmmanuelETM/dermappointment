@@ -60,7 +60,12 @@ export async function createAppointment(
       .returning();
 
     if (inserted.length > 0) {
-      await sendConfirmationEmailToDoctor(data.doctor.email);
+      await sendConfirmationEmailToDoctor(
+        { doctorId: data.doctor.doctorId, doctorEmail: data.doctor.email },
+        data.userName,
+        data.procedure.name,
+        { start: startInDoctorTimeZone, end: endInDoctorTimeZone },
+      );
     } else {
       return { error: "Email could no be sent to doctor!" };
     }

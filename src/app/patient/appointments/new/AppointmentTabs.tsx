@@ -134,6 +134,7 @@ export function AppointmentTabs({
         ...values,
         doctor: selectedDoctor!,
         userId: user!.id ?? "",
+        userName: user?.name ?? "",
         procedure: selectedProcedure!,
       });
       if (response?.success) {

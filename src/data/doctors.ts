@@ -1,6 +1,6 @@
 import { type Doctor } from "@/schemas/doctor";
 import { db } from "@/server/db";
-import { users } from "@/server/db/schema";
+import { schedule, users } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
 export const getDoctorId = async (userId: string) => {
@@ -87,16 +87,13 @@ export async function getDoctorData(): Promise<Doctor[]> {
   return flatDoctor;
 }
 
-// const getAllDoctors = async () => {
-//   const doctorData = await fetchAllDoctors();
-//   const proceduresData = await fetchAllProcedures();
-//   const specialtiesData = await fetchAllSpecialties();
+export async function getDoctorTimezone(doctorId: string) {
+  const data = await db.query.schedule.findFirst({
+    columns: {
+      timezone: true,
+    },
+    where: eq(schedule.doctorId, doctorId),
+  });
 
-//   const combinedDoctorData = combineDoctorData(
-//     doctorData,
-//     proceduresData,
-//     specialtiesData,
-//   );
-
-//   return combinedDoctorData;
-// };
+  return data;
+}

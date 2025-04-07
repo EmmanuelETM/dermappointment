@@ -7,7 +7,6 @@ import {
   MapPin,
   User,
   Text,
-  Plus,
   CalendarPlus,
 } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -31,6 +30,7 @@ import { subMinutes } from "date-fns";
 import { Footer } from "./Footer";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { type Appointment } from "@/schemas/appointment";
 
 export default async function AppointmentPage() {
   const user = await currentUser();
@@ -39,7 +39,9 @@ export default async function AppointmentPage() {
     redirect("/login");
   }
 
-  const appointments = await getActiveAppointmentsData("userId", user.id);
+  const appointments = (
+    await getActiveAppointmentsData("userId", user.id)
+  ).filter((appointment) => appointment.status !== "Completed");
 
   if (!user || !user.id) {
     redirect("/login");
@@ -62,7 +64,7 @@ export default async function AppointmentPage() {
       {appointments.length > 0 ? (
         <div className="flex flex-col gap-6">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {appointments.map((appointment) => (
+            {appointments.map((appointment: Appointment) => (
               <Card
                 key={appointment.id}
                 className="w-full rounded-2xl transition-all duration-300"
@@ -105,11 +107,11 @@ export default async function AppointmentPage() {
                     <div></div>
                     <div
                       className={cn(
-                        "inline-flex items-center gap-2 rounded-md px-2 py-1 text-sm font-medium", // nota el uso de `inline-flex` y `px-2`
+                        "inline-flex items-center gap-2 rounded-md py-1 text-sm font-medium underline underline-offset-4", // nota el uso de `inline-flex` y `px-2`
                         appointment.location === "Puerto Plata" &&
-                          "bg-blue-900/10 text-blue-900 dark:bg-blue-500/20 dark:text-blue-200",
+                          "text-blue-800 dark:text-blue-200",
                         appointment.location === "La Vega" &&
-                          "bg-green-900/10 text-green-900 dark:bg-green-500/20 dark:text-green-200",
+                          "text-green-800 dark:text-green-200",
                         !appointment.location && "text-muted-foreground",
                       )}
                     >
@@ -119,17 +121,24 @@ export default async function AppointmentPage() {
 
                     <CardDescription className="mt-2 flex flex-col gap-2">
                       <div>
-                        <HoverCard openDelay={2}>
-                          <HoverCardTrigger>
-                            <Button variant="link" className="p-0">
-                              <Text size={20} />
-                              Description
-                            </Button>
-                          </HoverCardTrigger>
-                          <HoverCardContent>
-                            {appointment.description ?? ""}
-                          </HoverCardContent>
-                        </HoverCard>
+                        {appointment?.description ? (
+                          <HoverCard openDelay={2}>
+                            <HoverCardTrigger>
+                              <Button variant="link" className="p-0">
+                                <Text size={20} />
+                                Description
+                              </Button>
+                            </HoverCardTrigger>
+                            <HoverCardContent side="right">
+                              {appointment.description}
+                            </HoverCardContent>
+                          </HoverCard>
+                        ) : (
+                          <Button variant="link" className="p-0" disabled>
+                            <Text size={20} />
+                            Description
+                          </Button>
+                        )}
                       </div>
                     </CardDescription>
                   </div>
