@@ -16,6 +16,20 @@ export const AppointmentFormSchema = z
   })
   .merge(AppointmentSchemaBase);
 
+export const EditAppointmentFormSchema = z
+  .object({
+    date: z.date().min(startOfDay(new Date()), "Must be in the future"),
+  })
+  .merge(AppointmentSchemaBase);
+
+export const EditAppointmentActionSchema = z
+  .object({
+    appointmentId: z.string(),
+    doctorId: z.string(),
+    procedure: ProcedureSchema,
+  })
+  .merge(EditAppointmentFormSchema);
+
 export const AppointmentActionSchema = z
   .object({
     userId: z.string(),
@@ -40,3 +54,32 @@ export const AppointmentSchema = z.object({
 });
 
 export type Appointment = z.infer<typeof AppointmentSchema>;
+
+const FullAppointmentSchema = z.object({
+  id: z.string(),
+  startTime: z.date(),
+  endTime: z.date(),
+  timezone: z.string(),
+  location: z.enum(LOCATION),
+  description: z.string().nullable(),
+  status: z.enum(APPOINTMENT_STATUS),
+  createdAt: z.date(),
+  doctors: z.object({
+    id: z.string(),
+    users: z.object({
+      name: z.string().nullable(), // Puede ser null
+    }),
+  }),
+  patients: z.object({
+    id: z.string(),
+    name: z.string().nullable(), // ← aquí está el fix
+  }),
+  procedures: z.object({
+    id: z.string(),
+    name: z.string(),
+    description: z.string(),
+    duration: z.number(),
+  }),
+});
+
+export type FullAppointment = z.infer<typeof FullAppointmentSchema>;

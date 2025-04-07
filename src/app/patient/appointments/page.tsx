@@ -7,6 +7,8 @@ import {
   MapPin,
   User,
   Text,
+  Plus,
+  CalendarPlus,
 } from "lucide-react";
 import { redirect } from "next/navigation";
 import { getActiveAppointmentsData } from "@/data/appointments";
@@ -28,6 +30,7 @@ import { format } from "date-fns-tz/format";
 import { subMinutes } from "date-fns";
 import { Footer } from "./Footer";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export default async function AppointmentPage() {
   const user = await currentUser();
@@ -48,6 +51,12 @@ export default async function AppointmentPage() {
         <h1 className="py-2 text-2xl font-semibold text-gray-900 dark:text-white lg:text-3xl">
           Appointments
         </h1>
+        <Button asChild className="flex items-center space-x-2">
+          <Link href="/patient/appointments/new/">
+            <CalendarPlus />
+            <span>New</span>
+          </Link>
+        </Button>
       </div>
 
       {appointments.length > 0 ? (

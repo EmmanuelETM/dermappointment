@@ -57,11 +57,13 @@ import { type z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormError } from "@/components/auth/form-error";
 import { useTheme } from "next-themes";
+
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
 import { CalendarIcon, Frown } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
@@ -75,13 +77,16 @@ import { type LOCATION } from "@/data/constants";
 import { DoctorTab } from "./tabs/Doctor";
 import { ProcedureTab } from "./tabs/Procedure";
 
-import { useSearchParams } from "next/navigation";
-
-export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
+export function AppointmentTabs({
+  doctors,
+  doctor,
+}: {
+  doctors: Doctor[];
+  doctor: Doctor | null;
+}) {
   const user = useCurrentUser();
   const router = useRouter();
   const theme = useTheme();
-  const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [selectedProcedure, setSelectedProcedure] = useState<Procedure | null>(
@@ -95,17 +100,11 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    const doctorId = searchParams.get("doctor");
-
-    if (!doctorId) return;
-
-    const doctor = doctors.find((doctor) => doctor.doctorId === doctorId);
-
     if (doctor) {
       setSelectedDoctor(doctor);
       setCurrentStep(2);
     }
-  }, [searchParams, doctors]);
+  }, [doctor]);
 
   if (!user || !user.id) {
     router.push("/login");
@@ -147,13 +146,6 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
   }
 
   //Data fetching stuff
-
-  // useEffect(() => {
-  //   if (doctor) {
-  //     setSelectedDoctor(doctor);
-  //     setCurrentStep(2);
-  //   }
-  // }, [doctor, user]);
 
   const {
     data: availableTimes,
@@ -286,10 +278,10 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
               </div>
               {isLoading === true ? (
                 <div className="flex flex-col items-center justify-center gap-2">
-                  Loading Doctor{"'"}s Schedule
                   <HashLoader
                     color={theme.theme === "dark" ? "white" : "black"}
                   />
+                  Loading Doctor{"'"}s Schedule
                 </div>
               ) : availableTimes?.length ? (
                 <CardContent className="space-y-2">
@@ -304,7 +296,7 @@ export function AppointmentTabs({ doctors }: { doctors: Doctor[] }) {
                             <Select
                               onValueChange={field.onChange}
                               defaultValue={"America/Santo_Domingo"}
-                              disabled={isPending}
+                              disabled={true}
                             >
                               <FormControl>
                                 <SelectTrigger>

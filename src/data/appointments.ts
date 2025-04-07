@@ -1,3 +1,5 @@
+"use server";
+
 import { type Appointment } from "@/schemas/appointment";
 import { db } from "@/server/db";
 import { appointment } from "@/server/db/schema";
@@ -184,3 +186,42 @@ export async function getActiveAppointmentsData(
 
   return flatten;
 }
+
+export const getSingleAppointment = async (appointmentId: string) => {
+  const data = await db.query.appointment.findFirst({
+    where: eq(appointment.id, appointmentId),
+    with: {
+      doctors: {
+        columns: {
+          id: true,
+        },
+        with: {
+          users: {
+            columns: {
+              name: true,
+            },
+          },
+        },
+      },
+      patients: {
+        columns: {
+          id: true,
+          name: true,
+        },
+      },
+      procedures: true,
+    },
+    columns: {
+      id: true,
+      startTime: true,
+      endTime: true,
+      timezone: true,
+      location: true,
+      description: true,
+      status: true,
+      createdAt: true,
+    },
+  });
+
+  return data;
+};
