@@ -132,7 +132,7 @@ export function AppointmentTabs({
     startTransition(async () => {
       const response = await createAppointment({
         ...values,
-        doctorId: selectedDoctor!.doctorId,
+        doctor: selectedDoctor!,
         userId: user!.id ?? "",
         procedure: selectedProcedure!,
       });

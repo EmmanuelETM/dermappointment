@@ -2,6 +2,7 @@ import { APPOINTMENT_STATUS, LOCATION } from "@/data/constants";
 import { startOfDay } from "date-fns";
 import { z } from "zod";
 import { ProcedureSchema } from "./admin/procedures";
+import { DoctorSchema } from "./doctor";
 
 export const AppointmentSchemaBase = z.object({
   startTime: z.date().min(new Date()),
@@ -33,7 +34,7 @@ export const EditAppointmentActionSchema = z
 export const AppointmentActionSchema = z
   .object({
     userId: z.string(),
-    doctorId: z.string(),
+    doctor: DoctorSchema,
     procedure: ProcedureSchema,
     date: z.date().min(startOfDay(new Date()), "Must be in the future"),
   })

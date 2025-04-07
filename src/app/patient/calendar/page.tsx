@@ -1,4 +1,4 @@
-import { getAppointmentsData } from "@/data/appointments";
+import { getActiveAppointmentsData } from "@/data/appointments";
 import { Calendar } from "./Calendar";
 import { currentUser } from "@/lib/currentUser";
 import { redirect } from "next/navigation";
@@ -12,7 +12,7 @@ export default async function CalendarPage() {
     redirect("/login");
   }
 
-  const appointments = await getAppointmentsData("userId", user.id);
+  const appointments = await getActiveAppointmentsData("userId", user.id);
 
   return (
     <div className="max-h-[80vh] overflow-hidden rounded-lg">

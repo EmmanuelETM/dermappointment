@@ -1,14 +1,11 @@
 import { sendEmail } from "@/server/nodemailer";
 import { env } from "@/env";
 
-export const sendConfirmationEmailToDoctor = async (
-  email: string,
-  token: string,
-) => {
-  const confirmLink = `${env.NEXT_PUBLIC_BASE_URL}new-verification?token=${token}`;
+export const sendConfirmationEmailToDoctor = async (email: string) => {
+  const redirect = `${env.NEXT_PUBLIC_BASE_URL}/doctor/appointment-management`;
   await sendEmail({
     to: email,
-    subject: "Confirm your Email",
-    html: `<p>Click <a href="${confirmLink}">Here</a> to confirm your email.</p>`,
+    subject: "New Appointment",
+    html: `<p>Click <a href="${redirect}">Here</a> somebody's watching me</p>`,
   });
 };

@@ -9,6 +9,7 @@ import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { revalidatePath } from "next/cache";
 import { type z } from "zod";
 import { getAppointmentTimes } from "./getAppointment";
+import { sendConfirmationEmailToDoctor } from "@/lib/mail/appointment";
 
 export async function createAppointment(
   values: z.infer<typeof AppointmentActionSchema>,
@@ -28,14 +29,14 @@ export async function createAppointment(
   const validTimes = await getValidTimesFromSchedule(
     [startInDoctorTimeZone],
     data.procedure,
-    data.doctorId,
+    data.doctor.doctorId,
     data.location,
   );
 
   if (validTimes.length === 0) return { error: "Invalid Schedule Time" };
 
   const appointments = await getAppointmentTimes({
-    doctorId: data.doctorId,
+    doctorId: data.doctor.doctorId,
     date: { start: startInDoctorTimeZone, end: endTime },
   });
 
@@ -43,17 +44,26 @@ export async function createAppointment(
     return { error: "This time overlaps with another!" };
 
   try {
-    await db.insert(appointment).values({
-      userId: data.userId,
-      doctorId: data.doctorId,
-      procedureId: data.procedure.id,
-      startTime: startInDoctorTimeZone,
-      endTime: endInDoctorTimeZone,
-      timezone: data.timezone,
-      location: data.location,
-      description: data.description,
-      status: "Pending",
-    });
+    const inserted = await db
+      .insert(appointment)
+      .values({
+        userId: data.userId,
+        doctorId: data.doctor.doctorId,
+        procedureId: data.procedure.id,
+        startTime: startInDoctorTimeZone,
+        endTime: endInDoctorTimeZone,
+        timezone: data.timezone,
+        location: data.location,
+        description: data.description,
+        status: "Pending",
+      })
+      .returning();
+
+    if (inserted.length > 0) {
+      await sendConfirmationEmailToDoctor(data.doctor.email);
+    } else {
+      return { error: "Email could no be sent to doctor!" };
+    }
 
     revalidatePath("/patients/appointments/new");
     return { success: "Appointment Created!" };
