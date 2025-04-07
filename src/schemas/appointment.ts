@@ -55,7 +55,7 @@ export const AppointmentSchema = z.object({
 
 export type Appointment = z.infer<typeof AppointmentSchema>;
 
-const FullAppointmentSchema = z.object({
+export const FullAppointmentSchema = z.object({
   id: z.string(),
   startTime: z.date(),
   endTime: z.date(),

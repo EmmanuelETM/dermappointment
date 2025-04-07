@@ -58,7 +58,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { toZonedTime } from "date-fns-tz";
-import { CalendarIcon, Frown } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentUser } from "@/hooks/user-current-user";
 import { FormError } from "@/components/auth/form-error";
@@ -128,7 +128,6 @@ export function EditAppointment({
 
   const timezone = form.watch("timezone");
   const date = form.watch("date");
-  const time = form.watch("startTime");
 
   const {
     data: availableTimes,
@@ -351,7 +350,7 @@ export function EditAppointment({
                               ))
                             ) : (
                               <SelectItem value="no-times" disabled>
-                                No times available
+                                times available
                               </SelectItem>
                             )}
                           </SelectContent>

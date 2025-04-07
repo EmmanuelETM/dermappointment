@@ -4,7 +4,6 @@ import { EditAppointmentActionSchema } from "@/schemas/appointment";
 import { getValidTimesFromSchedule } from "@/lib/getValidTimesFromSchedule";
 import { addMinutes } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
-import { revalidatePath } from "next/cache";
 import { db } from "@/server/db";
 import { appointment } from "@/server/db/schema";
 import { type z } from "zod";

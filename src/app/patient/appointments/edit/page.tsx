@@ -6,9 +6,9 @@ import { toast } from "sonner";
 export default async function EditAppointmentPage({
   searchParams,
 }: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  searchParams: Record<string, string | string[] | undefined>;
 }) {
-  const appointmentId = (await searchParams).appointment;
+  const appointmentId = searchParams.appointment;
 
   if (!appointmentId) {
     redirect("/patient/home");

@@ -65,7 +65,7 @@ export default async function AppointmentPage() {
             {appointments.map((appointment) => (
               <Card
                 key={appointment.id}
-                className="w-full rounded-2xl border shadow-md transition-all duration-300 hover:shadow-lg"
+                className="w-full rounded-2xl transition-all duration-300"
               >
                 <CardHeader>
                   <CardTitle className="mb-2 text-lg font-semibold">
