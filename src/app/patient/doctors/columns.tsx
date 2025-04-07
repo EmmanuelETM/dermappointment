@@ -1,7 +1,7 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, CalendarCheck, CalendarCheck2, Send } from "lucide-react";
+import { ArrowUpDown, CalendarCheck2, Send } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 

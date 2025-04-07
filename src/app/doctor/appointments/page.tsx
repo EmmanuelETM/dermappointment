@@ -99,11 +99,11 @@ export default async function AppointmentPage() {
                     <div></div>
                     <div
                       className={cn(
-                        "inline-flex items-center gap-2 rounded-md px-2 py-1 text-sm font-medium", // nota el uso de `inline-flex` y `px-2`
+                        "inline-flex items-center gap-2 rounded-md py-1 text-sm font-medium underline underline-offset-4", // nota el uso de `inline-flex` y `px-2`
                         appointment.location === "Puerto Plata" &&
-                          "bg-blue-900/10 text-blue-900 dark:bg-blue-500/20 dark:text-blue-200",
+                          "text-blue-800 dark:text-blue-200",
                         appointment.location === "La Vega" &&
-                          "bg-green-900/10 text-green-900 dark:bg-green-500/20 dark:text-green-200",
+                          "text-green-800 dark:text-green-200",
                         !appointment.location && "text-muted-foreground",
                       )}
                     >
