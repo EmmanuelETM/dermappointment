@@ -26,6 +26,12 @@ export const authRoutes = [
 export const apiAuthPrefix = "/api/auth";
 
 /**
+ * An array of routes that should be excluded from middleware protections (e.g. webhooks, apis)
+ * @type {string[]}
+ */
+export const ignoredRoutes = ["/api/stripe/webhook", "/api/uploadthing"];
+
+/**
  * This function takes the user role, and returns the default url for that role.
  * It is used for RBAC, and default redirecting
  * @param {string} role

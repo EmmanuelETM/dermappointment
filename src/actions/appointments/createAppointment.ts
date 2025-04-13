@@ -15,7 +15,7 @@ export async function createAppointment(
 ) {
   console.log("inside createAppointment");
   const procedure = await getProcedureById(values.procedureId);
-  const doctor = await getDoctorById(values.procedureId);
+  const doctor = await getDoctorById(values.doctorId);
   const user = await getUserById(values.userId);
 
   if (!procedure) {

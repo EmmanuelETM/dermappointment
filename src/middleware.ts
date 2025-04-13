@@ -7,6 +7,7 @@ import {
   authRoutes,
   publicRoutes,
   getDefaultRedirect,
+  ignoredRoutes,
 } from "@/routes";
 import { NextResponse } from "next/server";
 
@@ -17,11 +18,12 @@ export default auth(async (req) => {
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+  const isIgnoredRoute = ignoredRoutes.includes(nextUrl.pathname);
   const isAdminRoute = nextUrl.pathname.startsWith(adminRoutesPrefix);
   const isPatientRoute = nextUrl.pathname.startsWith(patientRoutesPrefix);
   const isDoctorRoute = nextUrl.pathname.startsWith(doctorRoutesPrefix);
 
-  if (isApiAuthRoute) {
+  if (isApiAuthRoute || isIgnoredRoute) {
     return NextResponse.next();
   }
 

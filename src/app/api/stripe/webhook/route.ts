@@ -50,6 +50,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (appointmentResponse.error) {
+      console.log(appointmentResponse.error);
       return new NextResponse("Appointment creation failed", { status: 500 });
     }
 
