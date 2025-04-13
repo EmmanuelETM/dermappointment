@@ -140,24 +140,22 @@ export function AppointmentTabs({
   function onSubmit(values: z.infer<typeof AppointmentFormSchema>) {
     setFormError("");
     startTransition(async () => {
-      if (paymentId) {
-        const response = await createAppointment({
-          ...values,
-          doctor: selectedDoctor!,
-          userId: user!.id ?? "",
-          userName: user?.name ?? "",
-          procedure: selectedProcedure!,
-        });
-        if (response?.success) {
-          toast(response?.success);
-          router.push(
-            `${env.NEXT_PUBLIC_BASE_URL}/patient/payment-success?amount=${amount}`,
-          );
-        }
-        if (response?.error) {
-          setFormError(response?.error);
-          setCurrentStep(3);
-        }
+      const response = await createAppointment({
+        ...values,
+        doctor: selectedDoctor!,
+        userId: user!.id ?? "",
+        userName: user?.name ?? "",
+        procedure: selectedProcedure!,
+      });
+      if (response?.success) {
+        toast(response?.success);
+        router.push(
+          `${env.NEXT_PUBLIC_BASE_URL}/patient/payment-success?amount=${amount}`,
+        );
+      }
+      if (response?.error) {
+        setFormError(response?.error);
+        setCurrentStep(3);
       }
     });
   }
