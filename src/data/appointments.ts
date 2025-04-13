@@ -184,7 +184,7 @@ export async function getActiveAppointmentsData(
   return flatten;
 }
 
-export const getSingleAppointment = async (appointmentId: string) => {
+export const getAppointmentById = async (appointmentId: string) => {
   const data = await db.query.appointments.findFirst({
     where: eq(appointments.id, appointmentId),
     with: {
@@ -222,3 +222,42 @@ export const getSingleAppointment = async (appointmentId: string) => {
 
   return data;
 };
+
+export async function getAppointmentByLockId(lockId: string) {
+  const data = db.query.appointments.findFirst({
+    where: eq(appointments.lockId, lockId),
+    with: {
+      doctors: {
+        columns: {
+          id: true,
+        },
+        with: {
+          users: {
+            columns: {
+              name: true,
+            },
+          },
+        },
+      },
+      patients: {
+        columns: {
+          id: true,
+          name: true,
+        },
+      },
+      procedures: true,
+    },
+    columns: {
+      id: true,
+      startTime: true,
+      endTime: true,
+      timezone: true,
+      location: true,
+      description: true,
+      status: true,
+      createdAt: true,
+    },
+  });
+
+  return data;
+}

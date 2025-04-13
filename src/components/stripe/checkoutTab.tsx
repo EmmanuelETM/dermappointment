@@ -80,7 +80,7 @@ const CheckoutTab = ({
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `${env.NEXT_PUBLIC_BASE_URL}/patient/payment-success?amount=${amount}&lockId=${lockId}`,
+        return_url: `${env.NEXT_PUBLIC_BASE_URL}/patient/payment-success?amount=${amount}`,
       },
     });
 

@@ -1,4 +1,4 @@
-import { getSingleAppointment } from "@/data/appointments";
+import { getAppointmentById } from "@/data/appointments";
 import { redirect } from "next/navigation";
 import { EditAppointment } from "./EditAppointment";
 import { toast } from "sonner";
@@ -19,7 +19,7 @@ export default async function EditAppointmentPage({
     redirect("/patient/home");
   }
 
-  const appointment = await getSingleAppointment(appointmentId);
+  const appointment = await getAppointmentById(appointmentId);
 
   if (!appointment) {
     toast("Something went wrong!");

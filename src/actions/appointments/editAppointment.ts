@@ -9,7 +9,7 @@ import { appointments } from "@/server/db/schema";
 import { type z } from "zod";
 import { getAppointmentTimes } from "@/lib/getAppointmentTimes";
 import { eq } from "drizzle-orm";
-import { getSingleAppointment } from "@/data/appointments";
+import { getAppointmentById } from "@/data/appointments";
 
 export async function editAppointment(
   values: z.infer<typeof EditAppointmentActionSchema>,
@@ -28,7 +28,7 @@ export async function editAppointment(
   const endTime = addMinutes(startInTimeZone, data.procedure.duration + 15);
   const endInDoctorTimeZone = toZonedTime(endTime, data.timezone);
 
-  const existingAppointment = await getSingleAppointment(data.appointmentId);
+  const existingAppointment = await getAppointmentById(data.appointmentId);
 
   const timeTolerance = 1000;
   const isSameTime =
