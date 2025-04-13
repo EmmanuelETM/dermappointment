@@ -2,6 +2,7 @@ import {
   APPOINTMENT_STATUS,
   DAYS_OF_WEEK,
   LOCATION,
+  LOCK_STATUS,
   ROLES,
   SKIN_TYPES,
 } from "@/data/constants";
@@ -304,6 +305,8 @@ export const appointmentsRelations = relations(
   }),
 );
 
+export const lockStatus = pgEnum("lock_status", LOCK_STATUS);
+
 export const appointmentLock = createTable("appointment_lock", {
   id: varchar("id", { length: 255 })
     .notNull()
@@ -323,7 +326,7 @@ export const appointmentLock = createTable("appointment_lock", {
   timezone: text("timezone").notNull(),
   location: Location("location").notNull(),
   description: text("description"),
-  status: status("status").default("Pending").notNull(),
+  status: lockStatus("status").default("Pending").notNull(),
   expires: timestamp("expires", { mode: "date" }).notNull(),
 });
 

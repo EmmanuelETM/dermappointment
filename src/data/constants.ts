@@ -38,6 +38,8 @@ export const APPOINTMENT_STATUS = [
   "Completed",
 ] as const;
 
+export const LOCK_STATUS = ["Pending", "Success"] as const;
+
 export const RELEVANT_TIMEZONES = [
   "UTC",
   "America/New_York",

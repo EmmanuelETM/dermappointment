@@ -6,16 +6,20 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
   apiVersion: "2025-03-31.basil",
 });
 
-type Amount = {
+type RequestParams = {
   amount: number;
+  currency: string;
+  lockId: string;
 };
 
 export async function POST(request: NextRequest) {
   try {
-    const { amount } = (await request.json()) as Amount;
+    const { amount, currency, lockId } =
+      (await request.json()) as RequestParams;
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount,
-      currency: "usd",
+      currency: currency,
+      metadata: { lockId },
       automatic_payment_methods: { enabled: true },
     });
 

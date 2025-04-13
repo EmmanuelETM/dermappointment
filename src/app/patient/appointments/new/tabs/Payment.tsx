@@ -18,14 +18,12 @@ const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 import CheckoutTab from "@/components/stripe/checkoutTab";
 
 export function PaymentTab({
-  onSuccessAction,
   setCurrentStepAction,
-  setPaymentIdAction,
+  lockId,
   amount,
 }: {
-  onSuccessAction: () => void;
   setCurrentStepAction: (step: number) => void;
-  setPaymentIdAction: (id: string) => void;
+  lockId: string | undefined;
   amount: number;
 }) {
   return (
@@ -45,9 +43,8 @@ export function PaymentTab({
         >
           <CheckoutTab
             amount={amount}
-            onSuccess={onSuccessAction}
+            lockId={lockId}
             setCurrentStep={setCurrentStepAction}
-            setPaymentId={setPaymentIdAction}
           />
         </Elements>
       </CardContent>

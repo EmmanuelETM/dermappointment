@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { env } from "@/env";
 import { HashLoader } from "react-spinners";
 import { useTheme } from "next-themes";
-import { toast } from "sonner";
 import { FormError } from "../auth/form-error";
 
 type PaymentIntentResponse = {
@@ -21,14 +20,12 @@ type PaymentIntentResponse = {
 
 const CheckoutTab = ({
   amount,
-  onSuccess,
+  lockId,
   setCurrentStep,
-  setPaymentId,
 }: {
   amount: number;
-  onSuccess: () => void;
+  lockId: string | undefined;
   setCurrentStep: (step: number) => void;
-  setPaymentId: (id: string) => void;
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -37,29 +34,37 @@ const CheckoutTab = ({
   const [clientSecret, setClientSecret] = useState("");
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const [paymentId, setLocalPaymentId] = useState("");
 
   useEffect(() => {
     const fetchClientSecret = async () => {
-      const data = await fetch("/api/stripe/create-payment-intent", {
+      if (!lockId) return;
+
+      const res = await fetch("/api/stripe/create-payment-intent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ amount: convertToSubCurrency(amount) }),
+        body: JSON.stringify({
+          amount: convertToSubCurrency(amount),
+          currency: "USD",
+          lockId,
+        }),
       });
 
-      const json = (await data.json()) as PaymentIntentResponse;
+      const json = (await res.json()) as PaymentIntentResponse;
       setClientSecret(json.clientSecret);
-      setLocalPaymentId(json.paymentIntentId);
     };
 
     fetchClientSecret().catch((error) => console.log(error));
-  }, [amount]);
+  }, [amount, lockId]);
 
   const handleClick = async () => {
     setLoading(true);
+    setFormError("");
+
     if (!stripe || !elements) {
+      setFormError("Stripe is not ready yet.");
+      setLoading(false);
       return;
     }
 
@@ -75,28 +80,23 @@ const CheckoutTab = ({
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `${env.NEXT_PUBLIC_BASE_URL}/patient/payment-success?amount=${amount}`,
+        return_url: `${env.NEXT_PUBLIC_BASE_URL}/patient/payment-success?amount=${amount}&lockId=${lockId}`,
       },
-      redirect: "if_required",
     });
 
-    if (result?.error) {
+    if (result.error) {
       if (
-        result?.error.type === "card_error" ||
-        result?.error.type === "validation_error"
+        result.error.type === "card_error" ||
+        result.error.type === "validation_error"
       ) {
         setFormError(result.error.message);
       } else {
         setFormError("An unknown error occurred");
       }
-    } else if (result.paymentIntent?.status === "succeeded") {
-      toast("Payment Completed Succesfully!");
-      setDisabled(true);
-      setPaymentId(paymentId);
-      onSuccess();
     }
 
     setLoading(false);
+    setDisabled(true);
   };
 
   if (!clientSecret || !stripe || !elements) {
@@ -111,7 +111,7 @@ const CheckoutTab = ({
   return (
     <div className="flex flex-col gap-4">
       <FormError message={formError} />
-      {clientSecret && <PaymentElement />}
+      <PaymentElement />
       <div className="flex justify-between pt-2">
         <Button
           disabled={disabled}

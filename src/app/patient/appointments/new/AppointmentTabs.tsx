@@ -71,13 +71,12 @@ import { toZonedTime } from "date-fns-tz";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 
-import { createAppointment } from "@/actions/appointments/createAppointment";
 import { toast } from "sonner";
 import { type LOCATION } from "@/data/constants";
 import { DoctorTab } from "./tabs/Doctor";
 import { ProcedureTab } from "./tabs/Procedure";
 import { PaymentTab } from "./tabs/Payment";
-import { env } from "@/env";
+import { createLock } from "@/actions/appointmentLock/createLock";
 
 export function AppointmentTabs({
   doctors,
@@ -103,7 +102,7 @@ export function AppointmentTabs({
 
   const [formError, setFormError] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-  const [paymentId, setPaymentId] = useState<string>("");
+  const [lockId, setLockId] = useState<string | undefined>("");
 
   useEffect(() => {
     if (doctor) {
@@ -117,10 +116,6 @@ export function AppointmentTabs({
   }
 
   //Form stuff
-
-  function handlePaymentSuccess() {
-    formRef.current?.requestSubmit();
-  }
 
   const form = useForm<z.infer<typeof AppointmentFormSchema>>({
     resolver: zodResolver(AppointmentFormSchema),
@@ -140,27 +135,19 @@ export function AppointmentTabs({
   function onSubmit(values: z.infer<typeof AppointmentFormSchema>) {
     setFormError("");
     startTransition(async () => {
-      const response = await createAppointment({
+      const response = await createLock({
         ...values,
         doctor: selectedDoctor!,
         userId: user!.id ?? "",
-        userName: user?.name ?? "",
         procedure: selectedProcedure!,
-        paymentIntentId: paymentId,
-        amount: String(amount),
-        currency: "USD",
-        status: "Success",
       });
       if (response?.success) {
         toast(response?.success);
-        router.push(
-          `${env.NEXT_PUBLIC_BASE_URL}/patient/payment-success?amount=${amount}`,
-        );
+        setLockId(response?.LockId);
+        setCurrentStep(4);
       }
       if (response?.error) {
         setFormError(response?.error);
-        setCurrentStep(3);
-        await refetch();
       }
     });
   }
@@ -170,7 +157,6 @@ export function AppointmentTabs({
     data: availableTimes,
     isLoading,
     error,
-    refetch,
   } = useQuery({
     queryKey: [
       "availableTimes",
@@ -249,9 +235,7 @@ export function AppointmentTabs({
           <TabsTrigger
             key={tab.value}
             value={tab.value}
-            disabled={
-              currentStep < tab.step || isPending || paymentId.length > 0
-            }
+            disabled={currentStep < tab.step || isPending}
           >
             <span className="block sm:hidden">{tab.step}</span>
             <span className="hidden sm:block">{tab.label}</span>
@@ -500,44 +484,27 @@ export function AppointmentTabs({
                   <Frown size={48} />
                 </div>
               )}
-              <CardFooter className="flex justify-end">
-                {paymentId.length > 0 ? (
-                  <>
-                    <Button
-                      type="submit"
-                      disabled={time != null ? false : true || isPending}
-                    >
-                      Finish
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button variant="outline" onClick={() => setCurrentStep(2)}>
-                      Back
-                    </Button>
-                    <Button
-                      disabled={time != null ? false : true}
-                      onClick={() => setCurrentStep(4)}
-                    >
-                      Next
-                    </Button>
-                  </>
-                )}
+              <CardFooter className="flex justify-between">
+                <Button variant="outline" onClick={() => setCurrentStep(2)}>
+                  Back
+                </Button>
+                <Button type="submit" disabled={time != null ? false : true}>
+                  Next
+                </Button>
               </CardFooter>
             </Card>
           </TabsContent>
-
-          {/* Step 4 */}
-          <TabsContent value="payment">
-            <PaymentTab
-              onSuccessAction={handlePaymentSuccess}
-              setCurrentStepAction={setCurrentStep}
-              setPaymentIdAction={setPaymentId}
-              amount={amount}
-            />
-          </TabsContent>
         </form>
       </Form>
+
+      {/* Step 4 */}
+      <TabsContent value="payment">
+        <PaymentTab
+          setCurrentStepAction={setCurrentStep}
+          lockId={lockId}
+          amount={amount}
+        />
+      </TabsContent>
     </Tabs>
   );
 }
