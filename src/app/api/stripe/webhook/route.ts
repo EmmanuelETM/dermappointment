@@ -17,10 +17,7 @@ export async function POST(request: NextRequest) {
     env.STRIPE_WEBHOOK_SECRET,
   );
 
-  console.log("Inside webhook api");
-
   if (event.type === "charge.succeeded") {
-    console.log("charge succeded");
     const charge = event.data.object;
     const lockId = charge.metadata.lockId;
     const amount = charge.amount;
@@ -38,12 +35,11 @@ export async function POST(request: NextRequest) {
       return new NextResponse("Lock not found", { status: 400 });
     }
 
-    console.log("creating appointment");
-
     const appointmentResponse = await createAppointment({
       userId: lockAppointment.userId,
       doctorId: lockAppointment.doctorId,
       procedureId: lockAppointment.procedureId,
+      lockId,
       startTime: lockAppointment.startTime,
       endTime: lockAppointment.endTime,
       timezone: lockAppointment.timezone,
@@ -53,14 +49,12 @@ export async function POST(request: NextRequest) {
     });
 
     if (appointmentResponse.error) {
-      console.log(appointmentResponse.error);
       return new NextResponse("Appointment creation failed", { status: 400 });
     }
 
     const appointmentId = appointmentResponse?.appointmentId;
 
     if (appointmentId) {
-      console.log("creating payment");
       await createPayment({
         amount,
         currency,

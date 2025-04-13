@@ -68,9 +68,6 @@ export async function getValidTimesFromSchedule(
     end: lock.endTime,
   }));
 
-  console.log("appointment times");
-  console.log(appointmentTimes);
-
   return timesInOrder.filter((intervalDate) => {
     const availabilities = getAvailabilities(
       groupedAvailabilites,

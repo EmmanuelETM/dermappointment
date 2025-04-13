@@ -37,6 +37,7 @@ export async function createAppointment(
         userId: values.userId,
         doctorId: values.doctorId,
         procedureId: values.procedureId,
+        lockId: values.lockId,
         startTime: values.startTime,
         endTime: values.endTime,
         timezone: values.timezone,

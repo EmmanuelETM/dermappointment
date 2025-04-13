@@ -19,8 +19,6 @@ export default async function PaymentSuccess({
   );
   const { amount } = await searchParams;
 
-  console.log(paymentIntent.metadata.lockId);
-
   if (paymentIntent.metadata.lockId == null) return notFound();
 
   return (

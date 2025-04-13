@@ -18,7 +18,6 @@ import {
   varchar,
   boolean,
   time,
-  decimal,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
@@ -276,6 +275,7 @@ export const appointments = createTable("appointments", {
   procedureId: varchar("procedure_id", { length: 255 })
     .notNull()
     .references(() => procedures.id),
+  lockId: varchar("lock_id", { length: 255 }).notNull(),
   startTime: timestamp("start_time").notNull(),
   endTime: timestamp("end_time").notNull(),
   timezone: text("timezone").notNull(),

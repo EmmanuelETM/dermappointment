@@ -36,6 +36,7 @@ export const AppointmentActionSchema = z
     userId: z.string(),
     doctorId: z.string(),
     procedureId: z.string(),
+    lockId: z.string(),
     status: z.string(),
     endTime: z.date(),
   })
