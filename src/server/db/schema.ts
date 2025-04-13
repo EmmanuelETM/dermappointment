@@ -359,7 +359,7 @@ export const payments = createTable("payments", {
   appointmentId: varchar("appointment_id", { length: 255 })
     .notNull()
     .references(() => appointments.id),
-  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  amount: integer("amount").notNull(),
   currency: varchar("currency", { length: 128 }).notNull(),
   status: varchar("status", { length: 255 }).notNull(),
   createdAt,

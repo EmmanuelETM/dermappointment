@@ -34,11 +34,10 @@ export const EditAppointmentActionSchema = z
 export const AppointmentActionSchema = z
   .object({
     userId: z.string(),
-    userName: z.string(),
-    doctor: DoctorSchema,
-    procedure: ProcedureSchema,
+    doctorId: z.string(),
+    procedureId: z.string(),
     status: z.string(),
-    date: z.date().min(startOfDay(new Date()), "Must be in the future"),
+    endTime: z.date(),
   })
   .merge(AppointmentSchemaBase);
 

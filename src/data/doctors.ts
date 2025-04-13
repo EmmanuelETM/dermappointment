@@ -1,6 +1,6 @@
 import { type Doctor } from "@/schemas/doctor";
 import { db } from "@/server/db";
-import { schedule, users } from "@/server/db/schema";
+import { doctors, schedule, users } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
 export const getDoctorId = async (userId: string) => {
@@ -17,6 +17,23 @@ export const getDoctorId = async (userId: string) => {
   });
 
   return doctorId;
+};
+
+export const getDoctorById = async (doctorId: string) => {
+  const doctor = db.query.doctors.findFirst({
+    where: eq(doctors.id, doctorId),
+    columns: {},
+    with: {
+      users: {
+        columns: {
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
+
+  return doctor;
 };
 
 const getFullDoctor = async () => {
