@@ -1,9 +1,12 @@
 import { getDoctorData } from "@/data/doctors";
 import { AppointmentTabs } from "./AppointmentTabs";
+import { env } from "@/env";
 
 type SearchParams = Promise<{
   doctor: string;
 }>;
+
+const amount = Number(env.APPOINTMENT_BASE_FEE);
 
 export default async function NewAppointmentsPage({
   searchParams,
@@ -15,5 +18,5 @@ export default async function NewAppointmentsPage({
 
   const doctor = doctors.find((doctor) => doctor.doctorId === doctorId) ?? null;
 
-  return <AppointmentTabs doctors={doctors} doctor={doctor} />;
+  return <AppointmentTabs doctors={doctors} doctor={doctor} amount={amount} />;
 }

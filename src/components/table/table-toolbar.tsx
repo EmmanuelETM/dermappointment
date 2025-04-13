@@ -7,9 +7,9 @@ import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DataTableViewOptions } from "@/components/tables/view-options";
+import { DataTableViewOptions } from "@/components/table/view-options";
 
-import { DataTableFacetedFilter } from "@/components/tables/faceted-filters";
+import { DataTableFacetedFilter } from "@/components/table/faceted-filters";
 
 type DataTableToolbarProps<TData> = {
   table: Table<TData>;

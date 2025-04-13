@@ -26,8 +26,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { DataTablePagination } from "@/components/tables/pagination";
-import { DataTableToolbar } from "@/components/tables/table-toolbar";
+import { DataTablePagination } from "@/components/table/pagination";
+import { DataTableToolbar } from "@/components/table/table-toolbar";
 import { type PopoverGroup } from "@/schemas/popover";
 
 type DataTableProps<TData, TValue> = {

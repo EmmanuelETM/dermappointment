@@ -1,4 +1,4 @@
-import { DataTable } from "@/components/tables/data-table";
+import { DataTable } from "@/components/table/data-table";
 import {
   Dialog,
   DialogContent,

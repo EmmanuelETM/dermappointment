@@ -1,4 +1,4 @@
-import { DataTable } from "@/components/tables/data-table";
+import { DataTable } from "@/components/table/data-table";
 import { columns } from "./columns";
 import { getDoctorData } from "@/data/doctors";
 

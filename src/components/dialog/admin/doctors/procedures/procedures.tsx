@@ -9,7 +9,7 @@ import {
 import { Eye } from "lucide-react";
 
 import { type Procedure } from "@/schemas/admin/procedures";
-import { DataTable } from "@/components/tables/data-table";
+import { DataTable } from "@/components/table/data-table";
 import { columns } from "./columns";
 
 export function DoctorsProcedures({ procedures }: { procedures: Procedure[] }) {

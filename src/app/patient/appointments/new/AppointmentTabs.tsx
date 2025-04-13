@@ -30,7 +30,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useCurrentUser } from "@/hooks/user-current-user";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
@@ -76,17 +76,22 @@ import { toast } from "sonner";
 import { type LOCATION } from "@/data/constants";
 import { DoctorTab } from "./tabs/Doctor";
 import { ProcedureTab } from "./tabs/Procedure";
+import { PaymentTab } from "./tabs/Payment";
+import { env } from "@/env";
 
 export function AppointmentTabs({
   doctors,
   doctor,
+  amount,
 }: {
   doctors: Doctor[];
   doctor: Doctor | null;
+  amount: number;
 }) {
   const user = useCurrentUser();
   const router = useRouter();
   const theme = useTheme();
+  const formRef = useRef<HTMLFormElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [selectedProcedure, setSelectedProcedure] = useState<Procedure | null>(
@@ -98,6 +103,7 @@ export function AppointmentTabs({
 
   const [formError, setFormError] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+  const [paymentId, setPaymentId] = useState<string>("");
 
   useEffect(() => {
     if (doctor) {
@@ -111,6 +117,10 @@ export function AppointmentTabs({
   }
 
   //Form stuff
+
+  function handlePaymentSuccess() {
+    formRef.current?.requestSubmit();
+  }
 
   const form = useForm<z.infer<typeof AppointmentFormSchema>>({
     resolver: zodResolver(AppointmentFormSchema),
@@ -130,24 +140,29 @@ export function AppointmentTabs({
   function onSubmit(values: z.infer<typeof AppointmentFormSchema>) {
     setFormError("");
     startTransition(async () => {
-      const response = await createAppointment({
-        ...values,
-        doctor: selectedDoctor!,
-        userId: user!.id ?? "",
-        userName: user?.name ?? "",
-        procedure: selectedProcedure!,
-      });
-      if (response?.success) {
-        toast(response?.success);
-        router.push("/patient/appointments/");
+      if (paymentId) {
+        const response = await createAppointment({
+          ...values,
+          doctor: selectedDoctor!,
+          userId: user!.id ?? "",
+          userName: user?.name ?? "",
+          procedure: selectedProcedure!,
+        });
+        if (response?.success) {
+          toast(response?.success);
+          router.push(
+            `${env.NEXT_PUBLIC_BASE_URL}/patient/payment-success?amount=${amount}`,
+          );
+        }
+        if (response?.error) {
+          setFormError(response?.error);
+          setCurrentStep(3);
+        }
       }
-
-      if (response?.error) setFormError(response?.error);
     });
   }
 
   //Data fetching stuff
-
   const {
     data: availableTimes,
     isLoading,
@@ -225,12 +240,14 @@ export function AppointmentTabs({
           { value: "doctor", label: "Doctor", step: 1 },
           { value: "procedure", label: "Procedure", step: 2 },
           { value: "details", label: "Details", step: 3 },
-          { value: "payment", label: "Payment", step: 3 },
+          { value: "payment", label: "Payment", step: 4 },
         ].map((tab) => (
           <TabsTrigger
             key={tab.value}
             value={tab.value}
-            disabled={currentStep < tab.step || isPending}
+            disabled={
+              currentStep < tab.step || isPending || paymentId.length > 0
+            }
           >
             <span className="block sm:hidden">{tab.step}</span>
             <span className="hidden sm:block">{tab.label}</span>
@@ -239,7 +256,7 @@ export function AppointmentTabs({
       </TabsList>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)}>
           {/* Step 1 */}
           <TabsContent value="doctor">
             <DoctorTab
@@ -480,42 +497,47 @@ export function AppointmentTabs({
                 </div>
               )}
               <CardFooter className="flex justify-between">
-                <Button variant="outline" onClick={() => setCurrentStep(2)}>
-                  Back
-                </Button>
-                <Button
-                  disabled={time != null ? false : true}
-                  onClick={() => setCurrentStep(4)}
-                >
-                  Next
-                </Button>
+                {paymentId.length > 0 ? (
+                  <>
+                    <Button
+                      disabled={true}
+                      variant="outline"
+                      onClick={() => setCurrentStep(2)}
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={time != null ? false : true}
+                    >
+                      Finish
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="outline" onClick={() => setCurrentStep(2)}>
+                      Back
+                    </Button>
+                    <Button
+                      disabled={time != null ? false : true}
+                      onClick={() => setCurrentStep(4)}
+                    >
+                      Next
+                    </Button>
+                  </>
+                )}
               </CardFooter>
             </Card>
           </TabsContent>
 
           {/* Step 4 */}
           <TabsContent value="payment">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">Payment</CardTitle>
-                <CardDescription className="text-md">
-                  Pay the reservation for the Appointment.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">Check everything</CardContent>
-              <CardFooter className="flex justify-between">
-                <Button
-                  variant="outline"
-                  disabled={isPending}
-                  onClick={() => setCurrentStep(3)}
-                >
-                  Back
-                </Button>
-                <Button type="submit" disabled={isPending}>
-                  Finish
-                </Button>
-              </CardFooter>
-            </Card>
+            <PaymentTab
+              onSuccessAction={handlePaymentSuccess}
+              setCurrentStepAction={setCurrentStep}
+              setPaymentIdAction={setPaymentId}
+              amount={amount}
+            />
           </TabsContent>
         </form>
       </Form>
