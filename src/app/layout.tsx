@@ -4,6 +4,8 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import Providers from "./providers";
 import { cn } from "@/lib/utils";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: "DermAppointment",
@@ -22,7 +24,11 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <body className={cn("min-h-screen bg-background antialiased")}>
-        <Providers>{children} </Providers>
+        <Providers>
+          {children}
+          <SpeedInsights />
+          <Analytics />
+        </Providers>
       </body>
     </html>
   );
