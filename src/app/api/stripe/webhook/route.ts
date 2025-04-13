@@ -2,6 +2,9 @@ import { createAppointment } from "@/actions/appointments/createAppointment";
 import { createPayment } from "@/actions/payments/createPayment";
 import { getAppointmentLockById } from "@/data/appointmentLock";
 import { env } from "@/env";
+import { db } from "@/server/db";
+import { appointmentLock } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
 import { NextResponse, type NextRequest } from "next/server";
 import Stripe from "stripe";
 
@@ -51,7 +54,7 @@ export async function POST(request: NextRequest) {
 
     if (appointmentResponse.error) {
       console.log(appointmentResponse.error);
-      return new NextResponse("Appointment creation failed", { status: 500 });
+      return new NextResponse("Appointment creation failed", { status: 400 });
     }
 
     const appointmentId = appointmentResponse?.appointmentId;
@@ -67,7 +70,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    return NextResponse.json({ received: true });
+    await db.delete(appointmentLock).where(eq(appointmentLock.id, lockId));
   }
-  return NextResponse.json({ received: true });
+  return new NextResponse();
 }
