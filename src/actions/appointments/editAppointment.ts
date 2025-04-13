@@ -5,7 +5,7 @@ import { getValidTimesFromSchedule } from "@/lib/getValidTimesFromSchedule";
 import { addMinutes } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { db } from "@/server/db";
-import { appointment } from "@/server/db/schema";
+import { appointments } from "@/server/db/schema";
 import { type z } from "zod";
 import { getAppointmentTimes } from "./getAppointment";
 import { eq } from "drizzle-orm";
@@ -43,11 +43,11 @@ export async function editAppointment(
   if (isSameTime) {
     try {
       await db
-        .update(appointment)
+        .update(appointments)
         .set({
           description: data.description,
         })
-        .where(eq(appointment.id, data.appointmentId));
+        .where(eq(appointments.id, data.appointmentId));
 
       return { success: "Appointment Updated!" };
     } catch (error) {
@@ -64,17 +64,17 @@ export async function editAppointment(
 
     if (validTimes.length === 0) return { error: "Invalid Schedule Time" };
 
-    const appointments = await getAppointmentTimes({
+    const appointmentTimes = await getAppointmentTimes({
       doctorId: data.doctorId,
       date: { start: startInDoctorTimeZone, end: endTime },
     });
 
-    if (appointments.length != 0)
+    if (appointmentTimes.length != 0)
       return { error: "This time overlaps with another!" };
 
     try {
       await db
-        .update(appointment)
+        .update(appointments)
         .set({
           startTime: startInDoctorTimeZone,
           endTime: endInDoctorTimeZone,
@@ -83,7 +83,7 @@ export async function editAppointment(
           description: data.description,
           status: "Pending",
         })
-        .where(eq(appointment.id, data.appointmentId));
+        .where(eq(appointments.id, data.appointmentId));
 
       return { success: "Appointment Updated!" };
     } catch (error) {

@@ -2,7 +2,7 @@
 
 import { type APPOINTMENT_STATUS } from "@/data/constants";
 import { db } from "@/server/db";
-import { appointment } from "@/server/db/schema";
+import { appointments } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -12,11 +12,11 @@ export async function updateAppointmentStatus(
 ) {
   try {
     await db
-      .update(appointment)
+      .update(appointments)
       .set({
         status: status,
       })
-      .where(eq(appointment.id, appointmentId));
+      .where(eq(appointments.id, appointmentId));
 
     revalidatePath("/doctor/appointment-confirmation");
     return { success: `Appointment ${status} successfully!` };

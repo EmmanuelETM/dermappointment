@@ -3,7 +3,7 @@
 import { getValidTimesFromSchedule } from "@/lib/getValidTimesFromSchedule";
 import { AppointmentActionSchema } from "@/schemas/appointment";
 import { db } from "@/server/db";
-import { appointment } from "@/server/db/schema";
+import { appointments } from "@/server/db/schema";
 import { addMinutes } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { revalidatePath } from "next/cache";
@@ -35,17 +35,17 @@ export async function createAppointment(
 
   if (validTimes.length === 0) return { error: "Invalid Schedule Time" };
 
-  const appointments = await getAppointmentTimes({
+  const appointmentTimes = await getAppointmentTimes({
     doctorId: data.doctor.doctorId,
     date: { start: startInDoctorTimeZone, end: endTime },
   });
 
-  if (appointments.length != 0)
+  if (appointmentTimes.length != 0)
     return { error: "This time overlaps with another!" };
 
   try {
     const inserted = await db
-      .insert(appointment)
+      .insert(appointments)
       .values({
         userId: data.userId,
         doctorId: data.doctor.doctorId,

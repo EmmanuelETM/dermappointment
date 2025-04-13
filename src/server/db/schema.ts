@@ -17,6 +17,7 @@ import {
   varchar,
   boolean,
   time,
+  decimal,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
@@ -60,6 +61,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
     fields: [users.id],
     references: [doctors.userId],
   }),
+  appointments: many(appointments),
   clinicalHistory: one(clinicalHistory, {
     fields: [users.id],
     references: [clinicalHistory.userId],
@@ -183,6 +185,7 @@ export const doctorsRelations = relations(doctors, ({ one, many }) => ({
     fields: [doctors.userId],
     references: [users.id],
   }),
+  appointments: many(appointments),
   doctorSpecialties: many(doctorSpecialties),
   doctorProcedures: many(doctorProcedures),
 }));
@@ -245,6 +248,7 @@ export const procedures = createTable("procedures", {
 
 export const proceduresRelations = relations(procedures, ({ many }) => ({
   doctorProcedures: many(doctorProcedures),
+  appointments: many(appointments),
 }));
 
 // Doctor => Procedures
@@ -280,7 +284,7 @@ export const doctorProceduresRelations = relations(
 
 export const status = pgEnum("status", APPOINTMENT_STATUS);
 
-export const appointment = createTable("appointment", {
+export const appointments = createTable("appointments", {
   id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
@@ -304,18 +308,47 @@ export const appointment = createTable("appointment", {
   updatedAt,
 });
 
-export const appointmentRelations = relations(appointment, ({ one }) => ({
-  patients: one(users, {
-    fields: [appointment.userId],
-    references: [users.id],
+export const appointmentsRelations = relations(
+  appointments,
+  ({ one, many }) => ({
+    patients: one(users, {
+      fields: [appointments.userId],
+      references: [users.id],
+    }),
+    doctors: one(doctors, {
+      fields: [appointments.doctorId],
+      references: [doctors.id],
+    }),
+    procedures: one(procedures, {
+      fields: [appointments.procedureId],
+      references: [procedures.id],
+    }),
+    payments: many(payments),
   }),
-  doctors: one(doctors, {
-    fields: [appointment.doctorId],
-    references: [doctors.id],
-  }),
-  procedures: one(procedures, {
-    fields: [appointment.procedureId],
-    references: [procedures.id],
+);
+
+//payment
+
+export const payments = createTable("payments", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  paymentIntentId: text("payment_intent_id").notNull().unique(),
+  appointmentId: varchar("appointment_id", { length: 255 })
+    .notNull()
+    .references(() => appointments.id),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  currency: varchar("currency", { length: 128 }).notNull(),
+  status: varchar("status", { length: 255 }).notNull(),
+  createdAt,
+  updatedAt,
+});
+
+export const paymentsRelations = relations(payments, ({ one }) => ({
+  appointment: one(appointments, {
+    fields: [payments.appointmentId],
+    references: [appointments.id],
   }),
 }));
 
