@@ -146,6 +146,10 @@ export function AppointmentTabs({
         userId: user!.id ?? "",
         userName: user?.name ?? "",
         procedure: selectedProcedure!,
+        paymentIntentId: paymentId,
+        amount: String(amount),
+        currency: "USD",
+        status: "Success",
       });
       if (response?.success) {
         toast(response?.success);

@@ -62,6 +62,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
     references: [doctors.userId],
   }),
   appointments: many(appointments),
+  appointmentLocks: many(appointmentLock),
   clinicalHistory: one(clinicalHistory, {
     fields: [users.id],
     references: [clinicalHistory.userId],
@@ -141,31 +142,6 @@ export const passwordResetTokens = createTable(
   }),
 );
 
-//Patients
-
-// export const patients = createTable("patients", {
-//   id: varchar("id", { length: 255 })
-//     .notNull()
-//     .primaryKey()
-//     .$defaultFn(() => crypto.randomUUID()),
-//   userId: varchar("user_id", { length: 255 })
-//     .notNull()
-//     .references(() => users.id, { onDelete: "cascade" }),
-//   createdAt,
-//   updatedAt,
-// });
-
-// export const patientsRelations = relations(patients, ({ one }) => ({
-//   users: one(users, {
-//     fields: [patients.userId],
-//     references: [users.id],
-//   }),
-//   clinicalHistory: one(clinicalHistory, {
-//     fields: [patients.id],
-//     references: [clinicalHistory.patientId],
-//   }),
-// }));
-
 //Doctors
 
 export const doctors = createTable("doctors", {
@@ -186,6 +162,7 @@ export const doctorsRelations = relations(doctors, ({ one, many }) => ({
     references: [users.id],
   }),
   appointments: many(appointments),
+  appointmentLocks: many(appointmentLock),
   doctorSpecialties: many(doctorSpecialties),
   doctorProcedures: many(doctorProcedures),
 }));
@@ -324,6 +301,47 @@ export const appointmentsRelations = relations(
       references: [procedures.id],
     }),
     payments: many(payments),
+  }),
+);
+
+export const appointmentLock = createTable("appointment_lock", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  doctorId: varchar("doctor_id", { length: 255 })
+    .notNull()
+    .references(() => doctors.id),
+  procedureId: varchar("procedure_id", { length: 255 })
+    .notNull()
+    .references(() => procedures.id),
+  startTime: timestamp("start_time").notNull(),
+  endTime: timestamp("end_time").notNull(),
+  timezone: text("timezone").notNull(),
+  location: Location("location").notNull(),
+  description: text("description"),
+  status: status("status").default("Pending").notNull(),
+  expires: timestamp("expires", { mode: "date" }).notNull(),
+});
+
+export const appointmentLockRelations = relations(
+  appointmentLock,
+  ({ one }) => ({
+    patients: one(users, {
+      fields: [appointmentLock.userId],
+      references: [users.id],
+    }),
+    doctors: one(doctors, {
+      fields: [appointmentLock.doctorId],
+      references: [doctors.id],
+    }),
+    procedures: one(procedures, {
+      fields: [appointmentLock.procedureId],
+      references: [procedures.id],
+    }),
   }),
 );
 

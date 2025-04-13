@@ -3,7 +3,7 @@
 import { getValidTimesFromSchedule } from "@/lib/getValidTimesFromSchedule";
 import { AppointmentActionSchema } from "@/schemas/appointment";
 import { db } from "@/server/db";
-import { appointments } from "@/server/db/schema";
+import { appointmentLock, appointments } from "@/server/db/schema";
 import { addMinutes } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { revalidatePath } from "next/cache";
@@ -11,7 +11,7 @@ import { type z } from "zod";
 import { getAppointmentTimes } from "@/lib/getAppointmentTimes";
 import { sendConfirmationEmailToDoctor } from "@/lib/mail/appointment";
 
-export async function createAppointment(
+export async function createLock(
   values: z.infer<typeof AppointmentActionSchema>,
 ) {
   const { success, data } = AppointmentActionSchema.safeParse(values);
@@ -43,37 +43,28 @@ export async function createAppointment(
   if (appointmentTimes.length != 0)
     return { error: "This time overlaps with another!" };
 
-  try {
-    const inserted = await db
-      .insert(appointments)
-      .values({
-        userId: data.userId,
-        doctorId: data.doctor.doctorId,
-        procedureId: data.procedure.id,
-        startTime: startInDoctorTimeZone,
-        endTime: endInDoctorTimeZone,
-        timezone: data.timezone,
-        location: data.location,
-        description: data.description,
-        status: "Pending",
-      })
-      .returning({ id: appointments.id });
+  const expires = "";
 
-    if (inserted.length > 0) {
-      await sendConfirmationEmailToDoctor(
-        { doctorId: data.doctor.doctorId, doctorEmail: data.doctor.email },
-        data.userName,
-        data.procedure.name,
-        { start: startInDoctorTimeZone, end: endInDoctorTimeZone },
-      );
-    } else {
-      return { error: "Email could no be sent to doctor!" };
-    }
+  try {
+    // await db
+    //   .insert(appointmentLock)
+    //   .values({
+    //     userId: data.userId,
+    //     doctorId: data.doctor.doctorId,
+    //     procedureId: data.procedure.id,
+    //     startTime: startInDoctorTimeZone,
+    //     endTime: endInDoctorTimeZone,
+    //     timezone: data.timezone,
+    //     location: data.location,
+    //     description: data.description,
+
+    //   })
+    //   .returning({ id: appointments.id });
 
     revalidatePath("/patients/appointments/new");
-    return { success: "Appointment Created!" };
+    return { success: "Appointment Lock Created Successfully!", LockId: "" };
   } catch (error) {
     console.log("Error creating appointment: ", error);
-    return { error: "Something went wrong!" };
+    return { error: "Something went wrong!", LockId: "" };
   }
 }

@@ -37,6 +37,10 @@ export const AppointmentActionSchema = z
     userName: z.string(),
     doctor: DoctorSchema,
     procedure: ProcedureSchema,
+    paymentIntentId: z.string(),
+    amount: z.string(),
+    currency: z.string(),
+    status: z.string(),
     date: z.date().min(startOfDay(new Date()), "Must be in the future"),
   })
   .merge(AppointmentSchemaBase);

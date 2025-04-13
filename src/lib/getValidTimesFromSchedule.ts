@@ -1,10 +1,11 @@
 "use server";
 
-import { getAppointmentTimes } from "@/actions/appointments/getAppointment";
+import { getAppointmentTimes } from "@/lib/getAppointmentTimes";
 import { type LOCATION, type DAYS_OF_WEEK } from "@/data/constants";
 import { type Procedure } from "@/schemas/admin/procedures";
 import { db } from "@/server/db";
 import { schedule, scheduleAvailability } from "@/server/db/schema";
+import { appointmentLock } from "@/server/db/schema";
 
 import {
   addMinutes,
@@ -21,7 +22,7 @@ import {
   setMinutes,
 } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
-import { and, eq } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 
 export async function getValidTimesFromSchedule(
   timesInOrder: Date[],
@@ -54,6 +55,19 @@ export async function getValidTimesFromSchedule(
 
   const appointmentTimes = await getAppointmentTimes({ doctorId, date });
 
+  const activeLocks = await db.query.appointmentLock.findMany({
+    where: and(
+      eq(appointmentLock.doctorId, doctorId),
+      eq(appointmentLock.location, location),
+      gt(appointmentLock.expires, new Date()),
+    ),
+  });
+
+  const lockTimes = activeLocks.map((lock) => ({
+    start: lock.startTime,
+    end: lock.endTime,
+  }));
+
   console.log("appointment times");
   console.log(appointmentTimes);
 
@@ -70,7 +84,7 @@ export async function getValidTimesFromSchedule(
     };
 
     return (
-      appointmentTimes.every((appointmentTime) => {
+      [...appointmentTimes, ...lockTimes].every((appointmentTime) => {
         return !areIntervalsOverlapping(appointmentTime, appointmentInterval);
       }) &&
       availabilities.some((availability) => {

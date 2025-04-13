@@ -7,7 +7,7 @@ import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { db } from "@/server/db";
 import { appointments } from "@/server/db/schema";
 import { type z } from "zod";
-import { getAppointmentTimes } from "./getAppointment";
+import { getAppointmentTimes } from "@/lib/getAppointmentTimes";
 import { eq } from "drizzle-orm";
 import { getSingleAppointment } from "@/data/appointments";
 

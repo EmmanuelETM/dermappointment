@@ -41,7 +41,7 @@ const CheckoutTab = ({
 
   useEffect(() => {
     const fetchClientSecret = async () => {
-      const data = await fetch("/api/create-payment-intent", {
+      const data = await fetch("/api/stripe/create-payment-intent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -81,7 +81,14 @@ const CheckoutTab = ({
     });
 
     if (result?.error) {
-      setFormError(result.error.message);
+      if (
+        result?.error.type === "card_error" ||
+        result?.error.type === "validation_error"
+      ) {
+        setFormError(result.error.message);
+      } else {
+        setFormError("An unknown error occurred");
+      }
     } else if (result.paymentIntent?.status === "succeeded") {
       toast("Payment Completed Succesfully!");
       setDisabled(true);
@@ -116,7 +123,7 @@ const CheckoutTab = ({
         <Button
           type="button"
           onClick={handleClick}
-          disabled={!stripe || loading || disabled}
+          disabled={!stripe || !elements || loading || disabled}
         >
           {!loading ? `Pay $${amount}` : "Processing..."}
         </Button>

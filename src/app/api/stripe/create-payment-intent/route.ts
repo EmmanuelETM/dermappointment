@@ -19,6 +19,12 @@ export async function POST(request: NextRequest) {
       automatic_payment_methods: { enabled: true },
     });
 
+    if (paymentIntent.client_secret == null) {
+      return NextResponse.json(
+        { error: "Something went Wrong!" },
+        { status: 500 },
+      );
+    }
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id,
@@ -29,5 +35,4 @@ export async function POST(request: NextRequest) {
       { status: 500 },
     );
   }
-  return;
 }

@@ -1,5 +1,3 @@
-"use server";
-
 import { getAppointmentScheduleData } from "@/data/appointments";
 import { endOfDay, startOfDay } from "date-fns";
 
