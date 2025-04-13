@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { type FormEvent, useEffect, useState } from "react";
 import {
   useStripe,
   useElements,
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { env } from "@/env";
 import { HashLoader } from "react-spinners";
 import { useTheme } from "next-themes";
-import { FormError } from "../auth/form-error";
+import { FormError } from "@/components/auth/form-error";
 
 type PaymentIntentResponse = {
   clientSecret: string;
@@ -58,12 +58,12 @@ const CheckoutTab = ({
     fetchClientSecret().catch((error) => console.log(error));
   }, [amount, lockId]);
 
-  const handleClick = async () => {
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
     setLoading(true);
     setFormError("");
 
     if (!stripe || !elements) {
-      setFormError("Stripe is not ready yet.");
       setLoading(false);
       return;
     }
@@ -121,8 +121,8 @@ const CheckoutTab = ({
           Back
         </Button>
         <Button
-          type="button"
-          onClick={handleClick}
+          type="submit"
+          onClick={handleSubmit}
           disabled={!stripe || !elements || loading || disabled}
         >
           {!loading ? `Pay $${amount}` : "Processing..."}
