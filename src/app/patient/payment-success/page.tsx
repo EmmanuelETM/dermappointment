@@ -1,5 +1,12 @@
+import { env } from "@/env";
+import { notFound } from "next/navigation";
+import Stripe from "stripe";
+
+const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+
 type SearchParams = Promise<{
   amount: string;
+  payment_intent: string;
 }>;
 
 export default async function PaymentSuccess({
@@ -7,7 +14,15 @@ export default async function PaymentSuccess({
 }: {
   searchParams: SearchParams;
 }) {
-  const amount = (await searchParams).amount;
+  const paymentIntent = await stripe.paymentIntents.retrieve(
+    (await searchParams).payment_intent,
+  );
+  const { amount } = await searchParams;
+
+  console.log(paymentIntent.metadata.lockId);
+
+  if (paymentIntent.metadata.lockId == null) return notFound();
+
   return (
     <main className="rouded-md m-10 mx-auto max-w-6xl border p-10 text-center">
       <div className="mb-10">

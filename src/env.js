@@ -13,6 +13,7 @@ export const env = createEnv({
     AUTH_GOOGLE_REFRESH_TOKEN: z.string(),
     APPOINTMENT_BASE_FEE: z.string(),
     STRIPE_SECRET_KEY: z.string(),
+    STRIPE_WEBHOOK_SECRET: z.string(),
     NODEMAILER_EMAIL: z.string(),
     DATABASE_URL: z.string().url(),
     NODE_ENV: z
@@ -31,6 +32,7 @@ export const env = createEnv({
     AUTH_GOOGLE_REFRESH_TOKEN: process.env.AUTH_GOOGLE_REFRESH_TOKEN,
     APPOINTMENT_BASE_FEE: process.env.APPOINTMENT_BASE_FEE,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     NODEMAILER_EMAIL: process.env.NODEMAILER_EMAIL,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
