@@ -156,6 +156,7 @@ export function AppointmentTabs({
       if (response?.error) {
         setFormError(response?.error);
         setCurrentStep(3);
+        await refetch();
       }
     });
   }
@@ -165,6 +166,7 @@ export function AppointmentTabs({
     data: availableTimes,
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: [
       "availableTimes",
@@ -494,19 +496,12 @@ export function AppointmentTabs({
                   <Frown size={48} />
                 </div>
               )}
-              <CardFooter className="flex justify-between">
+              <CardFooter className="flex justify-end">
                 {paymentId.length > 0 ? (
                   <>
                     <Button
-                      disabled={true}
-                      variant="outline"
-                      onClick={() => setCurrentStep(2)}
-                    >
-                      Back
-                    </Button>
-                    <Button
                       type="submit"
-                      disabled={time != null ? false : true}
+                      disabled={time != null ? false : true || isPending}
                     >
                       Finish
                     </Button>

@@ -116,7 +116,7 @@ const CheckoutTab = ({
         <Button
           type="button"
           onClick={handleClick}
-          disabled={!stripe || loading}
+          disabled={!stripe || loading || disabled}
         >
           {!loading ? `Pay $${amount}` : "Processing..."}
         </Button>
