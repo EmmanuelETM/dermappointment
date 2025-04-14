@@ -29,11 +29,16 @@ export default async function Page({
     return <div>Appointment not found</div>;
   }
 
+  const title = "DermAppointment Receipt";
+
+  const description =
+    "This is your receipt for the appointment you selected.\nFeel free to download it or keep it for your records.";
+
   return (
     <>
       <AppointmentSummaryCard
-        title={"Receipt"}
-        description={"this is a receipt"}
+        title={title}
+        description={description}
         amount={payment.amount}
         data={appointment}
       />
