@@ -20,13 +20,12 @@ export async function POST(req: Request) {
       oneHourFromNow,
     );
 
-    // Si no se encuentran citas, devuelves un error 404
-    if (!appointmentsInOneHour || appointmentsInOneHour.length === 0) {
-      return NextResponse.json(
-        { error: "No appointments found" },
-        { status: 404 },
-      );
-    }
+    // if (!appointmentsInOneHour || appointmentsInOneHour.length === 0) {
+    //   return NextResponse.json(
+    //     { error: "No appointments found" },
+    //     { status: 404 },
+    //   );
+    // }
 
     const sendResults = await Promise.allSettled(
       appointmentsInOneHour.map((appt) =>
