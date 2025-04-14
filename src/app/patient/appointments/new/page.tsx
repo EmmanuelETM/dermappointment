@@ -1,6 +1,8 @@
 import { getDoctorData } from "@/data/doctors";
 import { AppointmentTabs } from "./AppointmentTabs";
 import { env } from "@/env";
+import { currentUser } from "@/lib/currentUser";
+import { redirect } from "next/navigation";
 
 type SearchParams = Promise<{
   doctor: string;
@@ -13,6 +15,10 @@ export default async function NewAppointmentsPage({
 }: {
   searchParams: SearchParams;
 }) {
+  const user = await currentUser();
+  if (!user || !user.id) {
+    redirect("/login");
+  }
   const doctors = await getDoctorData();
   const doctorId = (await searchParams).doctor;
 

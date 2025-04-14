@@ -1,8 +1,14 @@
 import { DataTable } from "@/components/table/data-table";
 import { columns } from "./columns";
 import { getDoctorData } from "@/data/doctors";
+import { currentUser } from "@/lib/currentUser";
+import { redirect } from "next/navigation";
 
 export default async function DoctorsPage() {
+  const user = await currentUser();
+  if (!user || !user.id) {
+    redirect("/login");
+  }
   const data = await getDoctorData();
   return (
     <>

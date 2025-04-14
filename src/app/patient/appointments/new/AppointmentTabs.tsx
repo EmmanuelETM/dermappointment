@@ -105,11 +105,11 @@ export function AppointmentTabs({
   const [lockId, setLockId] = useState<string | undefined>("");
 
   useEffect(() => {
-    if (doctor) {
+    if (doctor && !selectedDoctor) {
       setSelectedDoctor(doctor);
       setCurrentStep(2);
     }
-  }, [doctor]);
+  }, [doctor, selectedDoctor]);
 
   if (!user || !user.id) {
     router.push("/login");

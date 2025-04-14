@@ -1,7 +1,8 @@
 import { env } from "@/env";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Stripe from "stripe";
 import AppointmentInfo from "./AppointmentInfo";
+import { currentUser } from "@/lib/currentUser";
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
@@ -17,6 +18,10 @@ export default async function PaymentSuccessPage({
   const paymentIntent = await stripe.paymentIntents.retrieve(
     (await searchParams).payment_intent,
   );
+  const user = await currentUser();
+  if (!user || !user.id) {
+    redirect("/login");
+  }
   const amount = paymentIntent.amount;
 
   if (!paymentIntent.metadata.lockId) notFound();

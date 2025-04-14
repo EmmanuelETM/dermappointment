@@ -38,10 +38,11 @@ export const columns: ColumnDef<FullPayment>[] = [
     header: () => "Amount",
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"));
+      const currency = row.original.currency ?? "USD";
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "DOP",
-      }).format(amount);
+        currency: currency,
+      }).format(amount / 100);
 
       return <div className="font-medium">{formatted}</div>;
     },

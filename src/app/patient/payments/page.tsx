@@ -12,8 +12,6 @@ export default async function TransactionsPage() {
 
   const data = await getUserPaymentsData(user.id);
 
-  console.log(data);
-
   return (
     <>
       <div className="container mx-auto px-4">
