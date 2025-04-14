@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { env } from "@/env";
-import { addHours } from "date-fns";
+import { addDays, startOfDay, endOfDay } from "date-fns";
 import { getAppointmentsInRange } from "@/data/appointments";
 import { sendReminderEmail } from "@/lib/mail/appointment";
 
@@ -12,23 +12,26 @@ export async function POST(req: Request) {
   }
 
   const now = new Date();
-  const oneHourFromNow = addHours(now, 1);
+  const startOfTomorrow = startOfDay(addDays(now, 1)); // Inicio de mañana a las 00:00
+  const endOfTomorrow = endOfDay(startOfTomorrow); // Fin de mañana a las 23:59
 
   try {
-    const appointmentsInOneHour = await getAppointmentsInRange(
-      now,
-      oneHourFromNow,
+    // Obtener citas para el día siguiente
+    const appointmentsForTomorrow = await getAppointmentsInRange(
+      startOfTomorrow,
+      endOfTomorrow,
     );
 
-    // if (!appointmentsInOneHour || appointmentsInOneHour.length === 0) {
-    //   return NextResponse.json(
-    //     { error: "No appointments found" },
-    //     { status: 404 },
-    //   );
-    // }
+    if (!appointmentsForTomorrow || appointmentsForTomorrow.length === 0) {
+      return NextResponse.json(
+        { error: "No appointments found for tomorrow" },
+        { status: 404 },
+      );
+    }
 
+    // Enviar los correos a todos los pacientes de las citas
     const sendResults = await Promise.allSettled(
-      appointmentsInOneHour.map((appt) =>
+      appointmentsForTomorrow.map((appt) =>
         sendReminderEmail(appt.patients.email!, appt),
       ),
     );
@@ -40,7 +43,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       {
-        message: "Emails procesados",
+        message: "Emails processed successfully",
         total: sendResults.length,
         enviados: successCount,
         fallidos: failCount,
