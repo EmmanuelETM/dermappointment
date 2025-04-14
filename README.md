@@ -11,3 +11,5 @@
 - [x] Role based routing
 - [x] Setup Settings page for all users
 - [] Fix callback url sitation, shit is fucked up
+
+stripe listen --forward-to localhost:3000/api/stripe/webhook

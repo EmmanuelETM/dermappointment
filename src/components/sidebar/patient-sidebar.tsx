@@ -68,8 +68,8 @@ const data = {
       title: "Others",
       items: [
         {
-          title: "Transactions",
-          url: "/patient/transactions",
+          title: "Payments",
+          url: "/patient/payments",
           icon: DollarSign,
         },
         {

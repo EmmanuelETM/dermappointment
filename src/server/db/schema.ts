@@ -63,6 +63,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   }),
   appointments: many(appointments),
   appointmentLocks: many(appointmentLock),
+  payments: many(payments),
   clinicalHistory: one(clinicalHistory, {
     fields: [users.id],
     references: [clinicalHistory.userId],
@@ -359,6 +360,9 @@ export const payments = createTable("payments", {
   appointmentId: varchar("appointment_id", { length: 255 })
     .notNull()
     .references(() => appointments.id),
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id),
   amount: integer("amount").notNull(),
   currency: varchar("currency", { length: 128 }).notNull(),
   status: varchar("status", { length: 255 }).notNull(),
@@ -370,6 +374,10 @@ export const paymentsRelations = relations(payments, ({ one }) => ({
   appointment: one(appointments, {
     fields: [payments.appointmentId],
     references: [appointments.id],
+  }),
+  users: one(users, {
+    fields: [payments.userId],
+    references: [users.id],
   }),
 }));
 

@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
         currency,
         appointmentId,
         paymentIntentId,
+        userId: lockAppointment.userId,
         status,
       });
     }
