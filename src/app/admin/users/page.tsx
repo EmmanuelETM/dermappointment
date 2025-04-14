@@ -3,8 +3,16 @@ import { columns } from "./columns";
 import { popoverConfig } from "./popoverConfig";
 import { UsersFormDialog } from "@/components/dialog/admin/users-form";
 import { getUserData } from "@/data/user";
+import { currentUser } from "@/lib/currentUser";
+import { redirect } from "next/navigation";
 
 export default async function TransactionsPage() {
+  const user = await currentUser();
+
+  if (!user || !user.isAdmin) {
+    redirect("/login");
+  }
+
   const data = await getUserData();
 
   return (

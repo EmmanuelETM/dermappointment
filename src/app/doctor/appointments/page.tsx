@@ -41,9 +41,6 @@ export default async function AppointmentPage() {
     user?.doctorId,
   );
 
-  if (!user || !user.id) {
-    redirect("/login");
-  }
   return (
     <div>
       {/* Header */}

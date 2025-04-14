@@ -4,12 +4,19 @@ import { db } from "@/server/db";
 import { type Specialty } from "@/schemas/admin/specialties";
 
 import { SpecialtiesFormDialog } from "@/components/dialog/admin/specialties-form";
+import { redirect } from "next/navigation";
+import { currentUser } from "@/lib/currentUser";
 
 async function getSpecialtyData(): Promise<Specialty[]> {
   return await db.query.specialties.findMany();
 }
 
 export default async function AdminSpecialtiesPage() {
+  const user = await currentUser();
+
+  if (!user || !user.isAdmin) {
+    redirect("/login");
+  }
   const data = await getSpecialtyData();
 
   return (

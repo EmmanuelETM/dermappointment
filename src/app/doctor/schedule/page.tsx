@@ -1,30 +1,17 @@
 import { ScheduleForm } from "@/components/forms/schedule-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDoctorSchedule } from "@/data/doctorSchedule";
 import { currentUser } from "@/lib/currentUser";
-import { db } from "@/server/db";
-import { schedule } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
 export default async function SchedulePage() {
   const user = await currentUser();
 
-  const doctorSchedule = await db.query.schedule.findFirst({
-    where: eq(schedule?.doctorId, user?.doctorId ?? ""),
-    columns: {
-      id: true,
-      timezone: true,
-    },
-    with: {
-      scheduleAvailability: {
-        columns: {
-          startTime: true,
-          endTime: true,
-          weekDay: true,
-          location: true,
-        },
-      },
-    },
-  });
+  if (!user || !user.doctorId) {
+    redirect("/login");
+  }
+
+  const doctorSchedule = await getDoctorSchedule(user.doctorId);
 
   return (
     <Card className="w-full">

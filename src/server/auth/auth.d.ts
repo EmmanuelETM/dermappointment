@@ -4,6 +4,7 @@ import { type Roles } from "drizzle/schema";
 export type ExtendedUser = DefaultSession["user"] & {
   role: Roles;
   doctorId: string;
+  isAdmin: boolean;
   address: string;
   gender: string;
   location: string;

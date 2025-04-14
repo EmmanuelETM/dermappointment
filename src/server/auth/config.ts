@@ -74,6 +74,10 @@ export const authConfig = {
         if (session.user.role === "DOCTOR") {
           session.user.doctorId = token.doctorId as string;
         }
+
+        if (session.user.role === "ADMIN") {
+          session.user.isAdmin = token.isAdmin as boolean;
+        }
       }
 
       if (session.user) {
@@ -107,6 +111,10 @@ export const authConfig = {
         const data = await getDoctorId(existingUser.id);
         token.doctorId = data?.doctors.id;
       } else token.doctorId = "";
+
+      if (existingUser.role === "ADMIN") {
+        token.isAdmin = true;
+      } else token.doctorId = false;
 
       token.location = existingUser.location;
       token.isOauth =
