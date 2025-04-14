@@ -4,6 +4,7 @@ import {
   Preview,
   Body,
   Container,
+  Tailwind,
   Text,
   Heading,
   Hr,
@@ -34,39 +35,44 @@ export default function ReminderEmail({
     <Html>
       <Head />
       <Preview>Recordatorio de tu cita médica</Preview>
-      <Body style={{ fontFamily: "sans-serif", backgroundColor: "#f9f9f9" }}>
-        <Container
-          style={{
-            backgroundColor: "#ffffff",
-            padding: "20px",
-            borderRadius: "8px",
-          }}
-        >
-          <Heading>Hola {patientName},</Heading>
-          <Text>
-            This is a reminder for your appointment at DermAppointment.
-          </Text>
-          <Hr />
-          <Text>
-            <strong>📅 Start:</strong> {startTime}
-            <strong>📅 End:</strong> {endTime}
-          </Text>
-          <Text>
-            <strong>🩺 Procedure:</strong> {procedureName}
-          </Text>
-          <Text>
-            <strong>👨‍⚕️ Doctor:</strong> {doctorName}
-          </Text>
-          {description && (
-            <Text>
-              <strong>📝 Description:</strong> {description}
+      <Tailwind>
+        <Body className="bg-gray-100 font-sans">
+          <Container className="mx-auto max-w-lg rounded-lg bg-white p-6 shadow-md">
+            <Heading className="mb-4 text-2xl font-semibold text-gray-800">
+              Hola {patientName},
+            </Heading>
+            <Text className="mb-4 text-gray-700">
+              Este es un recordatorio para tu cita médica en DermAppointment.
             </Text>
-          )}
-          <Hr />
-          <Text>See you soon!</Text>
-          <Link href={redirect}>Go to Appointments</Link>
-        </Container>
-      </Body>
+            <Hr className="my-4 border-t border-gray-300" />
+            <Text className="mb-2 text-gray-700">
+              <strong>📅 Inicio:</strong> {startTime}
+            </Text>
+            <Text className="mb-2 text-gray-700">
+              <strong>📅 Fin:</strong> {endTime}
+            </Text>
+            <Text className="mb-2 text-gray-700">
+              <strong>🩺 Procedimiento:</strong> {procedureName}
+            </Text>
+            <Text className="mb-2 text-gray-700">
+              <strong>👨‍⚕️ Doctor:</strong> {doctorName}
+            </Text>
+            {description && (
+              <Text className="mb-4 text-gray-700">
+                <strong>📝 Descripción:</strong> {description}
+              </Text>
+            )}
+            <Hr className="my-4 border-t border-gray-300" />
+            <Text className="mb-4 text-gray-700">¡Nos vemos pronto!</Text>
+            <Link
+              href={redirect}
+              className="text-blue-500 underline hover:text-blue-700"
+            >
+              Ir a las citas
+            </Link>
+          </Container>
+        </Body>
+      </Tailwind>
     </Html>
   );
 }
