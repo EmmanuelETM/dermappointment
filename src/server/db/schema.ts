@@ -362,7 +362,7 @@ export const transactions = createTable("transactions", {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  stripeId: text("payment_intent_id").notNull().unique(),
+  stripeId: text("stripeId").notNull().unique(),
   appointmentId: varchar("appointment_id", { length: 255 })
     .notNull()
     .references(() => appointments.id),

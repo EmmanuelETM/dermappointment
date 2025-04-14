@@ -31,7 +31,7 @@ export function AppointmentSummaryCard({
 }: AppointmentSummaryCard) {
   const router = useRouter();
   return (
-    <Card className="min-w-3xl mx-auto">
+    <Card className="mx-auto w-full max-w-xl">
       <div>
         <CardHeader className="center flex flex-col justify-between gap-3 text-center">
           <CardTitle className="text-xl font-semibold sm:text-2xl">

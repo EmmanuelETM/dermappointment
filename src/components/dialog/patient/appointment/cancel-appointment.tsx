@@ -1,6 +1,6 @@
 "use client";
 
-import { createRefund } from "@/actions/transactions/doctorRefundTransaction";
+import { cancelAppointmentWithOptionalRefund } from "@/actions/appointments/patientCancelAppointment";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,7 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Ban } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export function CancelAppointmentDialog({
@@ -19,16 +20,20 @@ export function CancelAppointmentDialog({
 }: {
   appointmentId: string;
 }) {
+  const router = useRouter();
+
   const handleCancel = async () => {
-    const response = await createRefund(appointmentId);
+    const response = await cancelAppointmentWithOptionalRefund(appointmentId);
 
     if (response?.error) {
-      console.log(response?.error);
       toast("Could not cancel Appointment");
     }
+
     if (response?.success) {
       toast(response?.success);
+      router.push("/patient/appointments");
     }
+
     return;
   };
 
@@ -36,10 +41,9 @@ export function CancelAppointmentDialog({
     <Dialog>
       <DialogTrigger asChild>
         <Button className="p-2" variant="destructiveGhost">
-          <Ban />
+          Cancel
         </Button>
       </DialogTrigger>
-
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Cancel Appointment</DialogTitle>
@@ -57,7 +61,7 @@ export function CancelAppointmentDialog({
           <Button
             type="button"
             variant="destructiveGhost"
-            onClick={handleCancel}
+            onClick={() => handleCancel()}
           >
             Yes, I&apos;m sure
           </Button>

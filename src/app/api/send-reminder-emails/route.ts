@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     if (!appointmentsForTomorrow || appointmentsForTomorrow.length === 0) {
       return NextResponse.json(
         { error: "No appointments found for tomorrow" },
-        { status: 404 },
+        { status: 202 },
       );
     }
 

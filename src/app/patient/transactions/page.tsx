@@ -1,5 +1,5 @@
 import { DataTable } from "@/components/table/data-table";
-import { getUserTransactionsData } from "@/data/payments";
+import { getUserTransactionsData } from "@/data/transactions";
 import { currentUser } from "@/lib/currentUser";
 import { redirect } from "next/navigation";
 import { columns } from "./columns";

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
 import { type APPOINTMENT_STATUS } from "@/data/constants";
 import { cn } from "@/lib/utils";
-import { CalendarCheck, CircleDot, Edit } from "lucide-react";
+import { Ban, CalendarCheck, CircleDot, Edit } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function Footer({
@@ -34,7 +34,15 @@ export function Footer({
         {status}
       </div>
       <div className="flex flex-row items-center gap-2">
-        <CancelAppointmentDialog appointmentId={appointmentId} />
+        <Button
+          className="p-2"
+          variant="destructiveGhost"
+          onClick={() =>
+            router.push(`/patient/appointments/cancel?appointment=${encoded}`)
+          }
+        >
+          <Ban />
+        </Button>
         <Button
           className="p-2"
           onClick={() =>
