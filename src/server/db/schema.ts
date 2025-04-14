@@ -3,6 +3,8 @@ import {
   DAYS_OF_WEEK,
   LOCATION,
   LOCK_STATUS,
+  NOTIFICATION_STATUS,
+  NOTIFICATION_TYPE,
   ROLES,
   SKIN_TYPES,
 } from "@/data/constants";
@@ -64,6 +66,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   appointments: many(appointments),
   appointmentLocks: many(appointmentLock),
   payments: many(payments),
+  notificationLogs: many(notificationLogs),
   clinicalHistory: one(clinicalHistory, {
     fields: [users.id],
     references: [clinicalHistory.userId],
@@ -435,6 +438,42 @@ export const scheduleAvailabilityRelations = relations(
     schedule: one(schedule, {
       fields: [scheduleAvailability.scheduleId],
       references: [schedule.id],
+    }),
+  }),
+);
+
+// notifications
+
+export const notificationType = pgEnum("notification_type", NOTIFICATION_TYPE);
+export const notificationStatus = pgEnum(
+  "notification_status",
+  NOTIFICATION_STATUS,
+);
+
+export const notificationLogs = createTable("notification_logs", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  type: notificationType("notification_type").notNull(),
+  content: text("content"),
+  status: notificationStatus("notification_status")
+    .notNull()
+    .default("Pending"),
+  error: text("error"),
+  createdAt,
+  updatedAt,
+});
+
+export const notificationLogsRelations = relations(
+  notificationLogs,
+  ({ one }) => ({
+    users: one(users, {
+      fields: [notificationLogs.userId],
+      references: [users.id],
     }),
   }),
 );

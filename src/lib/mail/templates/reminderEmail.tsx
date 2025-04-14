@@ -34,41 +34,41 @@ export default function ReminderEmail({
   return (
     <Html>
       <Head />
-      <Preview>Recordatorio de tu cita médica</Preview>
+      <Preview>DermAppointment Reminder</Preview>
       <Tailwind>
         <Body className="bg-gray-100 font-sans">
           <Container className="mx-auto max-w-lg rounded-lg bg-white p-6 shadow-md">
             <Heading className="mb-4 text-2xl font-semibold text-gray-800">
-              Hola {patientName},
+              Hi {patientName},
             </Heading>
             <Text className="mb-4 text-gray-700">
-              Este es un recordatorio para tu cita médica en DermAppointment.
+              This is a reminder for your Appointment at DermAppointment.
             </Text>
             <Hr className="my-4 border-t border-gray-300" />
             <Text className="mb-2 text-gray-700">
-              <strong>📅 Inicio:</strong> {startTime}
+              <strong>📅 Start:</strong> {startTime}
             </Text>
             <Text className="mb-2 text-gray-700">
-              <strong>📅 Fin:</strong> {endTime}
+              <strong>📅 End:</strong> {endTime}
             </Text>
             <Text className="mb-2 text-gray-700">
-              <strong>🩺 Procedimiento:</strong> {procedureName}
+              <strong>🩺 Procedure:</strong> {procedureName}
             </Text>
             <Text className="mb-2 text-gray-700">
               <strong>👨‍⚕️ Doctor:</strong> {doctorName}
             </Text>
             {description && (
               <Text className="mb-4 text-gray-700">
-                <strong>📝 Descripción:</strong> {description}
+                <strong>📝 Description:</strong> {description}
               </Text>
             )}
             <Hr className="my-4 border-t border-gray-300" />
-            <Text className="mb-4 text-gray-700">¡Nos vemos pronto!</Text>
+            <Text className="mb-4 text-gray-700">See you soon!</Text>
             <Link
               href={redirect}
               className="text-blue-500 underline hover:text-blue-700"
             >
-              Ir a las citas
+              Go to Appointments
             </Link>
           </Container>
         </Body>

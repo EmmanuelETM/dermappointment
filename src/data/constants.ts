@@ -40,6 +40,10 @@ export const APPOINTMENT_STATUS = [
 
 export const LOCK_STATUS = ["Pending", "Success"] as const;
 
+export const NOTIFICATION_TYPE = ["Email", "SMS", "Push", "System"] as const;
+
+export const NOTIFICATION_STATUS = ["Sent", "Failed", "Pending"] as const;
+
 export const RELEVANT_TIMEZONES = [
   "UTC",
   "America/New_York",
