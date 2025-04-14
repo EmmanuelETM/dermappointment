@@ -1,7 +1,13 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, ArrowUpDown } from "lucide-react";
+import {
+  MoreHorizontal,
+  ArrowUpDown,
+  Receipt,
+  ReceiptText,
+  Copy,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { type FullPayment } from "@/schemas/payment";
+import { useRouter } from "next/navigation";
 
 export const columns: ColumnDef<FullPayment>[] = [
   {
@@ -53,7 +60,7 @@ export const columns: ColumnDef<FullPayment>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const payment = row.original;
-
+      // const router = useRouter();
       return (
         <div className="text-right">
           <DropdownMenu>
@@ -67,10 +74,11 @@ export const columns: ColumnDef<FullPayment>[] = [
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(payment.id!)}
               >
+                <Copy />
                 Copy Payment Id
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View Receipt</DropdownMenuItem>
+              <ReceiptButton paymentId={payment.id!} />
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -78,3 +86,18 @@ export const columns: ColumnDef<FullPayment>[] = [
     },
   },
 ];
+
+function ReceiptButton({ paymentId }: { paymentId: string }) {
+  const router = useRouter();
+
+  return (
+    <DropdownMenuItem
+      onClick={() => router.push(`/patient/payments/${paymentId}`)}
+    >
+      <div className="flex flex-row items-center justify-between gap-2">
+        <ReceiptText size={16} />
+        <span>View Receipt</span>
+      </div>
+    </DropdownMenuItem>
+  );
+}

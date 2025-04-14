@@ -69,3 +69,11 @@ export async function getUserPaymentsData(
 
   return flatten;
 }
+
+export async function getPaymentById(paymentId: string) {
+  const data = await db.query.payments.findFirst({
+    where: eq(payments.id, paymentId),
+  });
+
+  return data;
+}

@@ -2,7 +2,6 @@ import { APPOINTMENT_STATUS, LOCATION } from "@/data/constants";
 import { startOfDay } from "date-fns";
 import { z } from "zod";
 import { ProcedureSchema } from "./admin/procedures";
-import { DoctorSchema } from "./doctor";
 
 export const AppointmentSchemaBase = z.object({
   startTime: z.date().min(new Date()),
@@ -70,12 +69,12 @@ export const FullAppointmentSchema = z.object({
   doctors: z.object({
     id: z.string(),
     users: z.object({
-      name: z.string().nullable(), // Puede ser null
+      name: z.string().nullable(),
     }),
   }),
   patients: z.object({
     id: z.string(),
-    name: z.string().nullable(), // ← aquí está el fix
+    name: z.string().nullable(),
   }),
   procedures: z.object({
     id: z.string(),

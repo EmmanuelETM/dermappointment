@@ -7,18 +7,15 @@ import { HashLoader } from "react-spinners";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { format, subMinutes } from "date-fns";
 
 import {
   Card,
   CardHeader,
   CardTitle,
-  CardDescription,
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Printer, RotateCw } from "lucide-react";
+import { RotateCw } from "lucide-react";
 import { AppointmentSummaryCard } from "@/components/AppointmentSummaryCard";
 
 export default function AppointmentInfo({
