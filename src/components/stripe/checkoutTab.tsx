@@ -21,11 +21,11 @@ type PaymentIntentResponse = {
 const CheckoutTab = ({
   amount,
   lockId,
-  setCurrentStep,
+  // setCurrentStep,
 }: {
   amount: number;
   lockId: string | undefined;
-  setCurrentStep: (step: number) => void;
+  // setCurrentStep: (step: number) => void;
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -112,14 +112,7 @@ const CheckoutTab = ({
     <div className="flex flex-col gap-4">
       <FormError message={formError} />
       <PaymentElement />
-      <div className="flex justify-between pt-2">
-        <Button
-          disabled={disabled}
-          variant="outline"
-          onClick={() => setCurrentStep(3)}
-        >
-          Back
-        </Button>
+      <div className="flex justify-end pt-2">
         <Button
           type="submit"
           onClick={handleSubmit}

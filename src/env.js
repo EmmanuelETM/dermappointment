@@ -16,6 +16,7 @@ export const env = createEnv({
     STRIPE_WEBHOOK_SECRET: z.string(),
     NODEMAILER_EMAIL: z.string(),
     DATABASE_URL: z.string().url(),
+    CRON_SECRET: z.string(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -35,6 +36,7 @@ export const env = createEnv({
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     NODEMAILER_EMAIL: process.env.NODEMAILER_EMAIL,
     DATABASE_URL: process.env.DATABASE_URL,
+    CRON_SECRET: process.env.CRON_SECRET,
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
     NEXT_PUBLIC_STRIPE_PUBLIC_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY,

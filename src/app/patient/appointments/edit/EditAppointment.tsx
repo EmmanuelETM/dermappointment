@@ -60,7 +60,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { toZonedTime } from "date-fns-tz";
 import { CalendarIcon } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import { useCurrentUser } from "@/hooks/user-current-user";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { FormError } from "@/components/auth/form-error";
 import { editAppointment } from "@/actions/appointments/editAppointment";
 import { toast } from "sonner";

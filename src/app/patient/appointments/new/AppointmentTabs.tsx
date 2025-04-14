@@ -31,7 +31,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
-import { useCurrentUser } from "@/hooks/user-current-user";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 
@@ -235,7 +235,7 @@ export function AppointmentTabs({
           <TabsTrigger
             key={tab.value}
             value={tab.value}
-            disabled={currentStep < tab.step || isPending}
+            disabled={currentStep < tab.step || isPending || currentStep === 4}
           >
             <span className="block sm:hidden">{tab.step}</span>
             <span className="hidden sm:block">{tab.label}</span>
@@ -499,11 +499,7 @@ export function AppointmentTabs({
 
       {/* Step 4 */}
       <TabsContent value="payment">
-        <PaymentTab
-          setCurrentStepAction={setCurrentStep}
-          lockId={lockId}
-          amount={amount}
-        />
+        <PaymentTab lockId={lockId} amount={amount} />
       </TabsContent>
     </Tabs>
   );

@@ -36,7 +36,7 @@ import { Plus, X } from "lucide-react";
 import { saveSchedule } from "@/actions/doctor/schedule";
 import { FormError } from "../auth/form-error";
 import { FormSuccess } from "../auth/form-success";
-import { useCurrentUser } from "@/hooks/user-current-user";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { useRouter } from "next/navigation";
 
 type Availability = {

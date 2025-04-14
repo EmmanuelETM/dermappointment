@@ -88,5 +88,5 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  return new NextResponse("Event received");
+  return NextResponse.json({ received: true });
 }

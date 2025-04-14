@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { useCurrentUser } from "@/hooks/user-current-user";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 import {
   Sidebar,

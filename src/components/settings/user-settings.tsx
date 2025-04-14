@@ -18,7 +18,7 @@ import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
 import { Button } from "@/components/ui/button";
 
-import { useCurrentUser } from "@/hooks/user-current-user";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { useSession } from "next-auth/react";
 import { useState, useTransition } from "react";
 import { type z } from "zod";

@@ -2,7 +2,6 @@ import { type Doctor } from "@/schemas/doctor";
 import { db } from "@/server/db";
 import { doctors, schedule, users } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
-import { TRACE_OUTPUT_VERSION } from "next/dist/shared/lib/constants";
 
 export const getDoctorId = async (userId: string) => {
   const doctorId = db.query.users.findFirst({
