@@ -16,39 +16,11 @@ export default async function HomePage() {
       {/* Cards */}
       <Card className="col-span-1 xl:col-span-1">
         <CardHeader>
-          <CardTitle>Total Patients</CardTitle>
+          <CardTitle>Total Appointments</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">Some Stuff</div>
-          <p className="text-sm text-muted-foreground">month</p>
-        </CardContent>
-      </Card>
-
-      <Card className="col-span-1 xl:col-span-1">
-        <CardHeader>
-          <CardTitle>Upcoming Appointments</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold">more stuff</div>
-          <p className="text-sm text-muted-foreground">today</p>
-        </CardContent>
-      </Card>
-
-      <Card className="col-span-1 xl:col-span-1">
-        <CardHeader>
-          <CardTitle>Pending Confirmations</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold">stuff here</div>
-          <div className="flex flex-row items-center justify-between">
-            <p className="text-sm text-muted-foreground">more stuff</p>
-
-            {/* <Link hidden={pending <= 0} href="/doctor/appointment-management">
-              <Button>
-                <Eye size={32} />
-              </Button>
-            </Link> */}
-          </div>
+          <div className="text-3xl font-bold">5</div>
+          <p className="text-sm text-muted-foreground"></p>
         </CardContent>
       </Card>
 
