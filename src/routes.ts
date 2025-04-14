@@ -29,7 +29,12 @@ export const apiAuthPrefix = "/api/auth";
  * An array of routes that should be excluded from middleware protections (e.g. webhooks, apis)
  * @type {string[]}
  */
-export const ignoredRoutes = ["/api/stripe/webhook", "/api/uploadthing"];
+export const ignoredRoutes = [
+  "/api/stripe/webhook",
+  "/api/uploadthing",
+  "/api/clean-locks",
+  "/api/send-emails",
+];
 
 /**
  * This function takes the user role, and returns the default url for that role.
