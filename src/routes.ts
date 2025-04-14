@@ -33,7 +33,7 @@ export const ignoredRoutes = [
   "/api/stripe/webhook",
   "/api/uploadthing",
   "/api/clean-locks",
-  "/api/send-emails",
+  "/api/send-reminder-emails",
 ];
 
 /**

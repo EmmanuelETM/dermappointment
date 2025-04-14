@@ -4,9 +4,9 @@ import { redirect } from "next/navigation";
 export default async function HomePage() {
   const user = await currentUser();
 
-  if (!user || !user.doctorId) {
+  if (!user) {
     redirect("/login");
   }
 
-  return <div>Doctor home page</div>;
+  return <div>{user.doctorId}</div>;
 }

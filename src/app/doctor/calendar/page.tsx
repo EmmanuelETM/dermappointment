@@ -23,10 +23,6 @@ export default async function CalendarPage() {
         <h1 className="py-2 text-2xl font-semibold text-gray-900 dark:text-white lg:text-3xl">
           Calendar
         </h1>
-        {/* <Button className="flex items-center space-x-2" variant="outline">
-          <CalendarPlus />
-          <span>New</span>
-        </Button> */}
       </div>
       <div className="h-full overflow-auto rounded-xl border-2">
         <Calendar appointments={appointments} />

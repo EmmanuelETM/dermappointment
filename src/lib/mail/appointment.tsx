@@ -4,6 +4,9 @@ import { getDoctorEmailById, getDoctorTimezone } from "@/data/doctors";
 import { format } from "date-fns-tz";
 import { subMinutes } from "date-fns";
 import { getAppointmentById } from "@/data/appointments";
+import ReminderEmail from "./templates/reminderEmail";
+import { FullAppointment } from "@/schemas/appointment";
+import { render } from "@react-email/components";
 
 export const sendConfirmationEmailToDoctor = async (
   doctorId: string,
@@ -36,3 +39,31 @@ export const sendConfirmationEmailToDoctor = async (
     html: `<div><p>${appointment?.patients.name} ${appointment?.procedures.name} ${start} ${end}</p><p>Click <a href="${redirect}">Here</a> somebody's watching me</p></div>`,
   });
 };
+
+export async function sendReminderEmail(
+  to: string,
+  appointment: FullAppointment,
+) {
+  const redirect = `${env.NEXT_PUBLIC_BASE_URL}/patient/appointments`;
+  const start = format(new Date(appointment.startTime), "PPPp");
+  const end = format(new Date(appointment.endTime), "PPPp");
+
+  const html = await render(
+    <ReminderEmail
+      patientName={appointment.patients.name!}
+      procedureName={appointment.procedures.name}
+      doctorName={appointment.doctors.users.name!}
+      startTime={start}
+      endTime={end}
+      description={appointment.description ?? undefined}
+      redirect={redirect}
+    />,
+  );
+
+  await sendEmail({
+    to: "torresmalenaemmanuel@gmail.com",
+    subject: "DermAppointment Reminder",
+    html: html,
+  });
+  return;
+}

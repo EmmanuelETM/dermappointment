@@ -3,7 +3,7 @@
 import { type Appointment } from "@/schemas/appointment";
 import { db } from "@/server/db";
 import { appointments } from "@/server/db/schema";
-import { and, eq, gte, lte, ne } from "drizzle-orm";
+import { and, eq, gt, gte, lt, lte, ne } from "drizzle-orm";
 import { toZonedTime } from "date-fns-tz";
 
 const getAppointmentSchedule = async (
@@ -196,6 +196,7 @@ export const getAppointmentById = async (appointmentId: string) => {
           users: {
             columns: {
               name: true,
+              email: true,
             },
           },
         },
@@ -204,6 +205,7 @@ export const getAppointmentById = async (appointmentId: string) => {
         columns: {
           id: true,
           name: true,
+          email: true,
         },
       },
       procedures: true,
@@ -235,6 +237,7 @@ export async function getAppointmentByLockId(lockId: string) {
           users: {
             columns: {
               name: true,
+              email: true,
             },
           },
         },
@@ -243,6 +246,7 @@ export async function getAppointmentByLockId(lockId: string) {
         columns: {
           id: true,
           name: true,
+          email: true,
         },
       },
       procedures: true,
@@ -260,4 +264,47 @@ export async function getAppointmentByLockId(lockId: string) {
   });
 
   return data;
+}
+
+export async function getAppointmentsInRange(from: Date, to: Date) {
+  return await db.query.appointments.findMany({
+    where: and(
+      eq(appointments.status, "Confirmed"),
+      gt(appointments.startTime, from),
+      lt(appointments.startTime, to),
+    ),
+    with: {
+      doctors: {
+        columns: {
+          id: true,
+        },
+        with: {
+          users: {
+            columns: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+      },
+      patients: {
+        columns: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+      procedures: true,
+    },
+    columns: {
+      id: true,
+      startTime: true,
+      endTime: true,
+      timezone: true,
+      location: true,
+      description: true,
+      status: true,
+      createdAt: true,
+    },
+  });
 }

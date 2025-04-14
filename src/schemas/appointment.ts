@@ -70,11 +70,13 @@ export const FullAppointmentSchema = z.object({
     id: z.string(),
     users: z.object({
       name: z.string().nullable(),
+      email: z.string().email().nullable(),
     }),
   }),
   patients: z.object({
     id: z.string(),
     name: z.string().nullable(),
+    email: z.string().email().nullable(),
   }),
   procedures: z.object({
     id: z.string(),

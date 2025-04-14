@@ -1,5 +1,5 @@
 import { sendEmail } from "@/server/nodemailer";
-import { Email } from "./email/appointment";
+import { Email } from "./templates/appointment";
 import { render } from "@react-email/components";
 
 export const sendTestEmail = async () => {
