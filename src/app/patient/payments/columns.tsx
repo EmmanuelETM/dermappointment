@@ -1,13 +1,7 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import {
-  MoreHorizontal,
-  ArrowUpDown,
-  Receipt,
-  ReceiptText,
-  Copy,
-} from "lucide-react";
+import { MoreHorizontal, ArrowUpDown, ReceiptText, Copy } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {

@@ -2,7 +2,6 @@ import { AppointmentSummaryCard } from "@/components/AppointmentSummaryCard";
 import { getAppointmentById } from "@/data/appointments";
 import { getPaymentById } from "@/data/payments";
 import { currentUser } from "@/lib/currentUser";
-import { FullAppointment } from "@/schemas/appointment";
 import { redirect } from "next/navigation";
 
 export default async function Page({

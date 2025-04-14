@@ -34,7 +34,7 @@ export default function AppointmentInfo({
   const { data, error, isFetching } = useQuery({
     queryKey: ["appointment", lockId],
     queryFn: () => getAppointmentByLockId(lockId),
-    refetchInterval: 1000,
+    refetchInterval: (data) => (data ? false : 1000),
     retry: (failureCount) => {
       if (failureCount >= 10) {
         setMaxRetriesReached(true);

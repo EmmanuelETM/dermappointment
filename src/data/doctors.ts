@@ -2,6 +2,7 @@ import { type Doctor } from "@/schemas/doctor";
 import { db } from "@/server/db";
 import { doctors, schedule, users } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
+import { TRACE_OUTPUT_VERSION } from "next/dist/shared/lib/constants";
 
 export const getDoctorId = async (userId: string) => {
   const doctorId = db.query.users.findFirst({
@@ -113,4 +114,19 @@ export async function getDoctorTimezone(doctorId: string) {
   });
 
   return data;
+}
+
+export async function getDoctorEmailById(doctorId: string) {
+  const data = await db.query.doctors.findFirst({
+    where: eq(doctors.id, doctorId),
+    columns: {},
+    with: {
+      users: {
+        columns: {
+          email: true,
+        },
+      },
+    },
+  });
+  return { email: data?.users.email };
 }

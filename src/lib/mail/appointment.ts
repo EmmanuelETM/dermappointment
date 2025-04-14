@@ -1,29 +1,38 @@
 import { sendEmail } from "@/server/nodemailer";
 import { env } from "@/env";
-import { getDoctorTimezone } from "@/data/doctors";
+import { getDoctorEmailById, getDoctorTimezone } from "@/data/doctors";
 import { format } from "date-fns-tz";
 import { subMinutes } from "date-fns";
+import { getAppointmentById } from "@/data/appointments";
 
 export const sendConfirmationEmailToDoctor = async (
-  doctor: { doctorId: string; doctorEmail: string },
-  patient: string,
-  procedure: string,
-  date: { start: Date; end: Date },
+  doctorId: string,
+  appointmentId: string,
 ) => {
   const redirect = `${env.NEXT_PUBLIC_BASE_URL}/doctor/appointment-management`;
 
-  const data = await getDoctorTimezone(doctor.doctorId);
+  const data = await getDoctorTimezone(doctorId);
+  const doctorEmail = await getDoctorEmailById(doctorId);
+  const appointment = await getAppointmentById(appointmentId);
 
-  const start = format(date.start, "yyyy/MM/dd hh:mm:a", {
+  if (!doctorEmail.email) {
+    throw new Error("Doctor email not found");
+  }
+
+  const start = format(appointment!.startTime, "yyyy/MM/dd hh:mm:a", {
     timeZone: data!.timezone,
   });
-  const end = format(subMinutes(date.end, 15), "yyyy/MM/dd hh:mm:a", {
-    timeZone: data!.timezone,
-  });
+  const end = format(
+    subMinutes(appointment!.endTime, 15),
+    "yyyy/MM/dd hh:mm:a",
+    {
+      timeZone: data!.timezone,
+    },
+  );
 
   await sendEmail({
-    to: doctor.doctorEmail,
+    to: doctorEmail.email,
     subject: "New Appointment",
-    html: `<div><p>${patient} ${procedure} ${start} ${end}</p><p>Click <a href="${redirect}">Here</a> somebody's watching me</p></div>`,
+    html: `<div><p>${appointment?.patients.name} ${appointment?.procedures.name} ${start} ${end}</p><p>Click <a href="${redirect}">Here</a> somebody's watching me</p></div>`,
   });
 };

@@ -25,7 +25,6 @@ import {
   ClipboardPlus,
   User,
   CalendarRange,
-  CalendarCheck,
   SquareChartGantt,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
