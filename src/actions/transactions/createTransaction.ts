@@ -1,18 +1,18 @@
 "use server";
 
-import { type Payment } from "@/schemas/payment";
+import { type Transaction } from "@/schemas/transactions";
 import { db } from "@/server/db";
-import { payments } from "@/server/db/schema";
+import { transactions } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function createPayment(values: Payment) {
-  const existing = await db.query.payments.findFirst({
-    where: eq(payments.paymentIntentId, values.paymentIntentId),
+export async function createTransaction(values: Transaction) {
+  const existing = await db.query.transactions.findFirst({
+    where: eq(transactions.stripeId, values.stripeId),
   });
-  console.log("inside createPayment");
+  console.log("inside createTransaction");
   if (!existing) {
     try {
-      const payment = await db.insert(payments).values(values).returning();
+      const payment = await db.insert(transactions).values(values).returning();
 
       if (payment.length > 0) {
         console.log("payment created");

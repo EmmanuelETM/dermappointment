@@ -7,6 +7,7 @@ import {
   NOTIFICATION_TYPE,
   ROLES,
   SKIN_TYPES,
+  TRANSACTION_TYPE,
 } from "@/data/constants";
 import { relations } from "drizzle-orm";
 import {
@@ -65,7 +66,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   }),
   appointments: many(appointments),
   appointmentLocks: many(appointmentLock),
-  payments: many(payments),
+  payments: many(transactions),
   notificationLogs: many(notificationLogs),
   clinicalHistory: one(clinicalHistory, {
     fields: [users.id],
@@ -305,7 +306,7 @@ export const appointmentsRelations = relations(
       fields: [appointments.procedureId],
       references: [procedures.id],
     }),
-    payments: many(payments),
+    payments: many(transactions),
   }),
 );
 
@@ -354,15 +355,18 @@ export const appointmentLockRelations = relations(
 
 //payment
 
-export const payments = createTable("payments", {
+export const transactionType = pgEnum("transaction_type", TRANSACTION_TYPE);
+
+export const transactions = createTable("transactions", {
   id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  paymentIntentId: text("payment_intent_id").notNull().unique(),
+  stripeId: text("payment_intent_id").notNull().unique(),
   appointmentId: varchar("appointment_id", { length: 255 })
     .notNull()
     .references(() => appointments.id),
+  type: transactionType("type").notNull(),
   userId: varchar("user_id", { length: 255 })
     .notNull()
     .references(() => users.id),
@@ -373,13 +377,13 @@ export const payments = createTable("payments", {
   updatedAt,
 });
 
-export const paymentsRelations = relations(payments, ({ one }) => ({
+export const paymentsRelations = relations(transactions, ({ one }) => ({
   appointment: one(appointments, {
-    fields: [payments.appointmentId],
+    fields: [transactions.appointmentId],
     references: [appointments.id],
   }),
   users: one(users, {
-    fields: [payments.userId],
+    fields: [transactions.userId],
     references: [users.id],
   }),
 }));

@@ -38,6 +38,8 @@ export const APPOINTMENT_STATUS = [
   "Completed",
 ] as const;
 
+export const TRANSACTION_TYPE = ["Refund", "Payment"] as const;
+
 export const LOCK_STATUS = ["Pending", "Success"] as const;
 
 export const NOTIFICATION_TYPE = ["Email", "SMS", "Push", "System"] as const;

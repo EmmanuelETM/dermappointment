@@ -12,10 +12,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { type FullPayment } from "@/schemas/payment";
+import { type FullTransaction } from "@/schemas/transactions";
 import { useRouter } from "next/navigation";
 
-export const columns: ColumnDef<FullPayment>[] = [
+export const columns: ColumnDef<FullTransaction>[] = [
   {
     accessorKey: "doctor",
     header: ({ column }) => {
@@ -29,10 +29,22 @@ export const columns: ColumnDef<FullPayment>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const doctor = row.getValue("doctor");
+      return <div className="pl-4">{String(doctor)}</div>;
+    },
+  },
+  {
+    accessorKey: "type",
+    header: "Type",
   },
   {
     accessorKey: "status",
     header: "Status",
+  },
+  {
+    accessorKey: "procedure",
+    header: "Procedure",
   },
   {
     accessorKey: "amount",
@@ -53,7 +65,7 @@ export const columns: ColumnDef<FullPayment>[] = [
     header: () => <div className="text-right">Actions</div>,
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const transaction = row.original;
       // const router = useRouter();
       return (
         <div className="text-right">
@@ -66,13 +78,13 @@ export const columns: ColumnDef<FullPayment>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id!)}
+                onClick={() => navigator.clipboard.writeText(transaction.id!)}
               >
                 <Copy />
                 Copy Payment Id
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <ReceiptButton paymentId={payment.id!} />
+              <ReceiptButton transactionId={transaction.id!} />
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -81,12 +93,12 @@ export const columns: ColumnDef<FullPayment>[] = [
   },
 ];
 
-function ReceiptButton({ paymentId }: { paymentId: string }) {
+function ReceiptButton({ transactionId }: { transactionId: string }) {
   const router = useRouter();
 
   return (
     <DropdownMenuItem
-      onClick={() => router.push(`/patient/payments/${paymentId}`)}
+      onClick={() => router.push(`/patient/transactions/${transactionId}`)}
     >
       <div className="flex flex-row items-center justify-between gap-2">
         <ReceiptText size={16} />

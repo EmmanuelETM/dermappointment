@@ -1,15 +1,16 @@
-import { type FullPayment } from "@/schemas/payment";
+import { type FullTransaction } from "@/schemas/transactions";
 import { db } from "@/server/db";
-import { payments } from "@/server/db/schema";
+import { transactions } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function getUserPayments(userId: string) {
-  const data = await db.query.payments.findMany({
-    where: eq(payments.userId, userId),
+export async function getUserTransactions(userId: string) {
+  const data = await db.query.transactions.findMany({
+    where: eq(transactions.userId, userId),
     columns: {
       id: true,
-      paymentIntentId: true,
+      stripeId: true,
       appointmentId: true,
+      type: true,
       amount: true,
       currency: true,
       status: true,
@@ -48,31 +49,32 @@ export async function getUserPayments(userId: string) {
   return data;
 }
 
-export async function getUserPaymentsData(
+export async function getUserTransactionsData(
   userId: string,
-): Promise<FullPayment[]> {
-  const data = await getUserPayments(userId);
+): Promise<FullTransaction[]> {
+  const data = await getUserTransactions(userId);
 
-  const flatten = data.map((payment) => ({
-    id: payment.id,
-    paymentIntentId: payment.paymentIntentId,
-    appointmentId: payment.appointmentId,
+  const flatten = data.map((transactions) => ({
+    id: transactions.id,
+    stripeId: transactions.stripeId,
+    appointmentId: transactions.appointmentId,
+    type: transactions.type,
     userId: userId,
-    user: payment.users.name,
-    amount: payment.amount,
-    currency: payment.currency,
-    doctor: payment.appointment.doctors.users.name,
-    doctorId: payment.appointment.doctors.id,
-    procedure: payment.appointment.procedures.name,
-    status: payment.status,
+    user: transactions.users.name,
+    amount: transactions.amount,
+    currency: transactions.currency,
+    doctor: transactions.appointment.doctors.users.name,
+    doctorId: transactions.appointment.doctors.id,
+    procedure: transactions.appointment.procedures.name,
+    status: transactions.status,
   }));
 
   return flatten;
 }
 
 export async function getPaymentById(paymentId: string) {
-  const data = await db.query.payments.findFirst({
-    where: eq(payments.id, paymentId),
+  const data = await db.query.transactions.findFirst({
+    where: eq(transactions.id, paymentId),
   });
 
   return data;

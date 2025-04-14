@@ -1,5 +1,5 @@
 import { createAppointment } from "@/actions/appointments/createAppointment";
-import { createPayment } from "@/actions/payments/createPayment";
+import { createTransaction } from "@/actions/transactions/createTransaction";
 import { getAppointmentLockById } from "@/data/appointmentLock";
 import { env } from "@/env";
 import { sendConfirmationEmailToDoctor } from "@/lib/mail/appointment";
@@ -65,12 +65,13 @@ export async function POST(request: NextRequest) {
       const appointmentId = appointmentResponse.appointmentId;
 
       console.log("Creando pago...");
-      await createPayment({
+      await createTransaction({
         amount,
         currency,
         appointmentId,
-        paymentIntentId,
+        stripeId: paymentIntentId,
         userId: lockAppointment.userId,
+        type: "Payment",
         status,
       });
 
