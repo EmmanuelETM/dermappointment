@@ -463,7 +463,7 @@ export const notificationLogs = createTable("notification_logs", {
     .notNull()
     .references(() => users.id),
   type: notificationType("notification_type").notNull(),
-  content: text("content"),
+  content: text("content").notNull(),
   status: notificationStatus("notification_status")
     .notNull()
     .default("Pending"),

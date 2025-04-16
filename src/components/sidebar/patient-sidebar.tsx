@@ -16,14 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavUser } from "@/components/nav-user";
 
-import {
-  DollarSign,
-  Hospital,
-  Home,
-  Send,
-  CalendarRange,
-  CalendarDays,
-} from "lucide-react";
+import { DollarSign, Hospital, Home, Send, CalendarRange } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
@@ -41,11 +34,6 @@ const data = {
           title: "Home",
           url: "/patient/home",
           icon: Home,
-        },
-        {
-          title: "Calendar",
-          url: "/patient/calendar",
-          icon: CalendarDays,
         },
       ],
     },

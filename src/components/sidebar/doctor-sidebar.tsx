@@ -55,11 +55,6 @@ const data = {
           url: "/doctor/schedule",
           icon: CalendarClock,
         },
-        {
-          title: "Calendar",
-          url: "/doctor/calendar",
-          icon: CalendarDays,
-        },
       ],
     },
     {
